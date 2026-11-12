@@ -1,11 +1,457 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HACKED - Escape Room</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #09090c;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 35px 20px;
+}
+
+.heading {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.heading p {
+  color: #ff5555;
+  font-size: 12px;
+  letter-spacing: 3px;
+}
+
+h1 {
+  color: #ff4545;
+  text-shadow: 0 0 15px #b40000;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 30px;
+  align-items: center;
+}
+
+.tower {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  height: 330px;
+  margin: auto;
+}
+
+.floor {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #231317;
+  border: 2px solid #e34b54;
+  color: #ff7777;
+  font-size: 38px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.floor:hover,
+.floor.selected {
+  background: #672027;
+  color: white;
+}
+
+.one {
+  top: 0;
+  left: 35%;
+  width: 30%;
+  height: 110px;
+  clip-path: polygon(
+    10% 0, 90% 0, 100% 100%, 0 100%
+  );
+}
+
+.two {
+  top: 110px;
+  left: 29%;
+  width: 42%;
+  height: 110px;
+  clip-path: polygon(
+    10% 0, 90% 0, 100% 100%, 0 100%
+  );
+}
+
+.three {
+  top: 220px;
+  left: 22%;
+  width: 56%;
+  height: 110px;
+  clip-path: polygon(
+    10% 0, 90% 0, 100% 100%, 0 100%
+  );
+}
+
+.challenge-btn {
+  position: absolute;
+  background: #180c10;
+  color: #ff6868;
+  border: 1px solid #e03c46;
+  border-radius: 5px;
+  padding: 12px 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.challenge-btn:hover {
+  background: #65212a;
+  color: white;
+}
+
+.easy {
+  top: 40px;
+  left: 0;
+}
+
+.medium {
+  top: 145px;
+  right: 0;
+}
+
+.hard {
+  top: 255px;
+  left: 0;
+}
+
+.panel {
+  border: 1px solid #b43a42;
+  border-radius: 10px;
+  padding: 22px;
+  background: #140d11;
+  text-align: center;
+  min-height: 430px;
+}
+
+.panel h2 {
+  color: #ff5555;
+  margin-top: 0;
+}
+
+#challengeName {
+  color: #aaa;
+  font-size: 13px;
+}
+
+.lock {
+  font-size: 65px;
+  margin: 20px 0;
+}
+
+.pin-boxes {
+  display: flex;
+  justify-content: center;
+  gap: 3px;
+  margin: 20px 0 12px;
+}
+
+.pin-box {
+  flex: 1;
+  min-width: 0;
+  height: 38px;
+  border: 1px solid #b43a42;
+  background: #231317;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+#wordInput {
+  width: 100%;
+  padding: 12px;
+  background: #09090c;
+  border: 1px solid #b43a42;
+  border-radius: 5px;
+  color: white;
+  text-align: center;
+  font-size: 16px;
+  text-transform: uppercase;
+}
+
+.unlock {
+  width: 100%;
+  margin-top: 15px;
+  padding: 14px;
+  border: none;
+  border-radius: 5px;
+  background: #c62828;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.unlock:hover {
+  background: #ff4545;
+}
+
+#message {
+  min-height: 25px;
+  font-weight: bold;
+}
+
+.footer {
+  text-align: center;
+  color: #aaa;
+  margin-top: 35px;
+}
+
+.back {
+  display: block;
+  margin: 25px auto;
+  padding: 12px 30px;
+  background: transparent;
+  color: white;
+  border: 1px solid #e34b54;
+  cursor: pointer;
+}
+
+#winScreen {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: #09090c;
+  z-index: 100;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+}
+
+#winScreen h1 {
+  color: #45df83;
+  text-shadow: 0 0 20px #168a45;
+  font-size: 42px;
+}
+
+#winScreen p {
+  color: #ddd;
+}
+
+@media (max-width: 750px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .challenge-btn {
+    font-size: 11px;
+    padding: 9px 6px;
+  }
+
+  .panel {
+    width: 100%;
+    max-width: 350px;
+    margin: auto;
+  }
+}
+</style>
 </head>
+
 <body>
-    <h1>COMING SOON....</h1>
+
+<div class="container">
+
+  <div class="heading">
+    <p>HACKED // ESCAPE ROOM</p>
+    <h1>SELECT A CHALLENGE</h1>
+  </div>
+
+  <div class="layout">
+
+    <!-- LEFT: CHALLENGE TOWER -->
+    <div class="tower">
+
+      <div class="floor one selected"
+           id="floor1"
+           onclick="selectChallenge('easy')">
+        1
+      </div>
+
+      <div class="floor two"
+           id="floor2"
+           onclick="selectChallenge('medium')">
+        2
+      </div>
+
+      <div class="floor three"
+           id="floor3"
+           onclick="selectChallenge('hard')">
+        3
+      </div>
+ 
+      <button class="challenge-btn easy"
+              onclick="window.location.href='matchthecolor.html'">
+        EASY
+      </button>
+
+      <button class="challenge-btn medium"
+              onclick="selectChallenge('medium')">
+        MEDIUM
+      </button>
+
+      <button class="challenge-btn hard"
+              onclick="selectChallenge('hard')">
+        HARD
+      </button>
+
+    </div>
+
+    <!-- RIGHT: ONE FULL WORD PIN -->
+    <div class="panel">
+
+      <h2>SOLVE</h2>
+
+      <p id="challengeName">EASY CHALLENGE</p>
+
+      <div class="lock" id="lockIcon">🔒</div>
+
+      <p>Enter the secret word PIN</p>
+
+      <div class="pin-boxes" id="pinBoxes"></div>
+
+      <input
+        type="text"
+        id="wordInput"
+        maxlength="10"
+        placeholder="TYPE LETTERS"
+        autocomplete="off"
+        oninput="updateBoxes()"
+      >
+
+      <button class="unlock" onclick="checkWord()">
+        UNLOCK
+      </button>
+
+      <p id="message"></p>
+
+    </div>
+
+  </div>
+
+  <p class="footer">
+    Complete the challenges to discover the secret word.
+  </p>
+
+  <button class="back"
+          onclick="location.href='screen3.html'">
+    BACK
+  </button>
+
+</div>
+
+<!-- WIN SCREEN -->
+<div id="winScreen">
+  <h1>🔓 SYSTEM RESTORED!</h1>
+  <p>You cracked the secret word PIN!</p>
+  <p>Returning to the welcome screen...</p>
+</div>
+
+<script>
+
+// ONE SECRET ANSWER FOR THE ENTIRE GAME
+const secretWord = "TECHNOLOGY";
+
+let selected = "easy";
+
+function selectChallenge(level) {
+  selected = level;
+
+  document.getElementById("challengeName").textContent =
+    level.toUpperCase() + " CHALLENGE";
+
+  document.getElementById("message").textContent = "";
+
+  const number = {
+    easy: 1,
+    medium: 2,
+    hard: 3
+  }[level];
+
+  document.querySelectorAll(".floor").forEach(floor => {
+    floor.classList.remove("selected");
+  });
+
+  document.getElementById("floor" + number)
+    .classList.add("selected");
+
+  // The full word PIN stays the same for every challenge.
+  updateBoxes();
+}
+
+function updateBoxes() {
+  const input = document.getElementById("wordInput");
+
+  input.value = input.value
+    .replace(/[^a-z]/gi, "")
+    .toUpperCase()
+    .slice(0, 10);
+
+  const boxes = document.getElementById("pinBoxes");
+  boxes.innerHTML = "";
+
+  // Always show 10 horizontal letter boxes.
+  for (let i = 0; i < 10; i++) {
+    const box = document.createElement("div");
+    box.className = "pin-box";
+    box.textContent = input.value[i] || "_";
+    boxes.appendChild(box);
+  }
+}
+
+function checkWord() {
+  const guess = document.getElementById("wordInput")
+    .value.trim().toUpperCase();
+
+  const message = document.getElementById("message");
+
+  if (guess === secretWord) {
+    message.style.color = "#45df83";
+    message.textContent = "ACCESS GRANTED!";
+
+    document.getElementById("lockIcon").textContent = "🔓";
+
+    document.getElementById("winScreen").style.display =
+      "flex";
+
+    // Return to the first screen after 3 seconds.
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 3000);
+
+  } else {
+    message.style.color = "#ff5555";
+    message.textContent = "ACCESS DENIED! TRY AGAIN.";
+  }
+}
+
+selectChallenge("easy");
+
+</script>
+
 </body>
 </html>
