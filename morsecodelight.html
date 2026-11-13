@@ -1,0 +1,471 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HACKED - Medium Challenge</title>
+
+<!--
+Morse Code Light Puzzle
+Original code generated with assistance from Google Gemini
+(November 12, 2026)
+Modified for HACKED Escape Room
+-->
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #09090c;
+  color: white;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 25px;
+}
+
+.game {
+  width: 100%;
+  max-width: 550px;
+  text-align: center;
+  background: #140d11;
+  border: 1px solid #b43a42;
+  border-radius: 12px;
+  padding: 30px 20px;
+  box-shadow: 0 0 25px #7a151b55;
+}
+
+h1 {
+  color: #ff4545;
+  text-shadow: 0 0 15px #b40000;
+}
+
+
+.subtitle {
+  color: #ff5555;
+  font-size: 13px;
+  letter-spacing: 2px;
+}
+
+.instructions {
+  color: #aaa;
+  line-height: 1.6;
+}
+
+.bulb {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: #292929;
+  box-shadow: inset 0 0 20px black;
+  margin: 25px auto;
+}
+
+.bulb.on {
+  background: #ffeb3b;
+  box-shadow: 0 0 45px #ffeb3b,
+              0 0 90px #ff9800;
+}
+
+.letter-indicator {
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  margin: 15px 0 8px;
+}
+
+#playStatus {
+  color: #aaa;
+  font-size: 13px;
+  min-height: 20px;
+  margin-bottom: 18px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 15px 0;
+}
+
+button {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  filter: brightness(1.2);
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.start {
+  background: #15803d;
+}
+
+.slow {
+  background: #ca8a04;
+}
+
+.next {
+  background: #2563eb;
+}
+
+.reset {
+  background: #b91c1c;
+}
+
+.submit {
+  background: #c62828;
+}
+
+.hint {
+  background: #5c242a;
+}
+
+.back {
+  background: transparent;
+  border: 1px solid #b43a42;
+  margin-top: 20px;
+}
+
+input {
+  width: 100%;
+  max-width: 320px;
+  padding: 13px;
+  background: #09090c;
+  border: 1px solid #b43a42;
+  border-radius: 5px;
+  color: white;
+  text-align: center;
+  font-size: 17px;
+  text-transform: uppercase;
+  margin-top: 20px;
+}
+
+.hint-box {
+  display: none;
+  margin-top: 20px;
+  padding: 15px;
+  background: #231317;
+  border: 1px solid #b43a42;
+  border-radius: 8px;
+  line-height: 1.8;
+}
+
+.hint-box.visible {
+  display: block;
+}
+
+.morse-chart {
+        
+  font-family: monospace;
+  font-size: 25px;
+  line-height: 2;
+  overflow-wrap: anywhere;
+}
+
+#feedback {
+  font-weight: bold;
+  min-height: 25px;
+}
+
+@media (max-width: 450px) {
+  .game {
+    padding: 20px 12px;
+  }
+
+  button {
+    padding: 11px 13px;
+    font-size: 12px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="game">
+
+  <p class="subtitle">HACKED // MEDIUM CHALLENGE</p>
+
+  <h1>💡 MORSE CODE PUZZLE</h1>
+
+  <p class="instructions">
+    Watch the flashing light carefully.<br>
+    Decode the three-letter secret word.<br>
+    Press START to begin each letter.
+  </p>
+
+  <!-- FLASHING LIGHT -->
+  <div class="bulb" id="light"></div>
+
+  <!-- CURRENT LETTER INDICATOR -->
+  <div class="letter-indicator" id="letterIndicator">
+    LETTER 1 OF 3
+  </div>
+
+  <p id="playStatus">READY TO START</p>
+
+  <!-- MORSE CONTROLS -->
+  <div class="buttons">
+
+    <button class="start" id="startBtn"
+            onclick="startMorse()">
+      START
+    </button>
+
+    <button class="slow" id="slowBtn"
+            onclick="slowMorse()">
+      SLOW
+    </button>
+
+    <button class="next" id="nextBtn"
+            onclick="nextLetter()" disabled>
+      NEXT
+    </button>
+
+    <button class="reset"
+            onclick="resetMorse()">
+      RESET
+    </button>
+
+  </div>
+
+  <!-- ANSWER -->
+  <input
+    type="text"
+    id="answer"
+    maxlength="3"
+    placeholder="ENTER 3 LETTERS"
+    autocomplete="off"
+  >
+
+  <div class="buttons">
+    <button class="submit" onclick="checkAnswer()">
+      SUBMIT
+    </button>
+
+    <button class="hint" onclick="toggleHint()">
+      HINT
+    </button>
+  </div>
+
+  <p id="feedback"></p>
+
+  <!-- FULL MORSE CODE HINT -->
+  <div class="hint-box" id="hintBox">
+
+    <strong>MORSE CODE CHART</strong>
+
+    <p>
+      Short flash = DOT (.)<br>
+      Long flash = DASH (-)
+    </p>
+
+    <p class="morse-chart">
+      A = .- &nbsp; B = -... &nbsp; C = -.-.<br>
+      D = -.. &nbsp; E = . &nbsp; F = ..-.<br>
+      G = --. &nbsp; H = .... &nbsp; I = ..<br>
+      J = .--- &nbsp; K = -.- &nbsp; L = .-..<br>
+      M = -- &nbsp; N = -. &nbsp; O = ---<br>
+      P = .--. &nbsp; Q = --.- &nbsp; R = .-.<br>
+      S = ... &nbsp; T = - &nbsp; U = ..-<br>
+      V = ...- &nbsp; W = .-- &nbsp; X = -..-<br>
+      Y = -.-- &nbsp; Z = --..
+    </p>
+
+  </div>
+
+  <button class="back"
+          onclick="window.location.href='screen4.html'">
+    ← BACK TO CHALLENGES
+  </button>
+
+</div>
+
+<script>
+const secretWord = "NOL";
+
+const morseMap = {
+  N: "-.",
+  O: "---",
+  L: ".-.."
+};
+
+const light = document.getElementById("light");
+const letterIndicator =
+  document.getElementById("letterIndicator");
+const playStatus =
+  document.getElementById("playStatus");
+
+const startBtn = document.getElementById("startBtn");
+const slowBtn = document.getElementById("slowBtn");
+const nextBtn = document.getElementById("nextBtn");
+
+let currentLetter = 0;
+let playing = false;
+let letterFinished = false;
+let playbackToken = 0;
+
+const sleep = ms =>
+  new Promise(resolve => setTimeout(resolve, ms));
+
+function updateControls() {
+  letterIndicator.textContent =
+    `LETTER ${currentLetter + 1} OF ${secretWord.length}`;
+
+  startBtn.disabled = playing;
+  slowBtn.disabled = playing;
+
+  nextBtn.disabled =
+    playing ||
+    !letterFinished ||
+    currentLetter === secretWord.length - 1;
+}
+
+// Play the current letter.
+async function playCurrentLetter(dotTime) {
+  if (playing) return;
+
+  playing = true;
+  letterFinished = false;
+
+  const token = ++playbackToken;
+
+  updateControls();
+
+  playStatus.textContent =
+    `PLAYING LETTER ${currentLetter + 1} OF 3...`;
+  playStatus.style.color = "#ffeb3b";
+
+  const letter = secretWord[currentLetter];
+  const code = morseMap[letter];
+
+  for (const symbol of code) {
+    if (token !== playbackToken) return;
+
+    light.classList.add("on");
+
+    if (symbol === ".") {
+      await sleep(dotTime);
+    } else {
+      await sleep(dotTime * 3);
+    }
+
+    if (token !== playbackToken) return;
+
+    light.classList.remove("on");
+
+    await sleep(dotTime);
+  }
+
+  if (token !== playbackToken) return;
+
+  playing = false;
+  letterFinished = true;
+  light.classList.remove("on");
+
+  if (currentLetter === secretWord.length - 1) {
+    playStatus.textContent =
+      "ALL LETTERS PLAYED — ENTER YOUR ANSWER";
+  } else {
+    playStatus.textContent =
+      "LETTER COMPLETE — PRESS NEXT";
+  }
+
+  playStatus.style.color = "#45df83";
+
+  updateControls();
+}
+
+// GREEN: Normal speed.
+function startMorse() {
+  playCurrentLetter(600);
+}
+
+// YELLOW: Slower speed.
+function slowMorse() {
+  playCurrentLetter(1100);
+}
+
+// BLUE: Advance one letter.
+function nextLetter() {
+  if (playing || !letterFinished) return;
+  if (currentLetter >= secretWord.length - 1) return;
+
+  currentLetter++;
+  letterFinished = false;
+
+  light.classList.remove("on");
+
+  playStatus.textContent = "READY TO START";
+  playStatus.style.color = "#aaa";
+
+  updateControls();
+}
+
+// RED: Start over.
+function resetMorse() {
+  playbackToken++;
+  playing = false;
+  letterFinished = false;
+  currentLetter = 0;
+
+  light.classList.remove("on");
+
+  document.getElementById("answer").value = "";
+  document.getElementById("feedback").textContent = "";
+
+  playStatus.textContent = "READY TO START";
+  playStatus.style.color = "#aaa";
+
+  updateControls();
+}
+
+// Show the full Morse alphabet.
+function toggleHint() {
+  document.getElementById("hintBox")
+    .classList.toggle("visible");
+}
+
+// Check the answer.
+function checkAnswer() {
+  const guess = document.getElementById("answer")
+    .value.trim().toUpperCase();
+
+  const feedback = document.getElementById("feedback");
+
+  if (guess === secretWord) {
+    feedback.style.color = "#45df83";
+    feedback.textContent =
+      "🔓 ACCESS GRANTED! YOU DECODED THE WORD!";
+
+    sessionStorage.setItem("mediumComplete", "true");
+  } else {
+    feedback.style.color = "#ff5555";
+    feedback.textContent =
+      "❌ INCORRECT! TRY AGAIN.";
+  }
+}
+
+// Initial state: no automatic flashing.
+updateControls();
+</script>
+
+</body>
+</html>
