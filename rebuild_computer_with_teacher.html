@@ -533,7 +533,7 @@ button:disabled {
     </span>
 
     <span class="timer" id="timer">
-      TIME LEFT 01:00
+      TIME LEFT --:--
     </span>
 
     <span class="tag" id="count">
@@ -764,6 +764,63 @@ const components = [
   }
 ];
 
+/* RANDOM TASKS: ONE SET PER ESCAPE ROOM */
+const TASKS_KEY = "easyRandomTasks";
+const TIME_KEY = "easyRandomSeconds";
+const GAME_KEY = "easyRandomGameWord";
+const currentGameWord = sessionStorage.getItem("secretWord");
+if (sessionStorage.getItem(GAME_KEY) !== currentGameWord) {
+  sessionStorage.removeItem(TASKS_KEY);
+  sessionStorage.removeItem(TIME_KEY);
+  sessionStorage.setItem(GAME_KEY, currentGameWord || "");
+}
+
+const allComponents = [
+  ...components,
+  { id: "motherboard", color: "#a855f7", name: "MOTHERBOARD", detail: "Main circuit board", icon: "🔌", slot: "I connect all the computer components together." },
+  { id: "psu", color: "#f97316", name: "POWER SUPPLY", detail: "PSU", icon: "⚡", slot: "I supply electricity to the computer." },
+  { id: "fan", color: "#06b6d4", name: "COOLING FAN", detail: "Cooling", icon: "🌬️", slot: "I move air to cool computer parts." },
+  { id: "hdd", color: "#ec4899", name: "HDD", detail: "Hard disk", icon: "💽", slot: "I store files on spinning magnetic disks." },
+  { id: "network", color: "#84cc16", name: "NETWORK CARD", detail: "Networking", icon: "🌐", slot: "I connect a computer to a network." },
+  { id: "sound", color: "#14b8a6", name: "SOUND CARD", detail: "Audio", icon: "🎵", slot: "I process sound for speakers and headphones." },
+  { id: "heatsink", color: "#f59e0b", name: "HEAT SINK", detail: "Heat control", icon: "🌡️", slot: "I carry heat away from computer chips." },
+  { id: "optical", color: "#8b5cf6", name: "OPTICAL DRIVE", detail: "Disc reader", icon: "💿", slot: "I read CDs and DVDs." },
+  { id: "wifi", color: "#38bdf8", name: "WI-FI ADAPTER", detail: "Wireless", icon: "📶", slot: "I connect to wireless networks." },
+  { id: "battery", color: "#fb7185", name: "CMOS BATTERY", detail: "Clock power", icon: "🔋", slot: "I keep the computer clock running when powered off." },
+  { id: "case", color: "#c084fc", name: "COMPUTER CASE", detail: "Enclosure", icon: "🗄️", slot: "I protect and hold the internal parts." },
+  { id: "ethernet", color: "#2dd4bf", name: "ETHERNET PORT", detail: "Wired connection", icon: "🔗", slot: "I connect a network cable to the computer." },
+  { id: "bios", color: "#f472b6", name: "BIOS CHIP", detail: "Startup firmware", icon: "🔧", slot: "I help start the computer before the operating system loads." },
+  { id: "usb", color: "#60a5fa", name: "USB PORT", detail: "Peripheral connection", icon: "🔌", slot: "I let you plug in flash drives, mice, and keyboards." },
+  { id: "keyboard", color: "#facc15", name: "KEYBOARD", detail: "Typing device", icon: "⌨️", slot: "I let you type letters, numbers, and commands." },
+  { id: "mouse", color: "#4ade80", name: "MOUSE", detail: "Pointing device", icon: "🖱️", slot: "I move the pointer and click items on the screen." },
+  { id: "monitor", color: "#a78bfa", name: "MONITOR", detail: "Display device", icon: "🖥️", slot: "I display text, pictures, and videos for you to see." },
+  { id: "webcam", color: "#fb923c", name: "WEBCAM", detail: "Video input", icon: "📷", slot: "I capture live video for online calls." },
+  { id: "microphone", color: "#2dd4bf", name: "MICROPHONE", detail: "Audio input", icon: "🎤", slot: "I turn your voice into an audio signal the computer can use." },
+  { id: "speakers", color: "#f87171", name: "SPEAKERS", detail: "Audio output", icon: "🔊", slot: "I play music, voices, and other sounds out loud." },
+  { id: "printer", color: "#818cf8", name: "PRINTER", detail: "Paper output", icon: "🖨️", slot: "I put digital documents and pictures onto paper." },
+  { id: "scanner", color: "#34d399", name: "SCANNER", detail: "Image input", icon: "📄", slot: "I turn a paper document into a digital image." },
+  { id: "flashdrive", color: "#fbbf24", name: "USB FLASH DRIVE", detail: "Portable storage", icon: "💾", slot: "I carry files between computers in a small removable device." },
+  { id: "thermalpaste", color: "#c084fc", name: "THERMAL PASTE", detail: "Heat transfer", icon: "🧴", slot: "I fill tiny gaps so heat moves better from a chip to its cooler." },
+  { id: "router", color: "#38bdf8", name: "ROUTER", detail: "Network traffic", icon: "📡", slot: "I direct data between your home network and other networks." },
+  { id: "ups", color: "#fb7185", name: "UPS", detail: "Backup power", icon: "🔋", slot: "I provide temporary battery power during an electricity outage." }
+];
+
+let chosenIds;
+try { chosenIds = JSON.parse(sessionStorage.getItem(TASKS_KEY)); } catch { chosenIds = null; }
+if (!Array.isArray(chosenIds) || chosenIds.length !== 4 ||
+    chosenIds.some(id => !allComponents.some(part => part.id === id))) {
+  chosenIds = shuffle(allComponents).slice(0, 4).map(part => part.id);
+  sessionStorage.setItem(TASKS_KEY, JSON.stringify(chosenIds));
+}
+components.length = 0;
+components.push(...chosenIds.map(id => allComponents.find(part => part.id === id)));
+
+let roundSeconds = Number(sessionStorage.getItem(TIME_KEY));
+if (!Number.isInteger(roundSeconds) || roundSeconds < 60 || roundSeconds > 90) {
+  roundSeconds = 60 + Math.floor(Math.random() * 31);
+  sessionStorage.setItem(TIME_KEY, String(roundSeconds));
+}
+
 /* GAME STATE */
 
 let installed = new Set();
@@ -772,7 +829,7 @@ let started = false;
 let expired = false;
 let won = false;
 
-let timeLeft = 60;
+let timeLeft = roundSeconds;
 let timerInterval = null;
 let endTime = 0;
 
@@ -1126,7 +1183,7 @@ function startGame() {
   started = true;
   setTeacher("watching");
 
-  endTime = Date.now() + 60000;
+  endTime = Date.now() + roundSeconds * 1000;
 
   get("startBtn").disabled = true;
   get("system").textContent = "OFFLINE";
@@ -1194,16 +1251,16 @@ function showResult(success) {
   get("resultMessage").textContent =
     success
       ? "COMPUTER REBUILT • SYSTEM ONLINE"
-      : "60 SECONDS HAVE PASSED";
+      : "YOUR TASK TIMER HAS EXPIRED";
 
   get("codeLabel").textContent =
     success
       ? "YOUR SECRET ACCESS CODE"
       : "THE COMPUTER IS STILL LOCKED";
 
-  get("resultCode").textContent =
-    success ? "OGY" : "LOCKED";
-
+get("resultCode").textContent = success
+  ? sessionStorage.getItem("secretWord").slice(0, 3)
+  : "LOCKED";
   get("resultFooter").textContent =
     success
       ? "Challenge completed successfully."
@@ -1259,7 +1316,7 @@ function resetGame() {
   expired = false;
   won = false;
 
-  timeLeft = 60;
+  timeLeft = roundSeconds;
 
   setTeacher("thinking");
 
@@ -1308,6 +1365,10 @@ get("restartEscapeBtn").addEventListener("click", () => {
   sessionStorage.removeItem("easyComplete");
   sessionStorage.removeItem("mediumComplete");
   sessionStorage.removeItem("hardComplete");
+  sessionStorage.removeItem("secretWord");
+  sessionStorage.removeItem(TASKS_KEY);
+  sessionStorage.removeItem(TIME_KEY);
+  sessionStorage.removeItem(GAME_KEY);
 
   window.location.href = "screen4.html";
 });

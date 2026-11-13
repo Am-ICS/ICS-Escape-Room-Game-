@@ -914,7 +914,8 @@ function showJoyfulTeacher() {
 
 // SECRET PASSWORD
 
-const secretWord = "NOL";
+const secretWord =
+  sessionStorage.getItem("secretWord").slice(3, 6);
 
 // MORSE CODE ALPHABET
 
@@ -1145,11 +1146,8 @@ function checkAnswer() {
   }
 
   showFeedback(
-
-    "🔓 ACCESS GRANTED — SIGNAL RESTORED!",
-
+    "🔓 ACCESS GRANTED — SIGNAL RESTORED! YOUR LETTERS: " + secretWord,
     "success"
-
   );
 
   sessionStorage.setItem("mediumComplete", "true");
@@ -1372,7 +1370,7 @@ document.getElementById("restartEscapeBtn").addEventListener("click", () => {
 
   for (const key of [ESCAPE_END_KEY, ESCAPE_TIMEOUT_KEY, ESCAPE_FINISHED_KEY,
 
-                     "easyComplete", "mediumComplete", "hardComplete"]) {
+                     "easyComplete", "mediumComplete", "hardComplete", "secretWord"]) {
 
     sessionStorage.removeItem(key);
 

@@ -781,11 +781,70 @@ h1 {
 
 <script>
 
-// SECRET ANSWER
-const secretWord = "TECHNOLOGY";
+// SECRET ANSWER CON
+const secretWords = [
+  "ALGORITHMS",
+  "AUTOMATION",
+  "BLOCKCHAIN",
+  "BOOTLOADER",
+  "CLUSTERING",
+  "CONTAINERS",
+  "CONTROLLER",
+  "DATACENTER",
+  "DEPLOYMENT",
+  "DEVELOPERS",
+  "EXECUTABLE",
+  "FILESYSTEM",
+  "HARDDRIVES",
+  "HYPERVISOR",
+  "JAVASCRIPT",
+  "KUBERNETES",
+  "MAINFRAMES",
+  "MICROCHIPS",
+  "MIDDLEWARE",
+  "MONITORING",
+  "NETWORKING",
+  "PARAMETERS",
+  "POWERSHELL",
+  "PROCESSING",
+  "PROCESSORS",
+  "PROGRAMMER",
+  "REPOSITORY",
+  "RESOLUTION",
+  "SEMAPHORES",
+  "SERVERLESS",
+  "SIMULATION",
+  "SUBROUTINE",
+  "TECHNOLOGY",
+  "THROUGHPUT",
+  "TRANSISTOR",
+  "TYPESCRIPT",
+  "VERSIONING",
+  "WEBMASTERS",
+  "WORKSPACES"
+];
+
+// ONLY 10-LETTER WORDS
+const validWords = secretWords.filter(word => word.length === 10);
+
+// PICK ONE RANDOM WORD AND SAVE IT
+let secretWord = sessionStorage.getItem("secretWord");
+
+if (!secretWord) {
+  secretWord = validWords[
+    Math.floor(Math.random() * validWords.length)
+  ];
+
+  sessionStorage.setItem("secretWord", secretWord);
+}
+
+// SPLIT WORD: 3 + 3 + 4
+const easyLetters = secretWord.slice(0, 3);
+const mediumLetters = secretWord.slice(3, 6);
+const hardLetters = secretWord.slice(6, 10);
 
 // SHARED TIMER SETTINGS
-const TIMER_DURATION = 30 * 60 * 1000;
+const TIMER_DURATION = 15 * 60 * 1000;
 const TIMER_KEY = "escapeRoomEndTime";
 const TIMEOUT_KEY = "escapeRoomTimedOut";
 const FINISHED_KEY = "escapeRoomFinished";
@@ -870,10 +929,10 @@ function restartEscape() {
   sessionStorage.removeItem("easyComplete");
   sessionStorage.removeItem("mediumComplete");
   sessionStorage.removeItem("hardComplete");
+  sessionStorage.removeItem("secretWord");
 
   window.location.href = "screen4.html";
 }
-
 // CHALLENGE SELECTION
 function selectChallenge(level) {
   if (escapeCompleted || escapeTimedOut) {
@@ -946,10 +1005,12 @@ function checkWord() {
 
   const message = document.getElementById("message");
 
-  if (guess === secretWord) {
+  // CHANGED LINE BELOW:
+  if (guess == secretWord) {
     escapeCompleted = true;
 
     sessionStorage.setItem(FINISHED_KEY, "true");
+
 
     message.style.color = "#45df83";
     message.textContent = "ACCESS GRANTED!";
@@ -970,9 +1031,14 @@ function checkWord() {
     });
 
     // RETURN TO WELCOME AFTER 8 SECONDS
-    setTimeout(() => {
-      window.location.href = "index.html";
-    }, 8000);
+  setTimeout(() => {
+    sessionStorage.removeItem("secretWord");
+    sessionStorage.removeItem("easyComplete");
+    sessionStorage.removeItem("mediumComplete");
+    sessionStorage.removeItem("hardComplete");
+
+    window.location.href = "index.html";
+  }, 8000);
 
   } else {
     message.style.color = "#ff5555";
