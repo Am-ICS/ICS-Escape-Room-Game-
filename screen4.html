@@ -40,40 +40,84 @@ body::before {
   padding: 30px 24px 50px;
 }
 
-/* CONFUSED TEACHER AT TOP */
+/* 30-MINUTE COUNTDOWN */
+
+.timer-area {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 25px;
+}
+
+.timer-box {
+  text-align: center;
+  padding: 14px 35px;
+  background: #210d15;
+  border: 2px solid #ff4545;
+  border-radius: 12px;
+  box-shadow: 0 0 25px #ff000044;
+}
+
+.timer-label {
+  color: #ff9999;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 3px;
+  margin-bottom: 8px;
+}
+
+#countdown {
+  color: #ff5555;
+  font-size: clamp(34px, 6vw, 50px);
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 20px #ff000077;
+}
+
+.timer-box.urgent {
+  background: #700000;
+  animation: timerBlink 0.7s infinite;
+}
+
+.timer-box.urgent #countdown {
+  color: white;
+}
+
+@keyframes timerBlink {
+  50% {
+    box-shadow: 0 0 40px #ff0000;
+  }
+}
+
+/* CONFUSED TEACHER - BOTTOM LEFT LIKE SYSTEM HACKED */
 
 .teacher-area {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 22px;
-  max-width: 800px;
-  margin: 0 auto 35px;
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  width: 190px;
+  z-index: 5;
+  pointer-events: none;
+  animation: teacherAppear 0.8s ease-out;
 }
 
 .teacher-image {
-  width: 400px;
+  display: block;
+  width: 300px;
+  max-width: none;
   height: auto;
   object-fit: contain;
-  filter: drop-shadow(0 8px 15px #0009);
+  filter: drop-shadow(0 5px 15px #000);
 }
 
-
-.teacher-message strong {
-  color: #d90000;
-}
-
-.teacher-message::before {
-  content: "";
-  position: absolute;
-  left: -13px;
-  top: 50%;
-  width: 20px;
-  height: 20px;
-  background: white;
-  border-left: 3px solid #111;
-  border-bottom: 3px solid #111;
-  transform: translateY(-50%) rotate(45deg);
+@keyframes teacherAppear {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 /* HEADING */
@@ -347,29 +391,154 @@ h1 {
   background: #672027;
 }
 
-/* WIN SCREEN */
+/* FINAL WIN SCREEN */
 
 #winScreen {
   display: none;
   position: fixed;
   inset: 0;
-  background: #09090c;
+  background:
+    radial-gradient(ellipse at center, #123523, #09090c 75%);
   z-index: 100;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
   padding: 20px;
+  overflow-y: auto;
+  opacity: 0;
+  transition: opacity 2.5s ease;
+}
+
+#winScreen.visible {
+  display: flex;
+}
+
+#winScreen.fade-in {
+  opacity: 1;
 }
 
 #winScreen h1 {
   color: #45df83;
-  text-shadow: 0 0 20px #168a45;
-  font-size: 42px;
+  text-shadow: 0 0 25px #168a45;
+  font-size: clamp(30px, 6vw, 48px);
+  animation: winGlow 2.5s ease-in-out infinite alternate;
 }
 
 #winScreen p {
   color: #ddd;
+}
+
+@keyframes winGlow {
+  from {
+    text-shadow: 0 0 10px #168a45;
+  }
+  to {
+    text-shadow: 0 0 35px #54e9a0;
+  }
+}
+
+/* JOYFUL TEACHER */
+
+.win-teacher {
+  width: clamp(170px, 30vw, 280px);
+  max-height: 35vh;
+  object-fit: contain;
+  margin: 12px auto;
+  filter: drop-shadow(0 0 20px #54e9a055);
+  animation: teacherCelebrate 2.5s ease-in-out infinite;
+}
+
+@keyframes teacherCelebrate {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-15px) scale(1.04);
+  }
+}
+
+.win-message {
+  padding: 20px 26px;
+  max-width: 550px;
+  background: white;
+  color: #171717;
+  border: 4px solid #111;
+  border-radius: 20px;
+  font-size: clamp(19px, 4vw, 30px);
+  font-weight: 900;
+  line-height: 1.4;
+  box-shadow: 0 0 30px #54e9a055;
+  animation: messageAppear 1.8s ease both;
+}
+
+@keyframes messageAppear {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.win-message strong {
+  color: #d71920;
+}
+
+.win-subtitle {
+  color: #8fffc0 !important;
+  font-weight: bold;
+  letter-spacing: 2px;
+  font-size: 13px;
+}
+
+/* TIMEOUT SCREEN */
+
+#timeoutScreen {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background:
+    radial-gradient(ellipse at center, #3c101b, #09090c 75%);
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 25px;
+}
+
+#timeoutScreen h1 {
+  color: #ff4545;
+  font-size: clamp(32px, 7vw, 58px);
+  text-shadow: 0 0 30px #ff0000;
+}
+
+#timeoutScreen h2 {
+  color: white;
+  font-size: clamp(20px, 4vw, 32px);
+}
+
+#timeoutScreen p {
+  color: #ffb1b1;
+}
+
+.retry-button {
+  padding: 16px 35px;
+  margin-top: 20px;
+  background: linear-gradient(135deg, #e53535, #a80000);
+  border: 2px solid #ff6969;
+  border-radius: 10px;
+  color: white;
+  font-size: 18px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.retry-button:hover {
+  background: #ff4545;
 }
 
 /* MOBILE */
@@ -391,21 +560,27 @@ h1 {
   }
 
   .container {
-    padding: 25px 12px;
+    padding: 25px 12px 190px;
   }
 
   .teacher-area {
-    gap: 12px;
-    margin-bottom: 30px;
+    width: 110px;
+    left: 5px;
+    bottom: 5px;
   }
 
   .teacher-image {
-    width: 110px;
+    width: 230px;
   }
+}
 
-  .teacher-message {
-    padding: 12px;
-    font-size: 13px;
+@media (prefers-reduced-motion: reduce) {
+  .win-teacher,
+  #winScreen h1,
+  .win-message,
+  .timer-box.urgent,
+  .teacher-area {
+    animation: none;
   }
 }
 </style>
@@ -415,18 +590,19 @@ h1 {
 
 <div class="container">
 
-  <!-- CONFUSED TEACHER AT TOP -->
-  <div class="teacher-area">
+  <!-- 30-MINUTE TIMER -->
 
-    <img
-      src="Confused.png"
-      alt="Confused teacher"
-      class="teacher-image"
-    >
-
+  <div class="timer-area">
+    <div class="timer-box" id="timerBox">
+      <div class="timer-label">
+        ⏰ ESCAPE ROOM TIME LEFT
+      </div>
+      <div id="countdown">30:00</div>
+    </div>
   </div>
 
   <!-- HEADING -->
+
   <div class="heading">
     <p>⚠ HACKED // ESCAPE ROOM ⚠</p>
     <h1>SELECT A CHALLENGE</h1>
@@ -438,52 +614,58 @@ h1 {
   <div class="layout">
 
     <!-- LEFT: CHALLENGE TOWER -->
-    <div class="tower-section">
 
+    <div class="tower-section">
       <div class="section-title">
         ◈ SECURITY CHALLENGE TOWER ◈
       </div>
 
       <div class="tower">
 
-        <div class="floor one selected"
-             id="floor1"
-             onclick="window.location.href='matchthecolor.html'">
+        <div
+          class="floor one selected"
+          id="floor1"
+          onclick="window.location.href='rebuild_computer_with_teacher.html'">
           1
         </div>
 
-        <div class="floor two"
-             id="floor2"
-             onclick="window.location.href='morsecodelight.html'">
+        <div
+          class="floor two"
+          id="floor2"
+          onclick="window.location.href='morsecodelight.html'">
           2
         </div>
 
-        <div class="floor three"
-             id="floor3"
-             onclick="selectChallenge('hard')">
+        <div
+          class="floor three"
+          id="floor3"
+          onclick="selectChallenge('hard')">
           3
         </div>
 
-        <button class="challenge-btn easy"
-                onclick="window.location.href='matchthecolor.html'">
+        <button
+          class="challenge-btn easy"
+          onclick="window.location.href='rebuild_computer_with_teacher.html'">
           EASY
         </button>
 
-        <button class="challenge-btn medium"
-                onclick="window.location.href='morsecodelight.html'">
+        <button
+          class="challenge-btn medium"
+          onclick="window.location.href='morsecodelight.html'">
           MEDIUM
         </button>
 
-        <button class="challenge-btn hard"
-                onclick="selectChallenge('hard')">
+        <button
+          class="challenge-btn hard"
+          onclick="selectChallenge('hard')">
           HARD
         </button>
 
       </div>
-
     </div>
 
     <!-- RIGHT: SECRET WORD PIN -->
+
     <div class="panel">
 
       <h2>🔐 SOLVE</h2>
@@ -492,7 +674,9 @@ h1 {
 
       <div class="lock" id="lockIcon">🔒</div>
 
-      <p class="pin-label">Enter the secret word PIN</p>
+      <p class="pin-label">
+        Enter the secret word PIN
+      </p>
 
       <div class="pin-boxes" id="pinBoxes"></div>
 
@@ -512,35 +696,174 @@ h1 {
       <p id="message"></p>
 
     </div>
-
   </div>
 
   <p class="footer">
     Complete the challenges to discover the secret word.
   </p>
 
-  <button class="back"
-          onclick="location.href='screen3.html'">
+  <button
+    class="back"
+    onclick="location.href='screen3.html'">
     ← BACK
   </button>
 
 </div>
 
-<!-- WIN SCREEN -->
+<!-- CONFUSED TEACHER FIXED AT BOTTOM LEFT -->
+
+<div class="teacher-area">
+  <img
+    src="Confused.png"
+    alt="Confused teacher"
+    class="teacher-image"
+  >
+</div>
+
+<!-- FINAL ESCAPE VICTORY SCREEN -->
+
 <div id="winScreen">
+
   <h1>🔓 SYSTEM RESTORED!</h1>
-  <p>You cracked the secret word PIN!</p>
+
+  <img
+    src="Joyful.png"
+    alt="Teacher celebrating"
+    class="win-teacher"
+  >
+
+  <div class="win-message">
+    CONGRATS!!<br>
+    <strong>YOU ESCAPED THE ROOM!!</strong>
+  </div>
+
+  <p class="win-subtitle">
+    🎉 ALL SYSTEMS ONLINE • ESCAPE SUCCESSFUL 🎉
+  </p>
+
   <p>Returning to the welcome screen...</p>
+
+</div>
+
+<!-- TIMEOUT SCREEN -->
+
+<div id="timeoutScreen">
+
+  <div style="font-size: 75px;">⏰</div>
+
+  <h1>TIME'S UP!</h1>
+
+  <h2>YOU DIDN'T ESCAPE THE ROOM!</h2>
+
+  <p>The 30-minute countdown has ended.</p>
+
+  <button class="retry-button" onclick="restartEscape()">
+    ↻ TRY AGAIN
+  </button>
+
 </div>
 
 <script>
 
-// ONE SECRET ANSWER FOR THE ENTIRE GAME
+// SECRET ANSWER
 const secretWord = "TECHNOLOGY";
 
-let selected = "easy";
+// SHARED TIMER SETTINGS
+const TIMER_DURATION = 30 * 60 * 1000;
+const TIMER_KEY = "escapeRoomEndTime";
+const TIMEOUT_KEY = "escapeRoomTimedOut";
+const FINISHED_KEY = "escapeRoomFinished";
 
+let selected = "easy";
+let escapeCompleted = false;
+let escapeTimedOut = false;
+
+// START TIMER ONLY ONCE
+function initializeTimer() {
+  if (sessionStorage.getItem(FINISHED_KEY) === "true") {
+    sessionStorage.removeItem(TIMER_KEY);
+    sessionStorage.removeItem(TIMEOUT_KEY);
+    sessionStorage.removeItem(FINISHED_KEY);
+  }
+
+  if (!sessionStorage.getItem(TIMER_KEY)) {
+    sessionStorage.setItem(
+      TIMER_KEY,
+      String(Date.now() + TIMER_DURATION)
+    );
+  }
+}
+
+// UPDATE COUNTDOWN
+function updateTimer() {
+  if (escapeCompleted || escapeTimedOut) {
+    return;
+  }
+
+  const endTime = Number(
+    sessionStorage.getItem(TIMER_KEY)
+  );
+
+  const remaining = Math.max(
+    0,
+    endTime - Date.now()
+  );
+
+  const totalSeconds = Math.ceil(remaining / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+
+  document.getElementById("countdown").textContent =
+    String(minutes).padStart(2, "0") +
+    ":" +
+    String(seconds).padStart(2, "0");
+
+  document.getElementById("timerBox")
+    .classList.toggle("urgent", totalSeconds <= 60);
+
+  if (
+    remaining <= 0 ||
+    sessionStorage.getItem(TIMEOUT_KEY) === "true"
+  ) {
+    showTimeout();
+  }
+}
+
+// SHOW TIMEOUT SCREEN
+function showTimeout() {
+  if (escapeCompleted || escapeTimedOut) {
+    return;
+  }
+
+  escapeTimedOut = true;
+  sessionStorage.setItem(TIMEOUT_KEY, "true");
+
+  document.getElementById("countdown").textContent = "00:00";
+  document.getElementById("wordInput").disabled = true;
+  document.getElementById("timeoutScreen").style.display = "flex";
+
+  clearInterval(timerInterval);
+}
+
+// RESTART ENTIRE ESCAPE ROOM
+function restartEscape() {
+  sessionStorage.removeItem(TIMER_KEY);
+  sessionStorage.removeItem(TIMEOUT_KEY);
+  sessionStorage.removeItem(FINISHED_KEY);
+
+  sessionStorage.removeItem("easyComplete");
+  sessionStorage.removeItem("mediumComplete");
+  sessionStorage.removeItem("hardComplete");
+
+  window.location.href = "screen4.html";
+}
+
+// CHALLENGE SELECTION
 function selectChallenge(level) {
+  if (escapeCompleted || escapeTimedOut) {
+    return;
+  }
+
   selected = level;
 
   document.getElementById("challengeName").textContent =
@@ -564,6 +887,7 @@ function selectChallenge(level) {
   updateBoxes();
 }
 
+// UPDATE THE 10 PIN BOXES
 function updateBoxes() {
   const input = document.getElementById("wordInput");
 
@@ -583,23 +907,56 @@ function updateBoxes() {
   }
 }
 
+// CHECK SECRET WORD
 function checkWord() {
+  if (escapeCompleted || escapeTimedOut) {
+    return;
+  }
+
+  const endTime = Number(
+    sessionStorage.getItem(TIMER_KEY)
+  );
+
+  if (
+    Date.now() >= endTime ||
+    sessionStorage.getItem(TIMEOUT_KEY) === "true"
+  ) {
+    showTimeout();
+    return;
+  }
+
   const guess = document.getElementById("wordInput")
     .value.trim().toUpperCase();
 
   const message = document.getElementById("message");
 
   if (guess === secretWord) {
+    escapeCompleted = true;
+
+    sessionStorage.setItem(FINISHED_KEY, "true");
+
     message.style.color = "#45df83";
     message.textContent = "ACCESS GRANTED!";
 
     document.getElementById("lockIcon").textContent = "🔓";
 
-    document.getElementById("winScreen").style.display = "flex";
+    clearInterval(timerInterval);
 
+    // VICTORY ANIMATION
+    const winScreen = document.getElementById("winScreen");
+
+    winScreen.classList.add("visible");
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        winScreen.classList.add("fade-in");
+      });
+    });
+
+    // RETURN TO WELCOME AFTER 8 SECONDS
     setTimeout(() => {
       window.location.href = "index.html";
-    }, 3000);
+    }, 8000);
 
   } else {
     message.style.color = "#ff5555";
@@ -607,7 +964,20 @@ function checkWord() {
   }
 }
 
+// PRESS ENTER TO UNLOCK
+document.getElementById("wordInput")
+  .addEventListener("keydown", event => {
+    if (event.key === "Enter") {
+      checkWord();
+    }
+  });
+
+// INITIALIZE GAME
+initializeTimer();
 selectChallenge("easy");
+
+const timerInterval = setInterval(updateTimer, 250);
+updateTimer();
 
 </script>
 
