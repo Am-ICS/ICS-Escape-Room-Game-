@@ -664,43 +664,59 @@ h1 {
       </div>
     </div>
 
-    <!-- RIGHT: SECRET WORD PIN -->
 
-    <div class="panel">
+<!-- RIGHT: SECRET WORD PIN -->
 
-      <h2>🔐 SOLVE</h2>
+<div class="panel">
 
-      <p id="challengeName">EASY CHALLENGE</p>
+  <h2>🔐 SOLVE</h2>
 
-      <div class="lock" id="lockIcon">🔒</div>
+  <p id="challengeName">FINAL SYSTEM LOCK</p>
 
-      <p class="pin-label">
-        Enter the secret word PIN
-      </p>
+  <div class="lock" id="lockIcon">🔒</div>
 
-      <div class="pin-boxes" id="pinBoxes"></div>
-
-      <input
-        type="text"
-        id="wordInput"
-        maxlength="10"
-        placeholder="TYPE LETTERS"
-        autocomplete="off"
-        oninput="updateBoxes()"
-      >
-
-      <button class="unlock" onclick="checkWord()">
-        🔓 UNLOCK SYSTEM
-      </button>
-
-      <p id="message"></p>
-
-    </div>
-  </div>
-
-  <p class="footer">
-    Complete the challenges to discover the secret word.
+  <p class="pin-label">
+    <strong>CRACK THE SECRET PASSWORD!</strong>
   </p>
+
+  <p>
+    Complete the EASY, MEDIUM, and HARD challenges
+    to collect 3–4 letters from each challenge.
+  </p>
+
+  <p>
+    Put the letters together in the correct order
+    to form ONE 10-letter word.
+  </p>
+
+  <p style="color: #ff7777; font-weight: bold;">
+    Enter the complete word below to unlock the system.
+  </p>
+
+  <div class="pin-boxes" id="pinBoxes"></div>
+
+  <input
+    type="text"
+    id="wordInput"
+    maxlength="10"
+    placeholder="ENTER 10-LETTER PASSWORD"
+    autocomplete="off"
+    oninput="updateBoxes()"
+  >
+
+  <button class="unlock" onclick="checkWord()">
+    🔓 UNLOCK SYSTEM
+  </button>
+
+  <p id="message"></p>
+
+</div>
+</div>
+
+<p class="footer">
+  Solve 3 challenges → Collect letters → Form 1 word → Escape!
+</p>
+
 
   <button
     class="back"
