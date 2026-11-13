@@ -109,9 +109,32 @@ h1 {
 }
 
 .board {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr 1.1fr;
-  gap: 20px;
+  gap: 90px;
+}
+
+/* Wires follow the pointer while dragging and stay after a correct match. */
+#wireLayer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 3;
+}
+
+#wireLayer path {
+  fill: none;
+  stroke-width: 6;
+  stroke-linecap: round;
+  opacity: 0.95;
+}
+
+.section {
+  position: relative;
 }
 
 .section {
@@ -144,6 +167,7 @@ h1 {
   border-radius: 9px;
   cursor: grab;
   user-select: none;
+  touch-action: none;
 }
 
 .part:hover,
@@ -521,7 +545,8 @@ button:disabled {
     <div class="fill" id="fill"></div>
   </div>
 
-  <div class="board">
+  <div class="board" id="board">
+    <svg id="wireLayer" aria-hidden="true"></svg>
 
     <section class="section">
       <h2>01 // HARDWARE COMPONENTS</h2>
@@ -707,6 +732,7 @@ function showOverallTimeout() {
 const components = [
   {
     id: "cpu",
+    color: "#ff5555",
     name: "CPU",
     detail: "Processor",
     icon: "🧠",
@@ -714,6 +740,7 @@ const components = [
   },
   {
     id: "ram",
+    color: "#3b82f6",
     name: "RAM",
     detail: "Memory",
     icon: "💾",
@@ -721,6 +748,7 @@ const components = [
   },
   {
     id: "gpu",
+    color: "#eab308",
     name: "GPU",
     detail: "Graphics card",
     icon: "🎮",
@@ -728,6 +756,7 @@ const components = [
   },
   {
     id: "ssd",
+    color: "#22c55e",
     name: "SSD",
     detail: "Storage",
     icon: "📀",
@@ -822,6 +851,7 @@ function installComponent(componentId, slotId) {
 
     showStatus("✓ Component installed correctly!", true);
     updateProgress();
+    drawWires();
 
   } else {
     slot.classList.remove("bad");
@@ -877,22 +907,11 @@ function createBoard() {
       );
     });
 
-    part.addEventListener("dragstart", event => {
-      if (
-        !escapeTimeAvailable() ||
-        !started ||
-        expired ||
-        won ||
-        installed.has(component.id)
-      ) {
-        event.preventDefault();
-        return;
-      }
-
-      event.dataTransfer.setData(
-        "text/plain",
-        component.id
-      );
+    // Drag a live colored wire using a mouse or finger.
+    part.addEventListener("pointerdown", event => {
+      if (!started || expired || won || installed.has(component.id)) return;
+      if (!escapeTimeAvailable()) return;
+      beginWireDrag(event, part, component);
     });
 
     get("parts").appendChild(part);
@@ -939,6 +958,116 @@ function createBoard() {
     get("slots").appendChild(slot);
   }
 }
+
+/* LIVE COLORED WIRE WHILE HOLDING / DRAGGING */
+let draggingWire = null;
+
+function wirePoint(element, fromStart) {
+  const boardRect = get("board").getBoundingClientRect();
+  const rect = element.getBoundingClientRect();
+  const stacked = window.matchMedia("(max-width: 560px)").matches;
+  return {
+    x: (stacked ? rect.left + rect.width / 2 : (fromStart ? rect.right : rect.left)) - boardRect.left,
+    y: (stacked ? (fromStart ? rect.bottom : rect.top) : rect.top + rect.height / 2) - boardRect.top
+  };
+}
+
+function wireCurve(a, b) {
+  const stacked = window.matchMedia("(max-width: 560px)").matches;
+  if (stacked) {
+    const mid = (a.y + b.y) / 2;
+    return `M ${a.x} ${a.y} C ${a.x} ${mid}, ${b.x} ${mid}, ${b.x} ${b.y}`;
+  }
+  const mid = (a.x + b.x) / 2;
+  return `M ${a.x} ${a.y} C ${mid} ${a.y}, ${mid} ${b.y}, ${b.x} ${b.y}`;
+}
+
+function beginWireDrag(event, part, component) {
+  if (draggingWire) return;
+  event.preventDefault();
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path.setAttribute("stroke", component.color);
+  get("wireLayer").appendChild(path);
+  draggingWire = { pointerId: event.pointerId, part, component, path };
+  moveWireDrag(event);
+  window.addEventListener("pointermove", moveWireDrag);
+  window.addEventListener("pointerup", finishWireDrag);
+  window.addEventListener("pointercancel", cancelWireDrag);
+}
+
+function moveWireDrag(event) {
+  if (!draggingWire || event.pointerId !== draggingWire.pointerId) return;
+  const rect = get("board").getBoundingClientRect();
+  const start = wirePoint(draggingWire.part, true);
+  const end = { x: event.clientX - rect.left, y: event.clientY - rect.top };
+  draggingWire.path.setAttribute("d", wireCurve(start, end));
+}
+
+function cancelWireDrag() {
+  if (!draggingWire) return;
+  draggingWire.path.remove();
+  draggingWire = null;
+  window.removeEventListener("pointermove", moveWireDrag);
+  window.removeEventListener("pointerup", finishWireDrag);
+  window.removeEventListener("pointercancel", cancelWireDrag);
+}
+
+function finishWireDrag(event) {
+  if (!draggingWire || event.pointerId !== draggingWire.pointerId) return;
+  const componentId = draggingWire.component.id;
+  const target = document.elementFromPoint(event.clientX, event.clientY);
+  const slot = target && target.closest(".slot");
+  cancelWireDrag();
+  if (slot) installComponent(componentId, slot.dataset.id);
+}
+
+/* DRAW COLORED WIRES BETWEEN MATCHED COMPONENTS AND SOCKETS */
+function drawWires() {
+  const board = get("board");
+  const svg = get("wireLayer");
+  const boardRect = board.getBoundingClientRect();
+  const stacked = window.matchMedia("(max-width: 560px)").matches;
+
+  svg.replaceChildren();
+
+  for (const component of components) {
+    if (!installed.has(component.id)) continue;
+
+    const part = document.querySelector(
+      `.part[data-id="${component.id}"]`
+    );
+    const slot = document.querySelector(
+      `.slot[data-id="${component.id}"]`
+    );
+    if (!part || !slot) continue;
+
+    const a = part.getBoundingClientRect();
+    const b = slot.getBoundingClientRect();
+
+    // Desktop: connect right-to-left. Mobile: connect bottom-to-top.
+    const x1 = (stacked ? a.left + a.width / 2 : a.right) - boardRect.left;
+    const y1 = (stacked ? a.bottom : a.top + a.height / 2) - boardRect.top;
+    const x2 = (stacked ? b.left + b.width / 2 : b.left) - boardRect.left;
+    const y2 = (stacked ? b.top : b.top + b.height / 2) - boardRect.top;
+
+    const path = document.createElementNS(
+      "http://www.w3.org/2000/svg", "path"
+    );
+    let curve;
+    if (stacked) {
+      const middleY = (y1 + y2) / 2;
+      curve = `M ${x1} ${y1} C ${x1} ${middleY}, ${x2} ${middleY}, ${x2} ${y2}`;
+    } else {
+      const middleX = (x1 + x2) / 2;
+      curve = `M ${x1} ${y1} C ${middleX} ${y1}, ${middleX} ${y2}, ${x2} ${y2}`;
+    }
+    path.setAttribute("d", curve);
+    path.setAttribute("stroke", component.color);
+    svg.appendChild(path);
+  }
+}
+
+window.addEventListener("resize", drawWires);
 
 /* 60-SECOND GAME TIMER */
 
@@ -1119,6 +1248,7 @@ function bootComputer() {
 
 function resetGame() {
   if (!escapeTimeAvailable()) return;
+  cancelWireDrag();
 
   clearInterval(timerInterval);
 
@@ -1139,6 +1269,7 @@ function resetGame() {
   get("overlay").classList.remove("show");
 
   createBoard();
+  drawWires();
   updateProgress();
   updateTimer();
 
