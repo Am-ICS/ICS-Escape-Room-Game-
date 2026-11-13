@@ -2,394 +2,877 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HACKED - Easy Challenge</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HACKED // Rebuild the Computer</title>
 
-<style>
-* {
-  box-sizing: border-box;
-  user-select: none;
-}
+  <style>
+    :root {
+      --red: #ff454e;
+      --green: #48e69b;
+      --panel: #170e13;
+    }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: #09090c;
-  color: white;
-  font-family: Arial, sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 35px 20px;
-}
+    * {
+      box-sizing: border-box;
+    }
 
-.heading {
-  text-align: center;
-  margin-bottom: 25px;
-}
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 30px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      color: white;
+      background: radial-gradient(
+        ellipse at 50% 10%,
+        #371019,
+        #09090c 65%
+      );
+    }
 
-.subtitle {
-  color: #ff5555;
-  font-size: 12px;
-  letter-spacing: 3px;
-}
+    .heading {
+      text-align: center;
+      max-width: 650px;
+    }
 
-h1 {
-  color: #ff4545;
-  text-shadow: 0 0 15px #b40000;
-  margin: 10px 0;
-}
+    .subtitle {
+      color: #ff616a;
+      letter-spacing: 3px;
+      font-size: 12px;
+      font-weight: bold;
+    }
 
-.instructions {
-  color: #aaa;
-  font-size: 14px;
-  line-height: 1.6;
-  text-align: center;
-}
+    h1 {
+      color: var(--red);
+      text-shadow: 0 0 18px #bd0000;
+      font-size: clamp(26px, 5vw, 39px);
+      margin: 10px 0;
+    }
 
-.game-container {
-  width: 100%;
-  max-width: 550px;
-  background: #140d11;
-  border: 1px solid #b43a42;
-  border-radius: 12px;
-  padding: 25px;
-  box-shadow: 0 0 25px #7a151b55;
-}
+    .instructions {
+      color: #bbb;
+      font-size: 14px;
+      line-height: 1.6;
+    }
 
-.panel {
-  position: relative;
-  width: 100%;
-  height: 360px;
-  background: #231317;
-  border: 2px solid #b43a42;
-  border-radius: 8px;
-  display: flex;
-  justify-content: space-between;
-  padding: 25px 20px;
-  touch-action: none;
-}
+    .game {
+      width: 100%;
+      max-width: 800px;
+      padding: 22px;
+      margin-top: 20px;
+      background: #140d11;
+      border: 1px solid #b43a42;
+      border-radius: 14px;
+      box-shadow: 0 0 35px #7a151b55;
+    }
 
-.column {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  z-index: 2;
-}
+    .top {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 15px;
+    }
 
-.node {
-  width: 46px;
-  height: 36px;
-  border-radius: 6px;
-  border: 3px solid #09090c;
-  cursor: pointer;
-  touch-action: none;
-  transition: transform 0.15s;
-}
+    .tag {
+      font-size: 12px;
+      color: #ff9da3;
+      letter-spacing: 1px;
+    }
 
-.node:hover {
-  transform: scale(1.08);
-}
+    .timer {
+      font-weight: bold;
+      color: #ff777f;
+    }
 
-.node.connected {
-  box-shadow: 0 0 15px currentColor;
-}
+    .timer.urgent {
+      color: red;
+      animation: blink 0.6s infinite;
+    }
 
-svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1;
-}
+    @keyframes blink {
+      50% { opacity: 0.3; }
+    }
 
-path {
-  fill: none;
-  stroke-width: 10;
-  stroke-linecap: round;
-}
+    .progress {
+      height: 9px;
+      background: #3a1d24;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
 
-#status {
-  min-height: 30px;
-  margin-top: 20px;
-  color: #45df83;
-  font-size: 20px;
-  font-weight: bold;
-  text-align: center;
-}
+    .fill {
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, #b92131, #ff6971);
+      transition: width 0.3s;
+    }
 
-button {
-  padding: 12px 25px;
-  background: #c62828;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-weight: bold;
-  cursor: pointer;
-}
+    .board {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap: 20px;
+    }
 
-button:hover {
-  background: #ff4545;
-}
+    .section {
+      background: #211319;
+      border: 1px solid #78313c;
+      border-radius: 10px;
+      padding: 15px;
+    }
 
-.buttons {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-top: 20px;
-}
+    .section h2 {
+      margin: 0 0 14px;
+      color: #ff9ba1;
+      font-size: 13px;
+      letter-spacing: 2px;
+    }
 
-.back {
-  background: transparent;
-  border: 1px solid #e34b54;
-}
+    .parts,
+    .slots {
+      display: grid;
+      gap: 12px;
+    }
 
-.back:hover {
-  background: #672027;
-}
+    .part {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-height: 58px;
+      padding: 13px;
+      background: #311b24;
+      border: 1px solid #b34a57;
+      border-radius: 9px;
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+    }
 
-.footer {
-  margin-top: 20px;
-  color: #777;
-  font-size: 12px;
-  text-align: center;
-}
-</style>
+    .part:hover,
+    .part.selected {
+      border-color: #ff707a;
+      box-shadow: 0 0 16px #d3384b55;
+    }
+
+    .part.installed {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .part.disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .emoji {
+      font-size: 26px;
+    }
+
+    .part strong {
+      display: block;
+      font-size: 15px;
+    }
+
+    .part small {
+      color: #b7a5aa;
+      font-size: 11px;
+    }
+
+    .slot {
+      min-height: 58px;
+      padding: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: #170e13;
+      border: 2px dashed #a64a57;
+      border-radius: 9px;
+      cursor: pointer;
+    }
+
+    .slot.over {
+      border-color: #ff828a;
+      background: #4d202c;
+    }
+
+    .slot.good {
+      border-color: #36d48a;
+      background: #113026;
+      color: #8effc4;
+    }
+
+    .slot.bad {
+      animation: shake 0.3s;
+      border-color: red;
+    }
+
+    .port {
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .hint {
+      color: #a38d94;
+      font-size: 11px;
+      text-align: right;
+    }
+
+    @keyframes shake {
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+
+    .status {
+      min-height: 50px;
+      padding: 17px 8px 5px;
+      text-align: center;
+      color: #ffb1b7;
+      font-weight: bold;
+    }
+
+    .status.success {
+      color: var(--green);
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    button {
+      padding: 13px 22px;
+      background: #c62828;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover:not(:disabled) {
+      background: #f34650;
+    }
+
+    button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .start {
+      background: #15803d;
+    }
+
+    .start:hover:not(:disabled) {
+      background: #16a34a;
+    }
+
+    .back {
+      background: transparent;
+      border: 1px solid #e34b54;
+    }
+
+    .footer {
+      margin-top: 20px;
+      color: #777;
+      font-size: 12px;
+      letter-spacing: 2px;
+    }
+
+    /* RESULT SCREEN */
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: #050507ed;
+    }
+
+    .overlay.show {
+      display: flex;
+    }
+
+    .result {
+      width: 100%;
+      max-width: 470px;
+      padding: 35px 22px;
+      text-align: center;
+      background: #101a17;
+      border: 2px solid #42e69a;
+      border-radius: 16px;
+      box-shadow: 0 0 60px #16ba6b50;
+    }
+
+    .result h2 {
+      color: #6dffb0;
+      font-size: 35px;
+    }
+
+    .result p {
+      color: #bcebd3;
+    }
+
+    .code {
+      font-size: 65px;
+      font-weight: bold;
+      letter-spacing: 10px;
+      color: white;
+      text-shadow: 0 0 18px #2eff91;
+      margin: 20px 0;
+    }
+
+    .result.failed {
+      background: #270d15;
+      border-color: #ff4355;
+    }
+
+    .result.failed h2 {
+      color: #ff6574;
+    }
+
+    @media (max-width: 560px) {
+      .game {
+        padding: 13px;
+      }
+
+      .board {
+        grid-template-columns: 1fr;
+      }
+
+      .parts {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .part {
+        padding: 10px;
+      }
+
+      .code {
+        font-size: 48px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="heading">
-  <p class="subtitle">HACKED // EASY CHALLENGE</p>
-  <h1>🔌 CONNECT THE WIRES</h1>
-  <p class="instructions">
-    Match each colored wire from left to right.<br>
-    Connect all four wires to unlock the secret answer.
-  </p>
-</div>
+  <header class="heading">
+    <p class="subtitle">HACKED // EASY CHALLENGE</p>
 
-<div class="game-container">
+    <h1>🖥️ REBUILD THE COMPUTER</h1>
 
-  <div class="panel" id="panel">
-    <svg id="wireLayer"></svg>
-    <div class="column" id="leftCol"></div>
-    <div class="column" id="rightCol"></div>
+    <p class="instructions">
+      Security has disabled the motherboard.<br>
+      Press START GAME, install all four components,
+      and boot the computer before time runs out.
+    </p>
+  </header>
+
+  <main class="game">
+
+    <div class="top">
+      <span class="tag">
+        SYSTEM: <span id="system">STANDBY</span>
+      </span>
+
+      <span class="timer" id="timer">
+        TIME LEFT 01:00
+      </span>
+
+      <span class="tag" id="count">
+        0 / 4 INSTALLED
+      </span>
+    </div>
+
+    <div class="progress">
+      <div class="fill" id="fill"></div>
+    </div>
+
+    <div class="board">
+
+      <section class="section">
+        <h2>01 // HARDWARE COMPONENTS</h2>
+        <div class="parts" id="parts"></div>
+      </section>
+
+      <section class="section">
+        <h2>02 // MOTHERBOARD SOCKETS</h2>
+        <div class="slots" id="slots"></div>
+      </section>
+
+    </div>
+
+    <div class="status" id="status" role="status">
+      Press START GAME to begin.
+    </div>
+
+    <div class="actions">
+      <button class="start" id="startBtn">
+        ▶ START GAME
+      </button>
+
+      <button id="bootBtn" disabled>
+        ⚡ BOOT COMPUTER
+      </button>
+
+      <button id="resetBtn">
+        ↻ RESET
+      </button>
+
+      <button class="back" id="backBtn">
+        ← BACK TO CHALLENGES
+      </button>
+    </div>
+
+  </main>
+
+  <p class="footer">HACKED // ESCAPE ROOM</p>
+
+  <!-- RESULT SCREEN -->
+
+  <div class="overlay" id="overlay">
+    <div class="result" id="result">
+      <div style="font-size:50px" id="resultIcon">🔓</div>
+
+      <h2 id="resultTitle">ACCESS GRANTED!</h2>
+
+      <p id="resultMessage">
+        COMPUTER REBUILT • SYSTEM ONLINE
+      </p>
+
+      <p id="codeLabel">YOUR SECRET ACCESS CODE</p>
+
+      <div class="code" id="resultCode">OGY</div>
+
+      <p id="resultFooter">
+        Challenge completed successfully.
+      </p>
+
+      <button id="continueBtn">CONTINUE</button>
+    </div>
   </div>
 
-  <p id="status"></p>
+  <script>
+    "use strict";
 
-  <div class="buttons">
-    <button onclick="initGame()">RESET</button>
+    // COMPUTER COMPONENTS
 
-    <button class="back"
-      onclick="window.location.href='screen4.html'">
-      ← BACK TO CHALLENGES
-    </button>
-  </div>
+    const components = [
+      {
+        id: "cpu",
+        name: "CPU",
+        detail: "Processor",
+        icon: "🧠",
+        slot: "CPU SOCKET"
+      },
+      {
+        id: "ram",
+        name: "RAM",
+        detail: "Memory",
+        icon: "💾",
+        slot: "DIMM / RAM SLOT"
+      },
+      {
+        id: "gpu",
+        name: "GPU",
+        detail: "Graphics card",
+        icon: "🎮",
+        slot: "PCIe x16 SLOT"
+      },
+      {
+        id: "ssd",
+        name: "SSD",
+        detail: "Storage",
+        icon: "📀",
+        slot: "M.2 SSD SOCKET"
+      }
+    ];
 
-</div>
+    // GAME STATE
 
-<p class="footer">HACKED // ESCAPE ROOM</p>
+    let installed = new Set();
+    let selected = null;
+    let started = false;
+    let expired = false;
+    let won = false;
 
-<script>
-const COLORS = [
-  { id: "red", hex: "#ef4444" },
-  { id: "blue", hex: "#3b82f6" },
-  { id: "yellow", hex: "#eab308" },
-  { id: "green", hex: "#22c55e" }
-];
+    let timeLeft = 60;
+    let timerInterval = null;
+    let endTime = 0;
 
-const panel = document.getElementById("panel");
-const wireLayer = document.getElementById("wireLayer");
-const leftCol = document.getElementById("leftCol");
-const rightCol = document.getElementById("rightCol");
-const statusText = document.getElementById("status");
+    const get = id => document.getElementById(id);
 
-let activeWire = null;
-let activeStartNode = null;
-let connections = new Map();
+    // SHUFFLE COMPONENTS
 
-function shuffle(array) {
-  const copy = [...array];
+    function shuffle(array) {
+      const copy = [...array];
 
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
 
-  return copy;
-}
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
 
-function getNodeCenter(node) {
-  const panelRect = panel.getBoundingClientRect();
-  const rect = node.getBoundingClientRect();
+      return copy;
+    }
 
-  return {
-    x: rect.left - panelRect.left + rect.width / 2,
-    y: rect.top - panelRect.top + rect.height / 2
-  };
-}
+    // SHOW STATUS MESSAGE
 
-function buildCurve(x1, y1, x2, y2) {
-  const tension = Math.abs(x2 - x1) * 0.5;
+    function showStatus(message, success = false) {
+      get("status").textContent = message;
+      get("status").classList.toggle("success", success);
+    }
 
-  return `M ${x1} ${y1}
-          C ${x1 + tension} ${y1},
-            ${x2 - tension} ${y2},
-            ${x2} ${y2}`;
-}
+    // UPDATE PROGRESS
 
-function initGame() {
-  window.removeEventListener("pointermove", onDrag);
-  window.removeEventListener("pointerup", endDrag);
-  window.removeEventListener("pointercancel", cancelDrag);
+    function updateProgress() {
+      const count = installed.size;
 
-  activeWire = null;
-  activeStartNode = null;
+      get("count").textContent = `${count} / 4 INSTALLED`;
+      get("fill").style.width = `${count * 25}%`;
 
-  leftCol.innerHTML = "";
-  rightCol.innerHTML = "";
-  wireLayer.innerHTML = "";
-  statusText.textContent = "";
-  connections.clear();
+      get("bootBtn").disabled =
+        !started || expired || won || count !== 4;
 
-  const leftItems = shuffle(COLORS);
-  const rightItems = shuffle(COLORS);
+      if (count === 4 && started && !expired) {
+        get("system").textContent = "READY TO BOOT";
 
-  leftItems.forEach(item => {
-    leftCol.appendChild(createNode(item, "left"));
-  });
+        showStatus(
+          "✓ All components installed! Press BOOT COMPUTER.",
+          true
+        );
+      }
+    }
 
-  rightItems.forEach(item => {
-    rightCol.appendChild(createNode(item, "right"));
-  });
-}
+    // INSTALL COMPONENT
 
-function createNode(item, side) {
-  const div = document.createElement("div");
+    function installComponent(componentId, slotId) {
+      if (!started || expired || won) return;
+      if (!componentId || installed.has(componentId)) return;
 
-  div.className = "node";
-  div.style.backgroundColor = item.hex;
-  div.style.color = item.hex;
-  div.dataset.color = item.id;
-  div.dataset.side = side;
+      const slot = document.querySelector(
+        `.slot[data-id="${slotId}"]`
+      );
 
-  if (side === "left") {
-    div.addEventListener("pointerdown", e => {
-      startDrag(e, div, item);
-    });
-  }
+      if (componentId === slotId) {
+        installed.add(componentId);
 
-  return div;
-}
+        slot.classList.add("good");
+        slot.querySelector(".hint").textContent = "✓ INSTALLED";
 
-function startDrag(e, node, item) {
-  if (connections.has(item.id)) return;
+        const part = document.querySelector(
+          `.part[data-id="${componentId}"]`
+        );
 
-  e.preventDefault();
+        part.classList.add("installed");
 
-  activeStartNode = node;
+        selected = null;
 
-  const start = getNodeCenter(node);
+        document.querySelectorAll(".part").forEach(part => {
+          part.classList.remove("selected");
+        });
 
-  const path = document.createElementNS(
-    "http://www.w3.org/2000/svg",
-    "path"
-  );
+        showStatus("✓ Component installed correctly!", true);
+        updateProgress();
 
-  path.setAttribute("stroke", item.hex);
-  path.setAttribute(
-    "d",
-    buildCurve(start.x, start.y, start.x, start.y)
-  );
+      } else {
+        slot.classList.remove("bad");
+        void slot.offsetWidth;
+        slot.classList.add("bad");
 
-  wireLayer.appendChild(path);
-  activeWire = path;
+        setTimeout(() => {
+          slot.classList.remove("bad");
+        }, 400);
 
-  window.addEventListener("pointermove", onDrag);
-  window.addEventListener("pointerup", endDrag);
-  window.addEventListener("pointercancel", cancelDrag);
-}
+        showStatus("✕ WRONG SOCKET! Try again.");
+      }
+    }
 
-function onDrag(e) {
-  if (!activeWire || !activeStartNode) return;
+    // CREATE COMPONENTS AND SOCKETS
 
-  const panelRect = panel.getBoundingClientRect();
-  const start = getNodeCenter(activeStartNode);
+    function createBoard() {
+      get("parts").replaceChildren();
+      get("slots").replaceChildren();
 
-  const curX = e.clientX - panelRect.left;
-  const curY = e.clientY - panelRect.top;
+      for (const component of shuffle(components)) {
+        const part = document.createElement("div");
 
-  activeWire.setAttribute(
-    "d",
-    buildCurve(start.x, start.y, curX, curY)
-  );
-}
+        part.className = "part disabled";
+        part.dataset.id = component.id;
+        part.draggable = false;
+        part.tabIndex = 0;
 
-function endDrag(e) {
-  window.removeEventListener("pointermove", onDrag);
-  window.removeEventListener("pointerup", endDrag);
-  window.removeEventListener("pointercancel", cancelDrag);
+        part.innerHTML = `
+          <span class="emoji">${component.icon}</span>
+          <span>
+            <strong>${component.name}</strong>
+            <small>${component.detail}</small>
+          </span>
+        `;
 
-  if (!activeWire || !activeStartNode) return;
+        part.addEventListener("click", () => {
+          if (!started || expired || won) return;
+          if (installed.has(component.id)) return;
 
-  const target = document.elementFromPoint(
-    e.clientX,
-    e.clientY
-  );
+          selected = component.id;
 
-  const isMatch =
-    target &&
-    target.classList.contains("node") &&
-    target.dataset.side === "right" &&
-    target.dataset.color === activeStartNode.dataset.color;
+          document.querySelectorAll(".part").forEach(item => {
+            item.classList.toggle(
+              "selected",
+              item.dataset.id === component.id
+            );
+          });
 
-  if (isMatch) {
-    const start = getNodeCenter(activeStartNode);
-    const end = getNodeCenter(target);
+          showStatus(
+            `Selected ${component.name}. Choose its socket.`
+          );
+        });
 
-    activeWire.setAttribute(
-      "d",
-      buildCurve(start.x, start.y, end.x, end.y)
-    );
+        part.addEventListener("dragstart", event => {
+          if (!started || expired || won ||
+              installed.has(component.id)) {
+            event.preventDefault();
+            return;
+          }
 
-    activeStartNode.classList.add("connected");
-    target.classList.add("connected");
+          event.dataTransfer.setData(
+            "text/plain",
+            component.id
+          );
+        });
 
-    connections.set(activeStartNode.dataset.color, true);
+        get("parts").appendChild(part);
+      }
 
-    if (connections.size === COLORS.length) {
-      statusText.textContent = "🔓 ACCESS GRANTED! CODE: OGY";
+      for (const component of shuffle(components)) {
+        const slot = document.createElement("div");
+
+        slot.className = "slot";
+        slot.dataset.id = component.id;
+        slot.tabIndex = 0;
+
+        slot.innerHTML = `
+          <span class="port">${component.slot}</span>
+          <span class="hint">EMPTY</span>
+        `;
+
+        slot.addEventListener("click", () => {
+          installComponent(selected, component.id);
+        });
+
+        slot.addEventListener("dragover", event => {
+          if (!started || expired || won) return;
+
+          event.preventDefault();
+          slot.classList.add("over");
+        });
+
+        slot.addEventListener("dragleave", () => {
+          slot.classList.remove("over");
+        });
+
+        slot.addEventListener("drop", event => {
+          event.preventDefault();
+          slot.classList.remove("over");
+
+          installComponent(
+            event.dataTransfer.getData("text/plain"),
+            component.id
+          );
+        });
+
+        get("slots").appendChild(slot);
+      }
+    }
+
+    // UPDATE TIMER DISPLAY
+
+    function updateTimer() {
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+
+      get("timer").textContent =
+        `TIME LEFT ${String(minutes).padStart(2, "0")}:` +
+        String(seconds).padStart(2, "0");
+
+      get("timer").classList.toggle(
+        "urgent",
+        started && timeLeft <= 10
+      );
+    }
+
+    // START GAME
+
+    function startGame() {
+      if (started || expired || won) return;
+
+      started = true;
+      endTime = Date.now() + 60000;
+
+      get("startBtn").disabled = true;
+      get("system").textContent = "OFFLINE";
+
+      document.querySelectorAll(".part").forEach(part => {
+        part.classList.remove("disabled");
+        part.draggable = true;
+      });
+
+      showStatus("Game started! Install all four components.");
+
+      updateProgress();
+
+      timerInterval = setInterval(() => {
+        timeLeft = Math.max(
+          0,
+          Math.ceil((endTime - Date.now()) / 1000)
+        );
+
+        updateTimer();
+
+        if (timeLeft === 0) {
+          timeOut();
+        }
+      }, 100);
+    }
+
+    // TIME OUT
+
+    function timeOut() {
+      if (expired || won) return;
+
+      expired = true;
+      started = false;
+
+      clearInterval(timerInterval);
+
+      get("system").textContent = "TIME OUT";
+      get("bootBtn").disabled = true;
+
+      showStatus("⏰ TIME OUT! Try again.");
+
+      showResult(false);
+    }
+
+    // SHOW WIN OR LOSS
+
+    function showResult(success) {
+      const result = get("result");
+
+      result.classList.toggle("failed", !success);
+
+      get("resultIcon").textContent =
+        success ? "🔓" : "⏰";
+
+      get("resultTitle").textContent =
+        success ? "ACCESS GRANTED!" : "TIME OUT!";
+
+      get("resultMessage").textContent =
+        success
+          ? "COMPUTER REBUILT • SYSTEM ONLINE"
+          : "60 SECONDS HAVE PASSED";
+
+      get("codeLabel").textContent =
+        success
+          ? "YOUR SECRET ACCESS CODE"
+          : "THE COMPUTER IS STILL LOCKED";
+
+      get("resultCode").textContent =
+        success ? "OGY" : "LOCKED";
+
+      get("resultFooter").textContent =
+        success
+          ? "Challenge completed successfully."
+          : "Try again to restore the system.";
+
+      get("continueBtn").textContent =
+        success ? "CONTINUE" : "↻ TRY AGAIN";
+
+      get("overlay").classList.add("show");
+    }
+
+    // BOOT COMPUTER
+
+    function bootComputer() {
+      if (!started || expired || won) return;
+      if (installed.size !== 4) return;
+
+      if (Date.now() >= endTime) {
+        timeOut();
+        return;
+      }
+
+      won = true;
+      started = false;
+
+      clearInterval(timerInterval);
+
+      get("system").textContent = "ONLINE";
+      get("bootBtn").disabled = true;
 
       sessionStorage.setItem("easyComplete", "true");
+
+      showResult(true);
     }
-  } else {
-    activeWire.remove();
-  }
 
-  activeWire = null;
-  activeStartNode = null;
-}
+    // RESET GAME
 
-function cancelDrag() {
-  window.removeEventListener("pointermove", onDrag);
-  window.removeEventListener("pointerup", endDrag);
-  window.removeEventListener("pointercancel", cancelDrag);
+    function resetGame() {
+      clearInterval(timerInterval);
 
-  if (activeWire) {
-    activeWire.remove();
-  }
+      installed.clear();
 
-  activeWire = null;
-  activeStartNode = null;
-}
+      selected = null;
+      started = false;
+      expired = false;
+      won = false;
 
-initGame();
-</script>
+      timeLeft = 60;
+
+      get("startBtn").disabled = false;
+      get("system").textContent = "STANDBY";
+
+      get("overlay").classList.remove("show");
+
+      createBoard();
+      updateProgress();
+      updateTimer();
+
+      showStatus("Press START GAME to begin.");
+    }
+
+    // BUTTON EVENTS
+
+    get("startBtn").addEventListener("click", startGame);
+    get("bootBtn").addEventListener("click", bootComputer);
+    get("resetBtn").addEventListener("click", resetGame);
+
+    get("backBtn").addEventListener("click", () => {
+      window.location.href = "screen4.html";
+    });
+
+    get("continueBtn").addEventListener("click", () => {
+      if (expired) {
+        resetGame();
+      } else {
+        get("overlay").classList.remove("show");
+      }
+    });
+
+    // INITIALIZE GAME
+
+    resetGame();
+  </script>
 
 </body>
 </html>

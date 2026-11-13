@@ -2,470 +2,701 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HACKED - Medium Challenge</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!--
-Morse Code Light Puzzle
-Original code generated with assistance from Google Gemini
-(November 12, 2026)
-Modified for HACKED Escape Room
--->
+  <title>HACKED // Signal Recovery</title>
 
-<style>
-* {
-  box-sizing: border-box;
-}
+  <style>
+    :root {
+      --red: #ff4656;
+      --background: #09090d;
+      --panel: #180e14;
+      --muted: #b8a7ad;
+      --green: #54e9a0;
+    }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: #09090c;
-  color: white;
-  font-family: Arial, sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 25px;
-}
+    * {
+      box-sizing: border-box;
+    }
 
-.game {
-  width: 100%;
-  max-width: 550px;
-  text-align: center;
-  background: #140d11;
-  border: 1px solid #b43a42;
-  border-radius: 12px;
-  padding: 30px 20px;
-  box-shadow: 0 0 25px #7a151b55;
-}
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 28px 14px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, Helvetica, sans-serif;
+      color: white;
+      background: radial-gradient(
+        ellipse at 50% 0%,
+        #3d111e 0%,
+        #120b11 45%,
+        #08090c 85%
+      );
+    }
 
-h1 {
-  color: #ff4545;
-  text-shadow: 0 0 15px #b40000;
-}
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          transparent 0 31px,
+          #ff4d5509 32px 33px
+        ),
+        repeating-linear-gradient(
+          90deg,
+          transparent 0 31px,
+          #ff4d5506 32px 33px
+        );
+    }
 
+    /* MAIN GAME */
 
-.subtitle {
-  color: #ff5555;
-  font-size: 13px;
-  letter-spacing: 2px;
-}
+    .game {
+      position: relative;
+      width: 100%;
+      max-width: 620px;
+      padding: 28px 26px;
+      text-align: center;
+      background: linear-gradient(155deg, #1d1019, #100c12);
+      border: 1px solid #a33a4b;
+      border-radius: 16px;
+      box-shadow: 0 18px 65px #000a, 0 0 35px #8f182b44;
+    }
 
-.instructions {
-  color: #aaa;
-  line-height: 1.6;
-}
+    .subtitle {
+      font-size: 11px;
+      color: #ff8891;
+      letter-spacing: 3px;
+      font-weight: bold;
+    }
 
-.bulb {
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  background: #292929;
-  box-shadow: inset 0 0 20px black;
-  margin: 25px auto;
-}
+    h1 {
+      color: var(--red);
+      font-size: clamp(26px, 6vw, 37px);
+      margin: 10px 0;
+      text-shadow: 0 0 22px #d51d3d88;
+    }
 
-.bulb.on {
-  background: #ffeb3b;
-  box-shadow: 0 0 45px #ffeb3b,
-              0 0 90px #ff9800;
-}
+    .instructions {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.65;
+      margin: 12px auto 18px;
+    }
 
-.letter-indicator {
-  color: white;
-  font-size: 20px;
-  font-weight: bold;
-  margin: 15px 0 8px;
-}
+    /* SIGNAL PANEL */
 
-#playStatus {
-  color: #aaa;
-  font-size: 13px;
-  min-height: 20px;
-  margin-bottom: 18px;
-}
+    .signal-panel {
+      margin: 20px 0 16px;
+      padding: 19px 14px;
+      background: linear-gradient(#25131d, #150d13);
+      border: 1px solid #6c2937;
+      border-radius: 13px;
+    }
 
-.buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin: 15px 0;
-}
+    .signal-panel::before {
+      content: "SIGNAL RECEIVER // ACTIVE";
+      display: block;
+      text-align: left;
+      color: #c98190;
+      font: bold 10px monospace;
+      letter-spacing: 2px;
+    }
 
-button {
-  padding: 12px 18px;
-  border: none;
-  border-radius: 5px;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-}
+    .bulb {
+      width: 112px;
+      height: 112px;
+      margin: 24px auto 20px;
+      border-radius: 50%;
+      border: 5px solid #59303c;
+      background: radial-gradient(
+        circle at 38% 30%,
+        #58303c,
+        #21131b 60%,
+        #100b0f
+      );
+      box-shadow: inset 0 0 22px black;
+      transition: background 0.08s, box-shadow 0.08s;
+    }
 
-button:hover:not(:disabled) {
-  filter: brightness(1.2);
-}
+    .bulb.on {
+      background: radial-gradient(
+        circle at 38% 30%,
+        #fff8d0,
+        #ffe762 35%,
+        #ff9a32 75%
+      );
+      border-color: #ffd65d;
+      box-shadow:
+        0 0 30px #ffeb3b,
+        0 0 85px #ff9b30aa;
+    }
 
-button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
+    .letter {
+      font-size: 18px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      color: #ffe5e8;
+    }
 
-.start {
-  background: #15803d;
-}
+    #playStatus {
+      min-height: 22px;
+      margin: 12px 0 3px;
+      color: #bba5ad;
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
 
-.slow {
-  background: #ca8a04;
-}
+    /* BUTTONS */
 
-.next {
-  background: #2563eb;
-}
+    .buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 16px 0;
+    }
 
-.reset {
-  background: #b91c1c;
-}
+    button {
+      min-height: 44px;
+      padding: 12px 17px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border: 1px solid #e84e5c;
+      border-radius: 7px;
+      background: linear-gradient(#dc3447, #aa1c2d);
+    }
 
-.submit {
-  background: #c62828;
-}
+    button:hover:not(:disabled) {
+      filter: brightness(1.2);
+      transform: translateY(-1px);
+    }
 
-.hint {
-  background: #5c242a;
-}
+    button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
 
-.back {
-  background: transparent;
-  border: 1px solid #b43a42;
-  margin-top: 20px;
-}
+    button:focus-visible,
+    input:focus-visible {
+      outline: 2px solid #ffbdc3;
+      outline-offset: 3px;
+    }
 
-input {
-  width: 100%;
-  max-width: 320px;
-  padding: 13px;
-  background: #09090c;
-  border: 1px solid #b43a42;
-  border-radius: 5px;
-  color: white;
-  text-align: center;
-  font-size: 17px;
-  text-transform: uppercase;
-  margin-top: 20px;
-}
+    .play {
+      background: #1d6d47;
+      border-color: #35bb7a;
+    }
 
-.hint-box {
-  display: none;
-  margin-top: 20px;
-  padding: 15px;
-  background: #231317;
-  border: 1px solid #b43a42;
-  border-radius: 8px;
-  line-height: 1.8;
-}
+    .slow {
+      background: #836019;
+      border-color: #d2a33b;
+    }
 
-.hint-box.visible {
-  display: block;
-}
+    .next {
+      background: #244b89;
+      border-color: #4c83d9;
+    }
 
-.morse-chart {
-        
-  font-family: monospace;
-  font-size: 25px;
-  line-height: 2;
-  overflow-wrap: anywhere;
-}
+    .hint {
+      background: #4a2637;
+      border-color: #b95d7d;
+    }
 
-#feedback {
-  font-weight: bold;
-  min-height: 25px;
-}
+    .back {
+      width: 100%;
+      max-width: 290px;
+      margin-top: 12px;
+      background: transparent;
+      border: 1px solid #a94c5b;
+    }
 
-@media (max-width: 450px) {
-  .game {
-    padding: 20px 12px;
-  }
+    /* ANSWER INPUT */
 
-  button {
-    padding: 11px 13px;
-    font-size: 12px;
-  }
-}
-</style>
+    .answer-label {
+      margin-top: 24px;
+      color: #ff8b98;
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    input {
+      display: block;
+      width: 100%;
+      max-width: 340px;
+      margin: 12px auto 0;
+      padding: 15px;
+      background: #0b0b10;
+      border: 1px solid #9c4152;
+      border-radius: 8px;
+      color: white;
+      text-align: center;
+      font-size: 19px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+    }
+
+    #unlockBtn {
+      min-width: 205px;
+    }
+
+    /* ERROR AND SUCCESS MESSAGES */
+
+    #feedback {
+      display: none;
+      margin: 17px 0;
+      padding: 20px 12px;
+      border: 2px solid;
+      border-radius: 10px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    #feedback.error {
+      display: block;
+      color: #ff909a;
+      background: #3d111e;
+      border-color: #ff4656;
+    }
+
+    #feedback.success {
+      display: block;
+      color: #6bffc0;
+      background: #103424;
+      border-color: #36d48a;
+    }
+
+    /* MORSE CODE HINT */
+
+    .hint-box {
+      display: none;
+      margin-top: 18px;
+      padding: 18px;
+      background: #21131b;
+      border: 1px solid #9d3e50;
+      border-radius: 10px;
+    }
+
+    .hint-box.visible {
+      display: block;
+    }
+
+    .hint-box strong {
+      color: #ff9aa4;
+      letter-spacing: 2px;
+    }
+
+    .chart {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+      text-align: left;
+      font-family: monospace;
+      font-size: 17px;
+    }
+
+    .chart span {
+      padding: 7px 9px;
+      background: #301c26;
+      border-radius: 4px;
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 450px) {
+      .game {
+        padding: 21px 13px;
+      }
+
+      .chart {
+        grid-template-columns: repeat(2, 1fr);
+        font-size: 16px;
+      }
+
+      .buttons {
+        gap: 7px;
+      }
+
+      button {
+        padding: 11px 12px;
+        font-size: 12px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="game">
+  <main class="game">
 
-  <p class="subtitle">HACKED // MEDIUM CHALLENGE</p>
+    <p class="subtitle">HACKED // MEDIUM CHALLENGE</p>
 
-  <h1>💡 MORSE CODE PUZZLE</h1>
+    <h1>📡 SIGNAL RECOVERY</h1>
 
-  <p class="instructions">
-    Watch the flashing light carefully.<br>
-    Decode the three-letter secret word.<br>
-    Press START to begin each letter.
-  </p>
-
-  <!-- FLASHING LIGHT -->
-  <div class="bulb" id="light"></div>
-
-  <!-- CURRENT LETTER INDICATOR -->
-  <div class="letter-indicator" id="letterIndicator">
-    LETTER 1 OF 3
-  </div>
-
-  <p id="playStatus">READY TO START</p>
-
-  <!-- MORSE CONTROLS -->
-  <div class="buttons">
-
-    <button class="start" id="startBtn"
-            onclick="startMorse()">
-      START
-    </button>
-
-    <button class="slow" id="slowBtn"
-            onclick="slowMorse()">
-      SLOW
-    </button>
-
-    <button class="next" id="nextBtn"
-            onclick="nextLetter()" disabled>
-      NEXT
-    </button>
-
-    <button class="reset"
-            onclick="resetMorse()">
-      RESET
-    </button>
-
-  </div>
-
-  <!-- ANSWER -->
-  <input
-    type="text"
-    id="answer"
-    maxlength="3"
-    placeholder="ENTER 3 LETTERS"
-    autocomplete="off"
-  >
-
-  <div class="buttons">
-    <button class="submit" onclick="checkAnswer()">
-      SUBMIT
-    </button>
-
-    <button class="hint" onclick="toggleHint()">
-      HINT
-    </button>
-  </div>
-
-  <p id="feedback"></p>
-
-  <!-- FULL MORSE CODE HINT -->
-  <div class="hint-box" id="hintBox">
-
-    <strong>MORSE CODE CHART</strong>
-
-    <p>
-      Short flash = DOT (.)<br>
-      Long flash = DASH (-)
+    <p class="instructions">
+      Watch the light flashes to decode 3 letters.<br>
+      Short flash = dot (·), long flash = dash (−).
     </p>
 
-    <p class="morse-chart">
-      A = .- &nbsp; B = -... &nbsp; C = -.-.<br>
-      D = -.. &nbsp; E = . &nbsp; F = ..-.<br>
-      G = --. &nbsp; H = .... &nbsp; I = ..<br>
-      J = .--- &nbsp; K = -.- &nbsp; L = .-..<br>
-      M = -- &nbsp; N = -. &nbsp; O = ---<br>
-      P = .--. &nbsp; Q = --.- &nbsp; R = .-.<br>
-      S = ... &nbsp; T = - &nbsp; U = ..-<br>
-      V = ...- &nbsp; W = .-- &nbsp; X = -..-<br>
-      Y = -.-- &nbsp; Z = --..
-    </p>
+    <!-- SIGNAL LIGHT -->
 
-  </div>
+    <section class="signal-panel">
 
-  <button class="back"
-          onclick="window.location.href='screen4.html'">
-    ← BACK TO CHALLENGES
-  </button>
+      <div class="bulb" id="light"></div>
 
-</div>
+      <div class="letter" id="letterIndicator">
+        LETTER 1 OF 3
+      </div>
 
-<script>
-const secretWord = "NOL";
+      <p id="playStatus" aria-live="polite">
+        READY TO START
+      </p>
 
-const morseMap = {
-  N: "-.",
-  O: "---",
-  L: ".-.."
-};
+    </section>
 
-const light = document.getElementById("light");
-const letterIndicator =
-  document.getElementById("letterIndicator");
-const playStatus =
-  document.getElementById("playStatus");
+    <!-- GAME CONTROLS -->
 
-const startBtn = document.getElementById("startBtn");
-const slowBtn = document.getElementById("slowBtn");
-const nextBtn = document.getElementById("nextBtn");
+    <div class="buttons">
 
-let currentLetter = 0;
-let playing = false;
-let letterFinished = false;
-let playbackToken = 0;
+      <button class="play" id="playBtn">
+        ▶ PLAY
+      </button>
 
-const sleep = ms =>
-  new Promise(resolve => setTimeout(resolve, ms));
+      <button class="slow" id="slowBtn">
+        🐢 SLOW
+      </button>
 
-function updateControls() {
-  letterIndicator.textContent =
-    `LETTER ${currentLetter + 1} OF ${secretWord.length}`;
+      <button class="next" id="nextBtn" disabled>
+        NEXT →
+      </button>
 
-  startBtn.disabled = playing;
-  slowBtn.disabled = playing;
+      <button id="resetBtn">
+        ↻ RESET
+      </button>
 
-  nextBtn.disabled =
-    playing ||
-    !letterFinished ||
-    currentLetter === secretWord.length - 1;
-}
+    </div>
 
-// Play the current letter.
-async function playCurrentLetter(dotTime) {
-  if (playing) return;
+    <!-- PASSWORD INPUT -->
 
-  playing = true;
-  letterFinished = false;
+    <div class="answer-label">
+      03 // DECRYPTED PASSWORD
+    </div>
 
-  const token = ++playbackToken;
+    <input
+      id="answer"
+      type="text"
+      placeholder="ENTER 3 LETTERS"
+      autocomplete="off"
+      spellcheck="false"
+      aria-label="Three-letter password"
+    >
 
-  updateControls();
+    <div class="buttons">
 
-  playStatus.textContent =
-    `PLAYING LETTER ${currentLetter + 1} OF 3...`;
-  playStatus.style.color = "#ffeb3b";
+      <button id="unlockBtn">
+        🔓 UNLOCK SIGNAL
+      </button>
 
-  const letter = secretWord[currentLetter];
-  const code = morseMap[letter];
+      <button class="hint" id="hintBtn">
+        💡 HINT
+      </button>
 
-  for (const symbol of code) {
-    if (token !== playbackToken) return;
+    </div>
 
-    light.classList.add("on");
+    <!-- FEEDBACK -->
 
-    if (symbol === ".") {
-      await sleep(dotTime);
-    } else {
-      await sleep(dotTime * 3);
+    <div
+      id="feedback"
+      role="alert"
+      aria-live="assertive">
+    </div>
+
+    <!-- MORSE CODE CHART -->
+
+    <div class="hint-box" id="hintBox">
+
+      <strong>MORSE CODE A–Z</strong>
+
+      <p class="instructions">
+        Dot = short flash · Dash = long flash
+      </p>
+
+      <div class="chart" id="chart"></div>
+
+    </div>
+
+    <!-- BACK BUTTON -->
+
+    <button class="back" id="backBtn">
+      ← BACK TO CHALLENGES
+    </button>
+
+  </main>
+
+  <script>
+    "use strict";
+
+    // SECRET PASSWORD
+
+    const secretWord = "NOL";
+
+    // MORSE CODE ALPHABET
+
+    const morse = {
+      A: ".-",
+      B: "-...",
+      C: "-.-.",
+      D: "-..",
+      E: ".",
+      F: "..-.",
+      G: "--.",
+      H: "....",
+      I: "..",
+      J: ".---",
+      K: "-.-",
+      L: ".-..",
+      M: "--",
+      N: "-.",
+      O: "---",
+      P: ".--.",
+      Q: "--.-",
+      R: ".-.",
+      S: "...",
+      T: "-",
+      U: "..-",
+      V: "...-",
+      W: ".--",
+      X: "-..-",
+      Y: "-.--",
+      Z: "--.."
+    };
+
+    // HTML ELEMENTS
+
+    const light = document.getElementById("light");
+    const status = document.getElementById("playStatus");
+    const indicator = document.getElementById("letterIndicator");
+
+    const playBtn = document.getElementById("playBtn");
+    const slowBtn = document.getElementById("slowBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const unlockBtn = document.getElementById("unlockBtn");
+    const hintBtn = document.getElementById("hintBtn");
+    const backBtn = document.getElementById("backBtn");
+
+    const answerInput = document.getElementById("answer");
+    const feedback = document.getElementById("feedback");
+    const hintBox = document.getElementById("hintBox");
+    const chart = document.getElementById("chart");
+
+    // GAME STATE
+
+    let currentLetter = 0;
+    let playing = false;
+    let finished = false;
+    let playbackToken = 0;
+
+    const sleep = ms =>
+      new Promise(resolve => setTimeout(resolve, ms));
+
+    // UPDATE BUTTON STATES
+
+    function updateControls() {
+      indicator.textContent =
+        `LETTER ${currentLetter + 1} OF 3`;
+
+      playBtn.disabled = playing;
+      slowBtn.disabled = playing;
+
+      nextBtn.disabled =
+        playing ||
+        !finished ||
+        currentLetter === 2;
     }
 
-    if (token !== playbackToken) return;
+    // PLAY MORSE CODE
 
-    light.classList.remove("on");
+    async function playMorse(dotTime) {
+      if (playing) return;
 
-    await sleep(dotTime);
-  }
+      const token = ++playbackToken;
 
-  if (token !== playbackToken) return;
+      playing = true;
+      finished = false;
 
-  playing = false;
-  letterFinished = true;
-  light.classList.remove("on");
+      updateControls();
 
-  if (currentLetter === secretWord.length - 1) {
-    playStatus.textContent =
-      "ALL LETTERS PLAYED — ENTER YOUR ANSWER";
-  } else {
-    playStatus.textContent =
-      "LETTER COMPLETE — PRESS NEXT";
-  }
+      status.textContent = "RECEIVING SIGNAL...";
+      status.style.color = "#ffeb3b";
 
-  playStatus.style.color = "#45df83";
+      const letter = secretWord[currentLetter];
+      const code = morse[letter];
 
-  updateControls();
-}
+      for (const symbol of code) {
+        if (token !== playbackToken) return;
 
-// GREEN: Normal speed.
-function startMorse() {
-  playCurrentLetter(600);
-}
+        light.classList.add("on");
 
-// YELLOW: Slower speed.
-function slowMorse() {
-  playCurrentLetter(1100);
-}
+        const duration =
+          symbol === "." ? dotTime : dotTime * 3;
 
-// BLUE: Advance one letter.
-function nextLetter() {
-  if (playing || !letterFinished) return;
-  if (currentLetter >= secretWord.length - 1) return;
+        await sleep(duration);
 
-  currentLetter++;
-  letterFinished = false;
+        if (token !== playbackToken) return;
 
-  light.classList.remove("on");
+        light.classList.remove("on");
 
-  playStatus.textContent = "READY TO START";
-  playStatus.style.color = "#aaa";
+        await sleep(dotTime);
+      }
 
-  updateControls();
-}
+      if (token !== playbackToken) return;
 
-// RED: Start over.
-function resetMorse() {
-  playbackToken++;
-  playing = false;
-  letterFinished = false;
-  currentLetter = 0;
+      playing = false;
+      finished = true;
 
-  light.classList.remove("on");
+      status.textContent =
+        currentLetter === 2
+          ? "ALL SIGNALS PLAYED — ENTER YOUR ANSWER"
+          : "SIGNAL COMPLETE — PRESS NEXT";
 
-  document.getElementById("answer").value = "";
-  document.getElementById("feedback").textContent = "";
+      status.style.color = "#45df83";
 
-  playStatus.textContent = "READY TO START";
-  playStatus.style.color = "#aaa";
+      updateControls();
+    }
 
-  updateControls();
-}
+    // CHECK ANSWER
 
-// Show the full Morse alphabet.
-function toggleHint() {
-  document.getElementById("hintBox")
-    .classList.toggle("visible");
-}
+    function checkAnswer() {
+      const guess = answerInput.value.trim().toUpperCase();
 
-// Check the answer.
-function checkAnswer() {
-  const guess = document.getElementById("answer")
-    .value.trim().toUpperCase();
+      if (!/^[A-Z]{3}$/.test(guess)) {
+        showFeedback(
+          "❌ 3 LETTER ERROR — ENTER EXACTLY 3 LETTERS",
+          "error"
+        );
+        return;
+      }
 
-  const feedback = document.getElementById("feedback");
+      if (guess !== secretWord) {
+        showFeedback(
+          "❌ ACCESS DENIED — WRONG CODE",
+          "error"
+        );
+        return;
+      }
 
-  if (guess === secretWord) {
-    feedback.style.color = "#45df83";
-    feedback.textContent =
-      "🔓 ACCESS GRANTED! YOU DECODED THE WORD!";
+      showFeedback(
+        "🔓 ACCESS GRANTED — SIGNAL RESTORED!",
+        "success"
+      );
 
-    sessionStorage.setItem("mediumComplete", "true");
-  } else {
-    feedback.style.color = "#ff5555";
-    feedback.textContent =
-      "❌ INCORRECT! TRY AGAIN.";
-  }
-}
+      sessionStorage.setItem("mediumComplete", "true");
+    }
 
-// Initial state: no automatic flashing.
-updateControls();
-</script>
+    // DISPLAY FEEDBACK
+
+    function showFeedback(message, type) {
+      feedback.textContent = message;
+      feedback.className = type;
+    }
+
+    // RESET GAME
+
+    function resetGame() {
+      playbackToken++;
+
+      currentLetter = 0;
+      playing = false;
+      finished = false;
+
+      light.classList.remove("on");
+
+      status.textContent = "READY TO START";
+      status.style.color = "#aaa";
+
+      answerInput.value = "";
+      feedback.textContent = "";
+      feedback.className = "";
+
+      hintBox.classList.remove("visible");
+
+      updateControls();
+    }
+
+    // CREATE MORSE CODE CHART
+
+    function createMorseChart() {
+      chart.innerHTML = Object.entries(morse)
+        .map(([letter, code]) =>
+          `<span>${letter} = ${code}</span>`
+        )
+        .join("");
+    }
+
+    // BUTTON EVENTS
+
+    playBtn.addEventListener("click", () => {
+      playMorse(500);
+    });
+
+    slowBtn.addEventListener("click", () => {
+      playMorse(950);
+    });
+
+    nextBtn.addEventListener("click", () => {
+      if (playing || !finished || currentLetter === 2) {
+        return;
+      }
+
+      currentLetter++;
+      finished = false;
+
+      status.textContent = "READY TO START";
+      status.style.color = "#aaa";
+
+      updateControls();
+    });
+
+    resetBtn.addEventListener("click", resetGame);
+
+    unlockBtn.addEventListener("click", checkAnswer);
+
+    answerInput.addEventListener("keydown", event => {
+      if (event.key === "Enter") {
+        checkAnswer();
+      }
+    });
+
+    hintBtn.addEventListener("click", () => {
+      hintBox.classList.toggle("visible");
+    });
+
+    backBtn.addEventListener("click", () => {
+      window.location.href = "screen4.html";
+    });
+
+    // START GAME
+
+    createMorseChart();
+    updateControls();
+  </script>
 
 </body>
 </html>
