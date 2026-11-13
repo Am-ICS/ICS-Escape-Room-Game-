@@ -3,8 +3,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>HACKED - System Locked</title>
 
@@ -24,6 +23,7 @@ body {
   align-items: center;
   text-align: center;
   overflow-x: hidden;
+  padding: 20px;
 }
 
 .container {
@@ -109,6 +109,47 @@ button:hover {
   box-shadow: 0 0 20px red;
 }
 
+/* SHOCKED TEACHER - BOTTOM LEFT */
+
+.teacher-area {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  width: 190px;
+  z-index: 5;
+  pointer-events: none;
+  animation: teacherAppear 0.8s ease-out;
+}
+
+.teacher-image {
+  display: block;
+  width: 400px;
+
+  height: auto;
+  filter: drop-shadow(0 5px 15px #000);
+}
+
+/* SPEECH BUBBLE */
+
+.speech-bubble span {
+  color: #e00000;
+}
+
+.speech-bubble::after {
+  content: "";
+  position: absolute;
+  bottom: -13px;
+  left: 30px;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-right: 3px solid #111;
+  border-bottom: 3px solid #111;
+  transform: rotate(45deg);
+}
+
+/* ANIMATIONS */
+
 @keyframes glitch {
   0% { transform: translateX(0); }
   25% { transform: translateX(-5px); }
@@ -121,15 +162,65 @@ button:hover {
   to { opacity: 1; }
 }
 
-@media (max-width: 500px) {
-  .container { padding: 15px; }
-  .item { font-size: 13px; }
-  .item span { font-size: 26px; }
+@keyframes teacherAppear {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+  body {
+    padding: 15px;
+    padding-bottom: 190px;
+  }
+
+  .container {
+    width: 100%;
+    padding: 15px;
+  }
+
+  .item {
+    font-size: 13px;
+  }
+
+  .item span {
+    font-size: 26px;
+  }
+
+  .teacher-area {
+    width: 110px;
+    left: 5px;
+    bottom: 5px;
+  }
+
+  .speech-bubble {
+    width: 145px;
+    left: 30px;
+    padding: 9px;
+    font-size: 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .container,
+  h1,
+  .teacher-area {
+    animation: none;
+  }
 }
 </style>
 </head>
 
 <body>
+
+<!-- ORIGINAL SYSTEM HACKED SCREEN -->
 
 <div class="container">
 
@@ -182,6 +273,19 @@ button:hover {
   <button onclick="startEscape()">
     BEGIN ESCAPE CHALLENGE →
   </button>
+
+</div>
+
+<!-- SMALL SHOCKED TEACHER -->
+
+<div class="teacher-area">
+
+
+  <img
+    src="Shocked.png"
+    alt="Shocked teacher"
+    class="teacher-image"
+  >
 
 </div>
 
