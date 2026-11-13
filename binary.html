@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   HACKED // HARD — Binary Decryption
+  </title>
+  <style>
+   /* HACKED HARD MODE — styles */
+:root {
+    --red:#ff454e;
+    --green:#48e69b;
+    --panel:#170e13
+}
+
+* {
+    box-sizing:border-box
+}
+
+body {
+    margin:0;
+    min-height:100vh;
+    padding:26px 16px 150px;
+    color:#fff;
+    font-family:Arial,sans-serif;
+    background:radial-gradient(ellipse at 50% 10%,#371019,#09090c 65%)
+}
+
+header {
+    text-align:center;
+    max-width:760px;
+    margin:auto
+}
+
+.subtitle {
+    color:#ff616a;
+    letter-spacing:3px;
+    font-size:12px;
+    font-weight:bold
+}
+
+h1 {
+    color:var(--red);
+    text-shadow:0 0 18px #bd0000;
+    font-size:clamp(27px,5vw,42px);
+    margin:12px 0
+}
+
+.instructions {
+    color:#c9a7ad;
+    font-size:14px;
+    line-height:1.7
+}
+
+.timer {
+    position:sticky;
+    top:10px;
+    z-index:8;
+    width:max-content;
+    max-width:100%;
+    margin:0 0 0 auto;
+    padding:10px 16px;
+    background:#210d15;
+    border:2px solid var(--red);
+    border-radius:10px;
+    color:#ff777f;
+    font-weight:900;
+    font-variant-numeric:tabular-nums;
+    box-shadow:0 0 18px #ff000044
+}
+
+.timer.urgent {
+    background:#850000;
+    color:white;
+    animation:blink .65s infinite
+}
+
+@keyframes blink {
+    50% {
+        opacity:.5
+    }
+
+}
+
+.game {
+    max-width:850px;
+    margin:24px auto;
+    padding:25px;
+    background:#140d11;
+    border:1px solid #b43a42;
+    border-radius:15px;
+    box-shadow:0 0 35px #7a151b55
+}
+
+.section-title {
+    color:#ff9ba1;
+    font-size:13px;
+    letter-spacing:2px;
+    font-weight:900;
+    text-align:center;
+    margin-bottom:17px
+}
+
+.codes {
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:15px
+}
+
+.code-card {
+    background:#211319;
+    border:1px solid #b34a57;
+    border-radius:11px;
+    padding:21px 8px;
+    text-align:center
+}
+
+.code-card small {
+    display:block;
+    color:#ff9da3;
+    letter-spacing:2px;
+    font-weight:bold;
+    margin-bottom:12px
+}
+
+.bits {
+    font-family:Consolas,'Courier New',monospace;
+    color:#fff;
+    font-weight:900;
+    font-size:clamp(16px,3vw,27px);
+    letter-spacing:2px;
+    overflow-wrap:anywhere;
+    text-shadow:0 0 12px #ff454e77
+}
+
+.math-guide {
+    display:grid;
+    grid-template-columns:repeat(8,minmax(0,1fr));
+    gap:4px;
+    margin:12px 0 18px
+}
+
+.math-guide div {
+    text-align:center;
+    padding:8px 1px;
+    background:#2c1a20;
+    border:1px solid #7d3541;
+    border-radius:5px;
+    font-family:monospace;
+    font-size:clamp(10px,2vw,15px)
+}
+
+.math-work {
+    width:100%;
+    margin-top:12px;
+    padding:9px;
+    background:#100b10;
+    border:1px solid #6e303b;
+    border-radius:6px;
+    color:#fff;
+    text-align:center;
+    font-size:14px
+}
+
+.answer-area {
+    text-align:center;
+    margin:25px auto 8px;
+    max-width:430px
+}
+
+.answer-area label {
+    display:block;
+    color:#ffb1b7;
+    font-weight:bold;
+    font-size:13px;
+    letter-spacing:1px;
+    margin-bottom:12px
+}
+
+#answer {
+    width:100%;
+    padding:15px;
+    background:#09090c;
+    border:1px solid #b43a42;
+    border-radius:8px;
+    color:#fff;
+    text-align:center;
+    font-size:23px;
+    font-weight:900;
+    letter-spacing:10px;
+    text-transform:uppercase;
+    outline:none
+}
+
+#answer:focus {
+    border-color:#ff6565;
+    box-shadow:0 0 12px #ff454533
+}
+
+.status {
+    min-height:36px;
+    margin-top:14px;
+    text-align:center;
+    color:#ffb1b7;
+    font-weight:bold
+}
+
+.status.success {
+    color:var(--green)
+}
+
+.actions {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:11px;
+    margin-top:15px
+}
+
+button {
+    padding:13px 20px;
+    background:#c62828;
+    color:white;
+    border:0;
+    border-radius:7px;
+    font-weight:900;
+    cursor:pointer
+}
+
+button:hover {
+    background:#f34650
+}
+
+button.secondary {
+    background:#311b24;
+    border:1px solid #e34b54
+}
+
+button.secondary:hover {
+    background:#672027
+}
+
+.hint-panel {
+    display:none;
+    margin-top:23px;
+    background:#211319;
+    border:1px solid #b34a57;
+    border-radius:10px;
+    padding:18px
+}
+
+.hint-panel.show {
+    display:block
+}
+
+.hint-panel h2 {
+    text-align:center;
+    color:#ff9ba1;
+    font-size:17px
+}
+
+.hint-panel p {
+    text-align:center;
+    color:#c9a7ad;
+    font-size:13px
+}
+
+.alphabet {
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:8px
+}
+
+.alphabet-item {
+    background:#120d11;
+    border:1px solid #78313c;
+    border-radius:6px;
+    padding:10px 5px;
+    text-align:center;
+    font-size:12px
+}
+
+.alphabet-item strong {
+    display:block;
+    color:#ff858c;
+    font-size:17px;
+    margin-bottom:4px
+}
+
+.alphabet-item span {
+    font-family:Consolas,'Courier New',monospace;
+    overflow-wrap:anywhere
+}
+
+.teacher-area {
+    position:fixed;
+    left:10px;
+    bottom:10px;
+    z-index:7;
+    display:flex;
+    align-items:flex-end;
+    gap:12px;
+    max-width:min(550px,calc(100vw - 20px));
+    pointer-events:none
+}
+
+.teacher-image {
+    width:clamp(100px,15vw,150px);
+    max-height:200px;
+    object-fit:contain;
+    filter:drop-shadow(0 8px 16px #0009)
+}
+
+.overlay {
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:20;
+    background:#050507ed;
+    align-items:center;
+    justify-content:center;
+    padding:18px
+}
+
+.overlay.show {
+    display:flex
+}
+
+.result {
+    max-width:480px;
+    width:100%;
+    background:#101a17;
+    border:2px solid #42e69a;
+    border-radius:16px;
+    box-shadow:0 0 60px #16ba6b50;
+    text-align:center;
+    padding:30px 22px
+}
+
+.result h2 {
+    color:#6dffb0;
+    font-size:32px
+}
+
+.result p {
+    color:#bcebd3
+}
+
+.reward {
+    font-size:clamp(40px,9vw,65px);
+    letter-spacing:9px;
+    font-weight:900;
+    text-shadow:0 0 18px #2eff91;
+    margin:15px 0
+}
+
+.result img {
+    max-width:160px;
+    max-height:160px;
+    object-fit:contain
+}
+
+.timeout {
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:100;
+    background:radial-gradient(ellipse at center,#3c101b,#09090c 75%);
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    text-align:center;
+    padding:25px
+}
+
+.timeout h2 {
+    color:var(--red);
+    font-size:clamp(32px,7vw,56px)
+}
+
+.timeout p {
+    color:#ffb1b7
+}
+
+.footer {
+    text-align:center;
+    color:#777;
+    font-size:12px;
+    letter-spacing:2px;
+    margin-top:20px
+}
+
+@media(max-width:600px) {
+    .game {
+        padding:15px
+    }
+
+    .codes {
+        gap:9px
+    }
+
+    .code-card {
+        padding:16px 4px
+    }
+
+    .bits {
+        letter-spacing:0;
+        font-size:clamp(13px,3.4vw,19px)
+    }
+
+    .alphabet {
+        grid-template-columns:repeat(2,minmax(0,1fr))
+    }
+
+    .teacher-image {
+        width:95px
+    }
+
+    body {
+        padding-bottom:160px
+    }
+
+    .timer {
+        margin:0 auto
+    }
+
+}
+  </style>
+ </head>
+ <body>
+  <div class="timer" id="escapeRoomTimer">
+   ⏰ ESCAPE ROOM 15:00
+  </div>
+  <header>
+   <p class="subtitle">
+    HACKED // HARD CHALLENGE
+   </p>
+   <h1>
+    💻 BINARY DECRYPTION
+   </h1>
+   <p class="instructions">
+    The hacker encrypted the final access code! Decode the four binary signals IN ORDER! For each signal, ADD the place values wherever the bit is 1. Convert each total to an ASCII letter. Enter the four letters from Signal 1 to Signal 4. SHOW HINT gives the place values and ASCII chart.
+   </p>
+  </header>
+  <main class="game">
+   <div class="section-title">
+    ◈ ENCRYPTED SYSTEM SIGNALS ◈
+   </div>
+   <div class="codes" id="codes">
+   </div>
+   <div class="answer-area">
+    <label for="answer">
+     ENTER THE 4 DECODED LETTERS
+    </label>
+    <input aria-label="Four decoded letters" autocomplete="off" id="answer" maxlength="4" placeholder="ABCD" spellcheck="false"/>
+    <div class="status" id="status" role="status">
+     Add the bit values and enter the decoded letters in Signal 1–4 order.
+    </div>
+   </div>
+   <div class="actions">
+    <button id="checkBtn">
+     🔓 DECRYPT CODE
+    </button>
+    <button aria-controls="hintPanel" aria-expanded="false" class="secondary" id="hintBtn">
+     💡 SHOW HINT
+    </button>
+    <button class="secondary" id="backBtn">
+     ← BACK TO CHALLENGES
+    </button>
+   </div>
+   <section class="hint-panel" id="hintPanel">
+    <h2>
+     📖 BINARY MATH HINT
+    </h2>
+    <p>
+     Each 1 means ADD the value above it; each 0 means skip it. Example: 01000011 = 64 + 2 + 1 = 67 = C.
+    </p>
+    <div class="math-guide">
+     <div>
+      128
+     </div>
+     <div>
+      64
+     </div>
+     <div>
+      32
+     </div>
+     <div>
+      16
+     </div>
+     <div>
+      8
+     </div>
+     <div>
+      4
+     </div>
+     <div>
+      2
+     </div>
+     <div>
+      1
+     </div>
+    </div>
+    <p>
+     ASCII decimal values for A–Z:
+    </p>
+    <div class="alphabet" id="alphabet">
+    </div>
+   </section>
+  </main>
+  <p class="footer">
+   HACKED // ESCAPE ROOM
+  </p>
+  <div class="teacher-area">
+   <img alt="Teacher watching" class="teacher-image" id="teacherImage" src="Watching.png"/>
+  </div>
+  <div class="overlay" id="winOverlay">
+   <div class="result">
+    <img alt="Teacher celebrating" src="Joyful.png"/>
+    <h2>
+     🔓 ACCESS GRANTED!
+    </h2>
+    <p>
+     YOU CRACKED THE BINARY CODE!
+    </p>
+    <p>
+     YOUR FINAL 4 LETTERS
+    </p>
+    <div class="reward" id="reward">
+    </div>
+    <p>
+     Combine these with EASY and MEDIUM to unlock the final system.
+    </p>
+    <button id="continueBtn">
+     CONTINUE TO CHALLENGES
+    </button>
+   </div>
+  </div>
+  <div class="timeout" id="timeoutScreen">
+   <div style="font-size:75px">
+    ⏰
+   </div>
+   <h2>
+    TIME'S UP!
+   </h2>
+   <h3>
+    YOU DIDN'T ESCAPE THE ROOM!
+   </h3>
+   <p>
+    The shared 15-minute countdown has ended.
+   </p>
+   <button id="restartBtn">
+    ↻ TRY AGAIN
+   </button>
+  </div>
+  <script>
+   "use strict";
+
+// --------------------------------------------------
+// Settings and shared escape-room storage
+// --------------------------------------------------
+const GAME_MINUTES = 15; // Change to 20 for a future new game.
+const END_KEY = "escapeRoomEndTime";
+const TIMEOUT_KEY = "escapeRoomTimedOut";
+const FINISHED_KEY = "escapeRoomFinished";
+
+const $ = (id) => document.getElementById(id);
+
+const words = [
+    "ALGORITHMS", "AUTOMATION", "BLOCKCHAIN", "BOOTLOADER",
+    "CLUSTERING", "CONTAINERS", "CONTROLLER", "DATACENTER",
+    "DEPLOYMENT", "DEVELOPERS", "EXECUTABLE", "FILESYSTEM",
+    "HARDDRIVES", "HYPERVISOR", "JAVASCRIPT", "KUBERNETES",
+    "MAINFRAMES", "MICROCHIPS", "MIDDLEWARE", "MONITORING",
+    "NETWORKING", "PARAMETERS", "POWERSHELL", "PROCESSING",
+    "PROCESSORS", "PROGRAMMER", "REPOSITORY", "RESOLUTION",
+    "SEMAPHORES", "SERVERLESS", "SIMULATION", "SUBROUTINE",
+    "TECHNOLOGY", "THROUGHPUT", "TRANSISTOR", "TYPESCRIPT",
+    "VERSIONING", "WEBMASTERS", "WORKSPACES"
+].filter((word) => word.length === 10);
+
+// EASY, MEDIUM, and HARD share one 10-letter secret word.
+let secretWord = sessionStorage.getItem("secretWord");
+
+if (!secretWord || !/^[A-Z]{10}$/.test(secretWord)) {
+    secretWord = words[Math.floor(Math.random() * words.length)];
+    sessionStorage.setItem("secretWord", secretWord);
+}
+
+const hardLetters = secretWord.slice(6, 10);
+const toBinary = (letter) =>
+    letter.charCodeAt(0).toString(2).padStart(8, "0");
+
+// --------------------------------------------------
+// Build the four binary signals and ASCII hint chart
+// --------------------------------------------------
+const signals = [...hardLetters];
+
+$("codes").innerHTML = signals.map((letter, index) => `
+    <div class="code-card">
+        <small>SIGNAL ${index + 1}</small>
+        <div class="bits">${toBinary(letter)}</div>
+        <input
+            class="math-work"
+            type="text"
+            inputmode="numeric"
+            placeholder="Your total (e.g. 67)"
+            aria-label="Decimal total for signal ${index + 1}"
+        >
+    </div>
+`).join("");
+
+$("alphabet").innerHTML = Array.from({ length: 26 }, (_, index) => {
+    const letter = String.fromCharCode(65 + index);
+    return `
+        <div class="alphabet-item">
+            <strong>${letter}</strong>
+            <span>${65 + index}</span>
+        </div>
+    `;
+}).join("");
+
+// --------------------------------------------------
+// Hint and answer input
+// --------------------------------------------------
+$("hintBtn").addEventListener("click", () => {
+    const showing = $("hintPanel").classList.toggle("show");
+    $("hintBtn").textContent = showing ? "🙈 HIDE HINT" : "💡 SHOW HINT";
+    $("hintBtn").setAttribute("aria-expanded", String(showing));
+});
+
+$("answer").addEventListener("input", () => {
+    $("answer").value = $("answer").value
+        .replace(/[^a-z]/gi, "")
+        .toUpperCase()
+        .slice(0, 4);
+});
+
+// --------------------------------------------------
+// Shared 15-minute countdown
+// --------------------------------------------------
+let expired = false;
+
+function showTimeout() {
+    if (expired) return;
+
+    expired = true;
+    sessionStorage.setItem(TIMEOUT_KEY, "true");
+    $("escapeRoomTimer").textContent = "⏰ ESCAPE ROOM 00:00";
+    $("timeoutScreen").style.display = "flex";
+    $("answer").disabled = true;
+    $("checkBtn").disabled = true;
+}
+
+if (!sessionStorage.getItem(END_KEY)) {
+    sessionStorage.setItem(
+        END_KEY,
+        String(Date.now() + GAME_MINUTES * 60 * 1000)
+    );
+}
+
+function timeAvailable() {
+    const timedOut = sessionStorage.getItem(TIMEOUT_KEY) === "true";
+    const pastDeadline = Date.now() >= Number(sessionStorage.getItem(END_KEY));
+
+    if (expired || timedOut || pastDeadline) {
+        showTimeout();
+        return false;
+    }
+
+    return true;
+}
+
+function updateTimer() {
+    if (expired) return;
+
+    const remaining = Math.max(
+        0,
+        Number(sessionStorage.getItem(END_KEY)) - Date.now()
+    );
+    const seconds = Math.ceil(remaining / 1000);
+    const minutesText = String(Math.floor(seconds / 60)).padStart(2, "0");
+    const secondsText = String(seconds % 60).padStart(2, "0");
+
+    $("escapeRoomTimer").textContent =
+        `⏰ ESCAPE ROOM ${minutesText}:${secondsText}`;
+    $("escapeRoomTimer").classList.toggle("urgent", seconds <= 60);
+
+    if (remaining <= 0 || sessionStorage.getItem(TIMEOUT_KEY) === "true") {
+        showTimeout();
+    }
+}
+
+// --------------------------------------------------
+// Check the four decoded letters
+// --------------------------------------------------
+function checkAnswer() {
+    if (!timeAvailable()) return;
+
+    const guess = $("answer").value.trim().toUpperCase();
+    const status = $("status");
+
+    if (!/^[A-Z]{4}$/.test(guess)) {
+        status.textContent = "❌ ENTER EXACTLY 4 LETTERS";
+        status.classList.remove("success");
+        return;
+    }
+
+    if (guess !== hardLetters) {
+        status.textContent = "❌ ACCESS DENIED — WRONG CODE!";
+        status.classList.remove("success");
+        $("teacherImage").src = "Watching.png";
+        return;
+    }
+
+    sessionStorage.setItem("hardComplete", "true");
+    status.textContent = "🔓 ACCESS GRANTED — BINARY DECRYPTED!";
+    status.classList.add("success");
+    $("reward").textContent = hardLetters;
+    $("teacherImage").src = "Joyful.png";
+    $("winOverlay").classList.add("show");
+}
+
+// --------------------------------------------------
+// Buttons and navigation
+// --------------------------------------------------
+$("checkBtn").addEventListener("click", checkAnswer);
+
+$("answer").addEventListener("keydown", (event) => {
+    if (event.key === "Enter") checkAnswer();
+});
+
+$("backBtn").addEventListener("click", () => {
+    if (timeAvailable()) location.href = "screen4.html";
+});
+
+$("continueBtn").addEventListener("click", () => {
+    if (timeAvailable()) location.href = "screen4.html";
+});
+
+$("restartBtn").addEventListener("click", () => {
+    [
+        END_KEY, TIMEOUT_KEY, FINISHED_KEY,
+        "easyComplete", "mediumComplete", "hardComplete",
+        "secretWord", "easyTaskIds", "easyTimerSeconds"
+    ].forEach((key) => sessionStorage.removeItem(key));
+
+    location.href = "screen4.html";
+});
+
+updateTimer();
+setInterval(updateTimer, 250);
+  </script>
+ </body>
+</html>

@@ -1,614 +1,1025 @@
-
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>HACKED - Escape Room</title>
 
 <style>
+
 * {
+
   box-sizing: border-box;
+
 }
 
 body {
+
   margin: 0;
+
   min-height: 100vh;
+
   background:
+
     radial-gradient(ellipse at 50% 0%, #3c101b 0%, transparent 55%),
+
     #09090c;
+
   color: white;
+
   font-family: Arial, sans-serif;
+
   overflow-x: hidden;
+
 }
 
 body::before {
+
   content: "";
+
   position: fixed;
+
   inset: 0;
+
   pointer-events: none;
+
   background-image:
+
     linear-gradient(#ff33330a 1px, transparent 1px),
+
     linear-gradient(90deg, #ff33330a 1px, transparent 1px);
+
   background-size: 35px 35px;
+
 }
 
 .container {
+
   position: relative;
+
   max-width: 1100px;
+
   margin: auto;
+
   padding: 30px 24px 50px;
+
 }
 
-/* 30-MINUTE COUNTDOWN */
+/* 20-MINUTE COUNTDOWN */
 
 .timer-area {
+
   display: flex;
+
   justify-content: center;
+
   margin-bottom: 25px;
+
 }
 
 .timer-box {
+
   text-align: center;
+
   padding: 14px 35px;
+
   background: #210d15;
+
   border: 2px solid #ff4545;
+
   border-radius: 12px;
+
   box-shadow: 0 0 25px #ff000044;
+
 }
 
 .timer-label {
+
   color: #ff9999;
+
   font-size: 12px;
+
   font-weight: bold;
+
   letter-spacing: 3px;
+
   margin-bottom: 8px;
+
 }
 
 #countdown {
+
   color: #ff5555;
+
   font-size: clamp(34px, 6vw, 50px);
+
   font-weight: 900;
+
   font-variant-numeric: tabular-nums;
+
   text-shadow: 0 0 20px #ff000077;
+
 }
 
 .timer-box.urgent {
+
   background: #700000;
+
   animation: timerBlink 0.7s infinite;
+
 }
 
 .timer-box.urgent #countdown {
+
   color: white;
+
 }
 
 @keyframes timerBlink {
+
   50% {
+
     box-shadow: 0 0 40px #ff0000;
+
   }
+
 }
 
 /* CONFUSED TEACHER - BOTTOM LEFT LIKE SYSTEM HACKED */
 
 .teacher-area {
+
   position: fixed;
+
   bottom: 10px;
+
   left: 10px;
+
   width: 190px;
+
   z-index: 5;
+
   pointer-events: none;
+
   animation: teacherAppear 0.8s ease-out;
+
 }
 
 .teacher-image {
+
   display: block;
+
   width: 300px;
+
   max-width: none;
+
   height: auto;
+
   object-fit: contain;
+
   filter: drop-shadow(0 5px 15px #000);
+
 }
 
 @keyframes teacherAppear {
+
   from {
+
     opacity: 0;
+
     transform: translateX(-40px);
+
   }
+
   to {
+
     opacity: 1;
+
     transform: translateX(0);
+
   }
+
 }
 
 /* HEADING */
 
 .heading {
+
   text-align: center;
+
   margin-bottom: 35px;
+
 }
 
 .heading p {
+
   color: #ff7777;
+
   font-size: 12px;
+
   font-weight: bold;
+
   letter-spacing: 4px;
+
 }
 
 h1 {
+
   color: #ff4545;
+
   font-size: clamp(30px, 5vw, 54px);
+
   text-shadow: 0 0 25px #b40000;
+
   margin: 12px 0;
+
 }
 
 .heading .description {
+
   color: #c9a7ad;
+
   font-size: 14px;
+
   letter-spacing: 0;
+
   font-weight: normal;
+
 }
 
 /* MAIN LAYOUT */
 
 .layout {
+
   display: grid;
+
   grid-template-columns: minmax(0, 1fr) 310px;
+
   gap: 25px;
+
   align-items: stretch;
+
 }
 
 /* TOWER SECTION */
 
 .tower-section {
+
   border: 1px solid #7e2c39;
+
   border-radius: 16px;
+
   padding: 25px 15px;
+
   background: linear-gradient(145deg, #1c1018, #100b10);
+
   box-shadow: 0 0 25px #ff000012;
+
 }
 
 .section-title {
+
   color: #ff8383;
+
   font-size: 12px;
+
   letter-spacing: 2px;
+
   text-align: center;
+
   margin-bottom: 25px;
+
 }
 
 /* CHALLENGE TOWER */
 
 .tower {
+
   position: relative;
+
   width: 100%;
+
   max-width: 500px;
+
   height: 360px;
+
   margin: auto;
+
 }
 
 .floor {
+
   position: absolute;
+
   display: flex;
+
   align-items: center;
+
   justify-content: center;
+
   background: linear-gradient(135deg, #371720, #1c1118);
+
   border: 2px solid #e34b54;
+
   color: #ff7777;
+
   font-size: 42px;
+
   font-weight: 900;
+
   cursor: pointer;
+
   transition: background 0.2s, filter 0.2s;
+
   text-shadow: 0 0 12px #ff555555;
+
 }
 
 .floor:hover,
+
 .floor.selected {
+
   background: linear-gradient(135deg, #a62b3a, #57202d);
+
   color: white;
+
   filter: drop-shadow(0 0 9px #ff404080);
+
 }
 
 .one {
+
   top: 0;
+
   left: 35%;
+
   width: 30%;
+
   height: 120px;
+
   clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%);
+
 }
 
 .two {
+
   top: 120px;
+
   left: 29%;
+
   width: 42%;
+
   height: 120px;
+
   clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%);
+
 }
 
 .three {
+
   top: 240px;
+
   left: 22%;
+
   width: 56%;
+
   height: 120px;
+
   clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%);
+
 }
 
 .challenge-btn {
+
   position: absolute;
+
   background: #210f17;
+
   color: #ff9999;
+
   border: 1px solid #e03c46;
+
   border-radius: 8px;
+
   padding: 13px 15px;
+
   font-weight: 900;
+
   letter-spacing: 1px;
+
   cursor: pointer;
+
   box-shadow: 0 0 12px #ff333322;
+
   transition: 0.2s;
+
 }
 
 .challenge-btn:hover {
+
   background: #a52a38;
+
   color: white;
+
   transform: scale(1.05);
+
 }
 
 .easy {
+
   top: 40px;
+
   left: 0;
+
 }
 
 .medium {
+
   top: 155px;
+
   right: 0;
+
 }
 
 .hard {
+
   top: 275px;
+
   left: 0;
+
 }
 
 /* PIN PANEL */
 
 .panel {
+
   border: 1px solid #b43a42;
+
   border-radius: 16px;
+
   padding: 25px 22px;
+
   background: linear-gradient(160deg, #251019, #100b10);
+
   text-align: center;
+
   box-shadow: 0 0 25px #ff000018;
+
 }
 
 .panel h2 {
+
   color: #ff5555;
+
   font-size: 30px;
+
   margin: 5px 0 10px;
+
   text-shadow: 0 0 15px #ff000055;
+
 }
 
 #challengeName {
+
   color: #ff9a9a;
+
   font-size: 12px;
+
   font-weight: bold;
+
   letter-spacing: 2px;
+
 }
 
 .lock {
+
   font-size: 65px;
+
   margin: 18px 0;
+
   filter: drop-shadow(0 0 12px #ff454555);
+
 }
 
 .pin-label {
+
   color: #d7b4bc;
+
   font-size: 14px;
+
 }
 
 .pin-boxes {
+
   display: flex;
+
   justify-content: center;
+
   gap: 4px;
+
   margin: 22px 0 15px;
+
 }
 
 .pin-box {
+
   flex: 1;
+
   min-width: 0;
+
   height: 38px;
+
   border: 1px solid #b43a42;
+
   border-radius: 4px;
+
   background: #30141e;
+
   display: flex;
+
   align-items: center;
+
   justify-content: center;
+
   font-size: 14px;
+
   font-weight: bold;
+
   color: #ffb2b2;
-}
 
-#wordInput {
-  width: 100%;
-  padding: 13px;
-  background: #09090c;
-  border: 1px solid #b43a42;
-  border-radius: 7px;
-  color: white;
-  text-align: center;
-  font-size: 16px;
-  text-transform: uppercase;
-  outline: none;
-}
-
-#wordInput:focus {
-  border-color: #ff6565;
-  box-shadow: 0 0 12px #ff454533;
 }
 
 .unlock {
+
   width: 100%;
+
   margin-top: 15px;
+
   padding: 15px;
+
   border: 1px solid #ff6969;
+
   border-radius: 8px;
+
   background: linear-gradient(135deg, #e53535, #a80000);
+
   color: white;
+
   font-size: 16px;
+
   font-weight: 900;
+
   cursor: pointer;
+
   box-shadow: 0 5px 18px #ff000033;
+
   transition: 0.2s;
+
 }
 
 .unlock:hover {
+
   background: #ff4545;
+
   transform: translateY(-2px);
+
 }
 
 #message {
+
   min-height: 25px;
+
   font-weight: bold;
+
   font-size: 13px;
+
 }
 
 .footer {
+
   text-align: center;
+
   color: #aaa;
+
   margin-top: 25px;
+
   font-size: 14px;
+
 }
 
 .back {
+
   display: block;
+
   margin: 20px auto;
+
   padding: 12px 30px;
+
   background: #1a0d12;
+
   color: white;
+
   border: 1px solid #e34b54;
+
   border-radius: 8px;
+
   cursor: pointer;
+
   font-weight: bold;
+
 }
 
 .back:hover {
+
   background: #672027;
+
 }
 
 /* FINAL WIN SCREEN */
 
 #winScreen {
+
   display: none;
+
   position: fixed;
+
   inset: 0;
+
   background:
+
     radial-gradient(ellipse at center, #123523, #09090c 75%);
+
   z-index: 100;
+
   flex-direction: column;
+
   justify-content: center;
+
   align-items: center;
+
   text-align: center;
+
   padding: 20px;
+
   overflow-y: auto;
+
   opacity: 0;
+
   transition: opacity 2.5s ease;
+
 }
 
 #winScreen.visible {
+
   display: flex;
+
 }
 
 #winScreen.fade-in {
+
   opacity: 1;
+
 }
 
 #winScreen h1 {
+
   color: #45df83;
+
   text-shadow: 0 0 25px #168a45;
+
   font-size: clamp(30px, 6vw, 48px);
+
   animation: winGlow 2.5s ease-in-out infinite alternate;
+
 }
 
 #winScreen p {
+
   color: #ddd;
+
 }
 
 @keyframes winGlow {
+
   from {
+
     text-shadow: 0 0 10px #168a45;
+
   }
+
   to {
+
     text-shadow: 0 0 35px #54e9a0;
+
   }
+
 }
 
 /* JOYFUL TEACHER */
 
 .win-teacher {
+
   width: clamp(170px, 30vw, 280px);
+
   max-height: 35vh;
+
   object-fit: contain;
+
   margin: 12px auto;
+
   filter: drop-shadow(0 0 20px #54e9a055);
+
   animation: teacherCelebrate 2.5s ease-in-out infinite;
+
 }
 
 @keyframes teacherCelebrate {
+
   0%, 100% {
+
     transform: translateY(0) scale(1);
+
   }
+
   50% {
+
     transform: translateY(-15px) scale(1.04);
+
   }
+
 }
 
 .win-message {
+
   padding: 20px 26px;
+
   max-width: 550px;
+
   background: white;
+
   color: #171717;
+
   border: 4px solid #111;
+
   border-radius: 20px;
+
   font-size: clamp(19px, 4vw, 30px);
+
   font-weight: 900;
+
   line-height: 1.4;
+
   box-shadow: 0 0 30px #54e9a055;
+
   animation: messageAppear 1.8s ease both;
+
 }
 
 @keyframes messageAppear {
+
   from {
+
     opacity: 0;
+
     transform: translateY(30px) scale(0.85);
+
   }
+
   to {
+
     opacity: 1;
+
     transform: translateY(0) scale(1);
+
   }
+
 }
 
 .win-message strong {
+
   color: #d71920;
+
 }
 
 .win-subtitle {
+
   color: #8fffc0 !important;
+
   font-weight: bold;
+
   letter-spacing: 2px;
+
   font-size: 13px;
+
 }
 
 /* TIMEOUT SCREEN */
 
 #timeoutScreen {
+
   display: none;
+
   position: fixed;
+
   inset: 0;
+
   z-index: 200;
+
   background:
+
     radial-gradient(ellipse at center, #3c101b, #09090c 75%);
+
   flex-direction: column;
+
   justify-content: center;
+
   align-items: center;
+
   text-align: center;
+
   padding: 25px;
+
 }
 
 #timeoutScreen h1 {
+
   color: #ff4545;
+
   font-size: clamp(32px, 7vw, 58px);
+
   text-shadow: 0 0 30px #ff0000;
+
 }
 
 #timeoutScreen h2 {
+
   color: white;
+
   font-size: clamp(20px, 4vw, 32px);
+
 }
 
 #timeoutScreen p {
+
   color: #ffb1b1;
+
 }
 
 .retry-button {
+
   padding: 16px 35px;
+
   margin-top: 20px;
+
   background: linear-gradient(135deg, #e53535, #a80000);
+
   border: 2px solid #ff6969;
+
   border-radius: 10px;
+
   color: white;
+
   font-size: 18px;
+
   font-weight: 900;
+
   cursor: pointer;
+
 }
 
 .retry-button:hover {
+
   background: #ff4545;
+
 }
 
 /* MOBILE */
 
 @media (max-width: 750px) {
+
   .layout {
+
     grid-template-columns: 1fr;
+
   }
 
   .panel {
+
     width: 100%;
+
     max-width: 400px;
+
     margin: auto;
+
   }
 
   .challenge-btn {
+
     font-size: 11px;
+
     padding: 10px 8px;
+
   }
 
   .container {
+
     padding: 25px 12px 190px;
+
   }
 
   .teacher-area {
+
     width: 110px;
+
     left: 5px;
+
     bottom: 5px;
+
   }
 
   .teacher-image {
+
     width: 230px;
+
   }
+
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .win-teacher,
+
   #winScreen h1,
+
   .win-message,
+
   .timer-box.urgent,
+
   .teacher-area {
+
     animation: none;
+
   }
+
 }
+
+/* FINAL LETTER ARRANGEMENT */
+.collection-status { color: #ffaaaa; font-size: 13px; line-height: 1.6; }
+.pin-box { min-height: 38px; }
+.letter-tiles[hidden] { display: none; }
+.letter-tiles { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin: 18px 0 12px; }
+.letter-tile { min-height: 46px; border: 1px solid #ff6565; border-radius: 7px; background: #401823; color: white; font-size: 20px; font-weight: 900; cursor: pointer; }
+.letter-tile:hover:not(:disabled) { background: #9b2d3a; }
+.letter-tile:disabled { opacity: .25; cursor: default; }
+.tile-actions { display: flex; gap: 8px; }
+.tile-action { flex: 1; padding: 10px; background: #24131a; border: 1px solid #9c3c49; border-radius: 7px; color: white; font-weight: bold; cursor: pointer; }
+.tile-action:disabled { opacity: .4; cursor: default; }
+.unlock:disabled { opacity: .45; cursor: not-allowed; transform: none; }
 </style>
+
 </head>
 
 <body>
 
 <div class="container">
 
-  <!-- 30-MINUTE TIMER -->
+  <!-- 20-MINUTE TIMER -->
 
   <div class="timer-area">
+
     <div class="timer-box" id="timerBox">
+
       <div class="timer-label">
+
         ⏰ ESCAPE ROOM TIME LEFT
+
       </div>
-      <div id="countdown">30:00</div>
+
+      <div id="countdown">20:00</div>
+
     </div>
+
   </div>
 
   <!-- HEADING -->
 
   <div class="heading">
+
     <p>⚠ HACKED // ESCAPE ROOM ⚠</p>
+
     <h1>SELECT A CHALLENGE</h1>
+
     <p class="description">
+
       Three security levels. One secret password. Save the system.
+
     </p>
+
   </div>
 
   <div class="layout">
@@ -616,54 +1027,84 @@ h1 {
     <!-- LEFT: CHALLENGE TOWER -->
 
     <div class="tower-section">
+
       <div class="section-title">
+
         ◈ SECURITY CHALLENGE TOWER ◈
+
       </div>
 
       <div class="tower">
 
         <div
+
           class="floor one selected"
+
           id="floor1"
+
           onclick="window.location.href='rebuild_computer_with_teacher.html'">
+
           1
+
         </div>
 
         <div
+
           class="floor two"
+
           id="floor2"
+
           onclick="window.location.href='morsecodelight.html'">
+
           2
+
         </div>
 
         <div
+
           class="floor three"
+
           id="floor3"
-          onclick="selectChallenge('hard')">
+
+          onclick="window.location.href='binary.html'">
+
           3
+
         </div>
 
         <button
+
           class="challenge-btn easy"
+
           onclick="window.location.href='rebuild_computer_with_teacher.html'">
+
           EASY
+
         </button>
 
         <button
+
           class="challenge-btn medium"
+
           onclick="window.location.href='morsecodelight.html'">
+
           MEDIUM
+
         </button>
 
         <button
+
           class="challenge-btn hard"
-          onclick="selectChallenge('hard')">
+
+          onclick="window.location.href='binary.html'">
+
           HARD
+
         </button>
 
       </div>
-    </div>
 
+    </div>
 
 <!-- RIGHT: SECRET WORD PIN -->
 
@@ -676,52 +1117,47 @@ h1 {
   <div class="lock" id="lockIcon">🔒</div>
 
   <p class="pin-label">
+
     <strong>CRACK THE SECRET PASSWORD!</strong>
+
   </p>
 
-  <p>
-    Complete the EASY, MEDIUM, and HARD challenges
-    to collect 3–4 letters from each challenge.
-  </p>
-
-  <p>
-    Put the letters together in the correct order
-    to form ONE 10-letter word.
-  </p>
-
-  <p style="color: #ff7777; font-weight: bold;">
-    Enter the complete word below to unlock the system.
-  </p>
-
-  <div class="pin-boxes" id="pinBoxes"></div>
-
-  <input
-    type="text"
-    id="wordInput"
-    maxlength="10"
-    placeholder="ENTER 10-LETTER PASSWORD"
-    autocomplete="off"
-    oninput="updateBoxes()"
-  >
+  <p>Finish EASY (3 letters), MEDIUM (3 letters), and HARD (4 letters).</p>
+  <p>Then arrange your <strong>10 collected letters</strong> into the correct word.</p>
+  <p id="collectionStatus" class="collection-status" aria-live="polite"></p>
+  <div class="pin-boxes" id="pinBoxes" aria-label="Your arranged password"></div>
+  <div id="letterTiles" class="letter-tiles" aria-label="Scrambled collected letters"></div>
+  <div class="tile-actions">
+    <button type="button" class="tile-action" id="undoBtn" onclick="undoLetter()">⌫ UNDO</button>
+    <button type="button" class="tile-action" id="clearBtn" onclick="clearLetters()">↻ CLEAR</button>
+  </div>
 
   <button class="unlock" onclick="checkWord()">
+
     🔓 UNLOCK SYSTEM
+
   </button>
 
   <p id="message"></p>
 
 </div>
+
 </div>
 
 <p class="footer">
+
   Solve 3 challenges → Collect letters → Form 1 word → Escape!
+
 </p>
 
-
   <button
+
     class="back"
+
     onclick="location.href='screen3.html'">
+
     ← BACK
+
   </button>
 
 </div>
@@ -729,11 +1165,17 @@ h1 {
 <!-- CONFUSED TEACHER FIXED AT BOTTOM LEFT -->
 
 <div class="teacher-area">
+
   <img
+
     src="Confused.png"
+
     alt="Confused teacher"
+
     class="teacher-image"
+
   >
+
 </div>
 
 <!-- FINAL ESCAPE VICTORY SCREEN -->
@@ -743,18 +1185,27 @@ h1 {
   <h1>🔓 SYSTEM RESTORED!</h1>
 
   <img
+
     src="Joyful.png"
+
     alt="Teacher celebrating"
+
     class="win-teacher"
+
   >
 
   <div class="win-message">
+
     CONGRATS!!<br>
+
     <strong>YOU ESCAPED THE ROOM!!</strong>
+
   </div>
 
   <p class="win-subtitle">
+
     🎉 ALL SYSTEMS ONLINE • ESCAPE SUCCESSFUL 🎉
+
   </p>
 
   <p>Returning to the welcome screen...</p>
@@ -771,297 +1222,306 @@ h1 {
 
   <h2>YOU DIDN'T ESCAPE THE ROOM!</h2>
 
-  <p>The 30-minute countdown has ended.</p>
+  <p>The 20-minute countdown has ended.</p>
 
   <button class="retry-button" onclick="restartEscape()">
+
     ↻ TRY AGAIN
+
   </button>
 
 </div>
 
 <script>
+"use strict";
 
-// SECRET ANSWER CON
+// SETTINGS: Shared 20-minute timer.
+const GAME_MINUTES = 20; // Shared timer duration; start a new game to apply changes.
+const TIMER_KEY = "escapeRoomEndTime";
+const TIMEOUT_KEY = "escapeRoomTimedOut";
+const FINISHED_KEY = "escapeRoomFinished";
+const COMPLETE_KEYS = ["easyComplete", "mediumComplete", "hardComplete"];
+
 const secretWords = [
+
   "ALGORITHMS",
+
   "AUTOMATION",
+
   "BLOCKCHAIN",
+
   "BOOTLOADER",
+
   "CLUSTERING",
+
   "CONTAINERS",
+
   "CONTROLLER",
+
   "DATACENTER",
+
   "DEPLOYMENT",
+
   "DEVELOPERS",
+
   "EXECUTABLE",
+
   "FILESYSTEM",
+
   "HARDDRIVES",
+
   "HYPERVISOR",
+
   "JAVASCRIPT",
+
   "KUBERNETES",
+
   "MAINFRAMES",
+
   "MICROCHIPS",
+
   "MIDDLEWARE",
+
   "MONITORING",
+
   "NETWORKING",
+
   "PARAMETERS",
+
   "POWERSHELL",
+
   "PROCESSING",
+
   "PROCESSORS",
+
   "PROGRAMMER",
+
   "REPOSITORY",
+
   "RESOLUTION",
+
   "SEMAPHORES",
+
   "SERVERLESS",
+
   "SIMULATION",
+
   "SUBROUTINE",
+
   "TECHNOLOGY",
+
   "THROUGHPUT",
+
   "TRANSISTOR",
+
   "TYPESCRIPT",
+
   "VERSIONING",
+
   "WEBMASTERS",
+
   "WORKSPACES"
-];
+].filter(word => word.length === 10);
 
-// ONLY 10-LETTER WORDS
-const validWords = secretWords.filter(word => word.length === 10);
-
-// PICK ONE RANDOM WORD AND SAVE IT
+const $ = (id) => document.getElementById(id);
 let secretWord = sessionStorage.getItem("secretWord");
-
-if (!secretWord) {
-  secretWord = validWords[
-    Math.floor(Math.random() * validWords.length)
-  ];
-
+if (!secretWord || !/^[A-Z]{10}$/.test(secretWord)) {
+  secretWord = secretWords[Math.floor(Math.random() * secretWords.length)];
   sessionStorage.setItem("secretWord", secretWord);
 }
 
-// SPLIT WORD: 3 + 3 + 4
+// The challenges reveal 3 + 3 + 4 letters of the SAME word.
 const easyLetters = secretWord.slice(0, 3);
 const mediumLetters = secretWord.slice(3, 6);
 const hardLetters = secretWord.slice(6, 10);
 
-// SHARED TIMER SETTINGS
-const TIMER_DURATION = 15 * 60 * 1000;
-const TIMER_KEY = "escapeRoomEndTime";
-const TIMEOUT_KEY = "escapeRoomTimedOut";
-const FINISHED_KEY = "escapeRoomFinished";
-
-let selected = "easy";
 let escapeCompleted = false;
 let escapeTimedOut = false;
+let timerInterval;
+let scrambledLetters = [];
+let selectedTiles = [];
 
-// START TIMER ONLY ONCE
+function allChallengesComplete() {
+  return COMPLETE_KEYS.every(key => sessionStorage.getItem(key) === "true");
+}
+
+function shuffleLetters(letters) {
+  const shuffled = [...letters];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  // Avoid displaying the solved password before the player starts.
+  if (shuffled.join("") === secretWord) {
+    [shuffled[0], shuffled[1]] = [shuffled[1], shuffled[0]];
+    if (shuffled.join("") === secretWord) shuffled.reverse();
+  }
+  return shuffled;
+}
+
 function initializeTimer() {
-  if (sessionStorage.getItem(FINISHED_KEY) === "true") {
-    sessionStorage.removeItem(TIMER_KEY);
-    sessionStorage.removeItem(TIMEOUT_KEY);
-    sessionStorage.removeItem(FINISHED_KEY);
-  }
-
+  // The countdown is created once and shared by every challenge page.
   if (!sessionStorage.getItem(TIMER_KEY)) {
-    sessionStorage.setItem(
-      TIMER_KEY,
-      String(Date.now() + TIMER_DURATION)
-    );
+    sessionStorage.setItem(TIMER_KEY, String(Date.now() + GAME_MINUTES * 60 * 1000));
   }
 }
 
-// UPDATE COUNTDOWN
-function updateTimer() {
-  if (escapeCompleted || escapeTimedOut) {
-    return;
-  }
-
-  const endTime = Number(
-    sessionStorage.getItem(TIMER_KEY)
-  );
-
-  const remaining = Math.max(
-    0,
-    endTime - Date.now()
-  );
-
-  const totalSeconds = Math.ceil(remaining / 1000);
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-
-  document.getElementById("countdown").textContent =
-    String(minutes).padStart(2, "0") +
-    ":" +
-    String(seconds).padStart(2, "0");
-
-  document.getElementById("timerBox")
-    .classList.toggle("urgent", totalSeconds <= 60);
-
-  if (
-    remaining <= 0 ||
-    sessionStorage.getItem(TIMEOUT_KEY) === "true"
-  ) {
-    showTimeout();
-  }
-}
-
-// SHOW TIMEOUT SCREEN
 function showTimeout() {
-  if (escapeCompleted || escapeTimedOut) {
-    return;
-  }
-
+  if (escapeCompleted || escapeTimedOut) return;
   escapeTimedOut = true;
   sessionStorage.setItem(TIMEOUT_KEY, "true");
-
-  document.getElementById("countdown").textContent = "00:00";
-  document.getElementById("wordInput").disabled = true;
-  document.getElementById("timeoutScreen").style.display = "flex";
-
-  clearInterval(timerInterval);
+  $("countdown").textContent = "00:00";
+  $("timeoutScreen").style.display = "flex";
+  if (timerInterval) clearInterval(timerInterval);
 }
 
-// RESTART ENTIRE ESCAPE ROOM
+function timeAvailable() {
+  if (escapeTimedOut || sessionStorage.getItem(TIMEOUT_KEY) === "true" ||
+      Date.now() >= Number(sessionStorage.getItem(TIMER_KEY))) {
+    showTimeout();
+    return false;
+  }
+  return true;
+}
+
+function updateTimer() {
+  if (escapeCompleted || escapeTimedOut) return;
+  const remaining = Math.max(0, Number(sessionStorage.getItem(TIMER_KEY)) - Date.now());
+  const seconds = Math.ceil(remaining / 1000);
+  $("countdown").textContent =
+    `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
+  $("timerBox").classList.toggle("urgent", seconds <= 60);
+  if (remaining <= 0 || sessionStorage.getItem(TIMEOUT_KEY) === "true") showTimeout();
+}
+
 function restartEscape() {
-  sessionStorage.removeItem(TIMER_KEY);
-  sessionStorage.removeItem(TIMEOUT_KEY);
-  sessionStorage.removeItem(FINISHED_KEY);
-
-  sessionStorage.removeItem("easyComplete");
-  sessionStorage.removeItem("mediumComplete");
-  sessionStorage.removeItem("hardComplete");
-  sessionStorage.removeItem("secretWord");
-
+  [TIMER_KEY, TIMEOUT_KEY, FINISHED_KEY, "secretWord", ...COMPLETE_KEYS,
+   "easyTaskIds", "easyTimerSeconds", "finalScrambledLetters"].forEach(key => sessionStorage.removeItem(key));
   window.location.href = "screen4.html";
 }
-// CHALLENGE SELECTION
-function selectChallenge(level) {
-  if (escapeCompleted || escapeTimedOut) {
-    return;
-  }
 
-  selected = level;
-
-  document.getElementById("challengeName").textContent =
-    level.toUpperCase() + " CHALLENGE";
-
-  document.getElementById("message").textContent = "";
-
-  const number = {
-    easy: 1,
-    medium: 2,
-    hard: 3
-  }[level];
-
-  document.querySelectorAll(".floor").forEach(floor => {
-    floor.classList.remove("selected");
-  });
-
-  document.getElementById("floor" + number)
-    .classList.add("selected");
-
-  updateBoxes();
-}
-
-// UPDATE THE 10 PIN BOXES
 function updateBoxes() {
-  const input = document.getElementById("wordInput");
-
-  input.value = input.value
-    .replace(/[^a-z]/gi, "")
-    .toUpperCase()
-    .slice(0, 10);
-
-  const boxes = document.getElementById("pinBoxes");
-  boxes.innerHTML = "";
-
+  const boxes = $("pinBoxes");
+  boxes.replaceChildren();
   for (let i = 0; i < 10; i++) {
     const box = document.createElement("div");
     box.className = "pin-box";
-    box.textContent = input.value[i] || "_";
+    box.textContent = selectedTiles[i] === undefined ? "_" : scrambledLetters[selectedTiles[i]];
     boxes.appendChild(box);
   }
+  $("undoBtn").disabled = selectedTiles.length === 0;
+  $("clearBtn").disabled = selectedTiles.length === 0;
+  $("letterTiles").querySelectorAll("button").forEach((button, index) => {
+    button.disabled = selectedTiles.includes(index);
+  });
+  document.querySelector(".unlock").disabled = !allChallengesComplete() || selectedTiles.length !== 10;
 }
 
-// CHECK SECRET WORD
-function checkWord() {
-  if (escapeCompleted || escapeTimedOut) {
-    return;
-  }
-
-  const endTime = Number(
-    sessionStorage.getItem(TIMER_KEY)
-  );
-
-  if (
-    Date.now() >= endTime ||
-    sessionStorage.getItem(TIMEOUT_KEY) === "true"
-  ) {
-    showTimeout();
-    return;
-  }
-
-  const guess = document.getElementById("wordInput")
-    .value.trim().toUpperCase();
-
-  const message = document.getElementById("message");
-
-  // CHANGED LINE BELOW:
-  if (guess == secretWord) {
-    escapeCompleted = true;
-
-    sessionStorage.setItem(FINISHED_KEY, "true");
-
-
-    message.style.color = "#45df83";
-    message.textContent = "ACCESS GRANTED!";
-
-    document.getElementById("lockIcon").textContent = "🔓";
-
-    clearInterval(timerInterval);
-
-    // VICTORY ANIMATION
-    const winScreen = document.getElementById("winScreen");
-
-    winScreen.classList.add("visible");
-
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        winScreen.classList.add("fade-in");
-      });
+function renderTiles() {
+  const holder = $("letterTiles");
+  holder.replaceChildren();
+  scrambledLetters.forEach((letter, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "letter-tile";
+    button.textContent = letter;
+    button.setAttribute("aria-label", `Choose letter ${letter}`);
+    button.addEventListener("click", () => {
+      if (escapeCompleted || !timeAvailable() || !allChallengesComplete() || selectedTiles.includes(index)) return;
+      selectedTiles.push(index);
+      $("message").textContent = "";
+      updateBoxes();
     });
+    holder.appendChild(button);
+  });
+  updateBoxes();
+}
 
-    // RETURN TO WELCOME AFTER 8 SECONDS
+function undoLetter() {
+  if (escapeCompleted || !timeAvailable()) return;
+  selectedTiles.pop();
+  $("message").textContent = "";
+  updateBoxes();
+}
+
+function clearLetters() {
+  if (escapeCompleted || !timeAvailable()) return;
+  selectedTiles = [];
+  $("message").textContent = "";
+  updateBoxes();
+}
+
+function initializeFinalLock() {
+  const completed = COMPLETE_KEYS.filter(key => sessionStorage.getItem(key) === "true").length;
+  if (!allChallengesComplete()) {
+    $("collectionStatus").textContent = `${completed}/3 challenges completed. Finish all three to reveal your 10 letter tiles.`;
+    $("letterTiles").hidden = true;
+    $("undoBtn").disabled = true;
+    $("clearBtn").disabled = true;
+    updateBoxes();
+    return;
+  }
+
+  $("letterTiles").hidden = false;
+  $("collectionStatus").textContent = "ALL 10 LETTERS COLLECTED! Click the tiles to build the secret word.";
+  let saved = null;
+  try { saved = JSON.parse(sessionStorage.getItem("finalScrambledLetters")); } catch (_) {}
+  if (Array.isArray(saved) && saved.length === 10 &&
+      [...saved].sort().join("") === [...secretWord].sort().join("")) {
+    scrambledLetters = saved;
+  } else {
+    scrambledLetters = shuffleLetters([...easyLetters, ...mediumLetters, ...hardLetters]);
+    sessionStorage.setItem("finalScrambledLetters", JSON.stringify(scrambledLetters));
+  }
+  renderTiles();
+}
+
+function checkWord() {
+  if (escapeCompleted || !timeAvailable()) return;
+  const message = $("message");
+  if (!allChallengesComplete()) {
+    message.style.color = "#ff5555";
+    message.textContent = "COMPLETE ALL 3 CHALLENGES FIRST!";
+    return;
+  }
+  if (selectedTiles.length !== 10) {
+    message.style.color = "#ff5555";
+    message.textContent = "ARRANGE ALL 10 LETTERS FIRST!";
+    return;
+  }
+
+  const guess = selectedTiles.map(index => scrambledLetters[index]).join("");
+  if (guess !== secretWord) {
+    message.style.color = "#ff5555";
+    message.textContent = "ACCESS DENIED! REARRANGE THE LETTERS AND TRY AGAIN.";
+    return;
+  }
+
+  escapeCompleted = true;
+  sessionStorage.setItem(FINISHED_KEY, "true");
+  message.style.color = "#45df83";
+  message.textContent = "ACCESS GRANTED!";
+  $("lockIcon").textContent = "🔓";
+  if (timerInterval) clearInterval(timerInterval);
+
+  const winScreen = $("winScreen");
+  winScreen.classList.add("visible");
+  requestAnimationFrame(() => requestAnimationFrame(() => winScreen.classList.add("fade-in")));
+
+  // Return to the welcome screen after celebrating, ready for a fresh game.
   setTimeout(() => {
-    sessionStorage.removeItem("secretWord");
-    sessionStorage.removeItem("easyComplete");
-    sessionStorage.removeItem("mediumComplete");
-    sessionStorage.removeItem("hardComplete");
-
+    [TIMER_KEY, TIMEOUT_KEY, FINISHED_KEY, "secretWord", ...COMPLETE_KEYS,
+     "easyTaskIds", "easyTimerSeconds", "finalScrambledLetters"].forEach(key => sessionStorage.removeItem(key));
     window.location.href = "index.html";
   }, 8000);
-
-  } else {
-    message.style.color = "#ff5555";
-    message.textContent = "ACCESS DENIED! TRY AGAIN.";
-  }
 }
 
-// PRESS ENTER TO UNLOCK
-document.getElementById("wordInput")
-  .addEventListener("keydown", event => {
-    if (event.key === "Enter") {
-      checkWord();
-    }
-  });
-
-// INITIALIZE GAME
 initializeTimer();
-selectChallenge("easy");
-
-const timerInterval = setInterval(updateTimer, 250);
+initializeFinalLock();
+timerInterval = setInterval(updateTimer, 250);
 updateTimer();
-
 </script>
 
 </body>
+
 </html>

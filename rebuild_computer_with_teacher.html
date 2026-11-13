@@ -13,19 +13,23 @@
   --panel: #170e13;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
   min-height: 100vh;
-  padding: 30px 16px;
+  padding: 30px 16px 170px;
   display: flex;
   flex-direction: column;
   align-items: center;
   font-family: Arial, sans-serif;
   color: white;
   background: radial-gradient(
-    ellipse at 50% 10%, #371019, #09090c 65%
+    ellipse at 50% 10%,
+    #371019,
+    #09090c 65%
   );
 }
 
@@ -79,20 +83,6 @@ h1 {
   letter-spacing: 1px;
 }
 
-.timer {
-  font-weight: bold;
-  color: #ff777f;
-}
-
-.timer.urgent {
-  color: red;
-  animation: blink 0.6s infinite;
-}
-
-@keyframes blink {
-  50% { opacity: 0.3; }
-}
-
 .progress {
   height: 9px;
   background: #3a1d24;
@@ -104,7 +94,11 @@ h1 {
 .fill {
   width: 0;
   height: 100%;
-  background: linear-gradient(90deg, #b92131, #ff6971);
+  background: linear-gradient(
+    90deg,
+    #b92131,
+    #ff6971
+  );
   transition: width 0.3s;
 }
 
@@ -115,7 +109,6 @@ h1 {
   gap: 90px;
 }
 
-/* Wires follow the pointer while dragging and stay after a correct match. */
 #wireLayer {
   position: absolute;
   inset: 0;
@@ -135,9 +128,6 @@ h1 {
 
 .section {
   position: relative;
-}
-
-.section {
   background: #211319;
   border: 1px solid #78313c;
   border-radius: 10px;
@@ -151,7 +141,8 @@ h1 {
   letter-spacing: 2px;
 }
 
-.parts, .slots {
+.parts,
+.slots {
   display: grid;
   gap: 12px;
 }
@@ -186,7 +177,9 @@ h1 {
   cursor: not-allowed;
 }
 
-.emoji { font-size: 26px; }
+.emoji {
+  font-size: 26px;
+}
 
 .part strong {
   display: block;
@@ -239,8 +232,13 @@ h1 {
 }
 
 @keyframes shake {
-  25% { transform: translateX(-6px); }
-  75% { transform: translateX(6px); }
+  25% {
+    transform: translateX(-6px);
+  }
+
+  75% {
+    transform: translateX(6px);
+  }
 }
 
 .status {
@@ -251,7 +249,9 @@ h1 {
   font-weight: bold;
 }
 
-.status.success { color: var(--green); }
+.status.success {
+  color: var(--green);
+}
 
 .actions {
   display: flex;
@@ -280,7 +280,9 @@ button:disabled {
   cursor: not-allowed;
 }
 
-.start { background: #15803d; }
+.start {
+  background: #15803d;
+}
 
 .start:hover:not(:disabled) {
   background: #16a34a;
@@ -300,7 +302,6 @@ button:disabled {
 
 /* TEACHER */
 
-/* TEACHER FIXED AT BOTTOM LEFT, LIKE SYSTEM HACKED */
 .teacher-area {
   position: fixed;
   left: 10px;
@@ -309,9 +310,7 @@ button:disabled {
   display: flex;
   align-items: flex-end;
   gap: 12px;
-  width: auto;
   max-width: min(550px, calc(100vw - 20px));
-  margin: 0;
   pointer-events: none;
   animation: teacherAppear 0.8s ease-out;
 }
@@ -320,8 +319,6 @@ button:disabled {
   display: block;
   width: clamp(100px, 15vw, 150px);
   max-height: 200px;
-  height: auto;
-  flex-shrink: 0;
   object-fit: contain;
   filter: drop-shadow(0 8px 16px #0009);
 }
@@ -359,8 +356,15 @@ button:disabled {
 }
 
 @keyframes teacherAppear {
-  from { opacity: 0; transform: translateX(-40px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 /* RESULT SCREEN */
@@ -376,7 +380,9 @@ button:disabled {
   background: #050507ed;
 }
 
-.overlay.show { display: flex; }
+.overlay.show {
+  display: flex;
+}
 
 .result {
   width: 100%;
@@ -394,7 +400,9 @@ button:disabled {
   font-size: 35px;
 }
 
-.result p { color: #bcebd3; }
+.result p {
+  color: #bcebd3;
+}
 
 .code {
   font-size: 65px;
@@ -410,7 +418,9 @@ button:disabled {
   border-color: #ff4355;
 }
 
-.result.failed h2 { color: #ff6574; }
+.result.failed h2 {
+  color: #ff6574;
+}
 
 .result-teacher {
   display: block;
@@ -421,9 +431,11 @@ button:disabled {
   object-fit: contain;
 }
 
-.result-teacher[hidden] { display: none; }
+.result-teacher[hidden] {
+  display: none;
+}
 
-/* SHARED 30-MINUTE TIMER */
+/* SHARED 20-MINUTE TIMER */
 
 #escapeRoomTimer {
   position: sticky;
@@ -447,6 +459,12 @@ button:disabled {
   animation: blink 0.6s infinite;
 }
 
+@keyframes blink {
+  50% {
+    opacity: 0.3;
+  }
+}
+
 /* OVERALL TIMEOUT SCREEN */
 
 #escapeRoomTimeout {
@@ -455,7 +473,9 @@ button:disabled {
   inset: 0;
   z-index: 9999;
   background: radial-gradient(
-    ellipse at center, #3c101b, #09090c 75%
+    ellipse at center,
+    #3c101b,
+    #09090c 75%
   );
   color: white;
   flex-direction: column;
@@ -476,28 +496,56 @@ button:disabled {
 }
 
 @media (max-width: 560px) {
-  .game { padding: 13px; }
-  .board { grid-template-columns: 1fr; }
-  .parts { grid-template-columns: repeat(2, 1fr); }
-  .part { padding: 10px; }
-  .code { font-size: 48px; }
-  body { padding-bottom: 170px; }
-  .teacher-area { left: 5px; bottom: 5px; gap: 8px; max-width: calc(100vw - 10px); }
-  .teacher-image { width: 105px; max-height: 145px; }
-  .teacher-message { padding: 10px 12px; max-width: 185px; font-size: 12px; }
-  #escapeRoomTimer { align-self: center; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .teacher-area { animation: none; }
+  .game {
+    padding: 13px;
+  }
+
+  .board {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .parts {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .part {
+    padding: 10px;
+  }
+
+  .code {
+    font-size: 48px;
+  }
+
+  .teacher-area {
+    left: 5px;
+    bottom: 5px;
+    gap: 8px;
+  }
+
+  .teacher-image {
+    width: 105px;
+    max-height: 145px;
+  }
+
+  .teacher-message {
+    padding: 10px 12px;
+    max-width: 185px;
+    font-size: 12px;
+  }
+
+  #escapeRoomTimer {
+    align-self: center;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<!-- OVERALL ESCAPE ROOM TIMER -->
+<!-- SHARED ESCAPE ROOM TIMER -->
 <div id="escapeRoomTimer">
-  ⏰ ESCAPE ROOM 30:00
+  ⏰ ESCAPE ROOM 20:00
 </div>
 
 <!-- TEACHER -->
@@ -508,7 +556,11 @@ button:disabled {
     src="Thinking.png"
     alt="Teacher thinking"
   >
-  <div class="teacher-message" id="teacherMessage">
+
+  <div
+    class="teacher-message"
+    id="teacherMessage"
+  >
     Hmm... maybe start it!
   </div>
 </div>
@@ -519,9 +571,10 @@ button:disabled {
   <h1>🖥️ REBUILD THE COMPUTER</h1>
 
   <p class="instructions">
-    Security has disabled the motherboard.<br>
+    Security has disabled the motherboard.
+    <br>
     Press START GAME, install all four components,
-    and boot the computer before time runs out.
+    and boot the computer before the escape room timer ends.
   </p>
 </header>
 
@@ -530,10 +583,6 @@ button:disabled {
   <div class="top">
     <span class="tag">
       SYSTEM: <span id="system">STANDBY</span>
-    </span>
-
-    <span class="timer" id="timer">
-      TIME LEFT --:--
     </span>
 
     <span class="tag" id="count">
@@ -557,10 +606,13 @@ button:disabled {
       <h2>02 // MOTHERBOARD SOCKETS</h2>
       <div class="slots" id="slots"></div>
     </section>
-
   </div>
 
-  <div class="status" id="status" role="status">
+  <div
+    class="status"
+    id="status"
+    role="status"
+  >
     Press START GAME to begin.
   </div>
 
@@ -584,9 +636,12 @@ button:disabled {
 
 </main>
 
-<p class="footer">HACKED // ESCAPE ROOM</p>
+<p class="footer">
+  HACKED // ESCAPE ROOM
+</p>
 
 <!-- RESULT SCREEN -->
+
 <div class="overlay" id="overlay">
   <div class="result" id="result">
 
@@ -598,34 +653,50 @@ button:disabled {
       hidden
     >
 
-    <p id="resultTeacherMessage"
-       style="font-weight:bold;color:#6dffb0"
-       hidden>
+    <p
+      id="resultTeacherMessage"
+      style="font-weight:bold;color:#6dffb0"
+      hidden
+    >
       YAY! WE GOT THE ANSWER!
     </p>
 
-    <div style="font-size:50px" id="resultIcon">🔓</div>
+    <div
+      style="font-size:50px"
+      id="resultIcon"
+    >
+      🔓
+    </div>
 
-    <h2 id="resultTitle">ACCESS GRANTED!</h2>
+    <h2 id="resultTitle">
+      ACCESS GRANTED!
+    </h2>
 
     <p id="resultMessage">
       COMPUTER REBUILT • SYSTEM ONLINE
     </p>
 
-    <p id="codeLabel">YOUR SECRET ACCESS CODE</p>
+    <p id="codeLabel">
+      YOUR COLLECTED LETTERS
+    </p>
 
-    <div class="code" id="resultCode">OGY</div>
+    <div class="code" id="resultCode">
+      ---
+    </div>
 
     <p id="resultFooter">
       Challenge completed successfully.
     </p>
 
-    <button id="continueBtn">CONTINUE</button>
+    <button id="continueBtn">
+      CONTINUE
+    </button>
 
   </div>
 </div>
 
-<!-- 30-MINUTE TIMEOUT SCREEN -->
+<!-- OVERALL TIMEOUT -->
+
 <div id="escapeRoomTimeout">
   <div style="font-size:75px">⏰</div>
 
@@ -633,7 +704,7 @@ button:disabled {
 
   <h3>YOU DIDN'T ESCAPE THE ROOM!</h3>
 
-  <p>The 30-minute countdown has ended.</p>
+  <p>The 20-minute countdown has ended.</p>
 
   <button id="restartEscapeBtn">
     ↻ TRY AGAIN
@@ -643,17 +714,26 @@ button:disabled {
 <script>
 "use strict";
 
-/* SHARED 30-MINUTE ESCAPE TIMER */
+// ========================================
+// SHARED 20-MINUTE ESCAPE TIMER
+// ========================================
 
 const ESCAPE_END_KEY = "escapeRoomEndTime";
 const ESCAPE_TIMEOUT_KEY = "escapeRoomTimedOut";
 const ESCAPE_FINISHED_KEY = "escapeRoomFinished";
 
-const ESCAPE_DURATION = 30 * 60 * 1000;
+const ESCAPE_DURATION = 20 * 60 * 1000;
 
 let overallEscapeExpired = false;
 
-if (!sessionStorage.getItem(ESCAPE_END_KEY)) {
+const savedDeadline = Number(
+  sessionStorage.getItem(ESCAPE_END_KEY)
+);
+
+if (
+  !Number.isFinite(savedDeadline) ||
+  savedDeadline <= 0
+) {
   sessionStorage.setItem(
     ESCAPE_END_KEY,
     String(Date.now() + ESCAPE_DURATION)
@@ -663,7 +743,9 @@ if (!sessionStorage.getItem(ESCAPE_END_KEY)) {
 function escapeTimeAvailable() {
   if (overallEscapeExpired) return false;
 
-  if (sessionStorage.getItem(ESCAPE_TIMEOUT_KEY) === "true") {
+  if (
+    sessionStorage.getItem(ESCAPE_TIMEOUT_KEY) === "true"
+  ) {
     showOverallTimeout();
     return false;
   }
@@ -672,7 +754,10 @@ function escapeTimeAvailable() {
     sessionStorage.getItem(ESCAPE_END_KEY)
   );
 
-  if (Date.now() >= deadline) {
+  if (
+    !Number.isFinite(deadline) ||
+    Date.now() >= deadline
+  ) {
     showOverallTimeout();
     return false;
   }
@@ -687,13 +772,24 @@ function updateOverallEscapeTimer() {
     sessionStorage.getItem(ESCAPE_END_KEY)
   );
 
-  const remaining = Math.max(0, deadline - Date.now());
+  const remaining = Math.max(
+    0,
+    deadline - Date.now()
+  );
 
-  const secondsLeft = Math.ceil(remaining / 1000);
-  const minutes = Math.floor(secondsLeft / 60);
+  const secondsLeft = Math.ceil(
+    remaining / 1000
+  );
+
+  const minutes = Math.floor(
+    secondsLeft / 60
+  );
+
   const seconds = secondsLeft % 60;
 
-  const display = document.getElementById("escapeRoomTimer");
+  const display = document.getElementById(
+    "escapeRoomTimer"
+  );
 
   display.textContent =
     "⏰ ESCAPE ROOM " +
@@ -701,7 +797,10 @@ function updateOverallEscapeTimer() {
     ":" +
     String(seconds).padStart(2, "0");
 
-  display.classList.toggle("urgent", secondsLeft <= 60);
+  display.classList.toggle(
+    "urgent",
+    secondsLeft <= 60
+  );
 
   if (
     remaining <= 0 ||
@@ -716,20 +815,140 @@ function showOverallTimeout() {
 
   overallEscapeExpired = true;
 
-  sessionStorage.setItem(ESCAPE_TIMEOUT_KEY, "true");
+  sessionStorage.setItem(
+    ESCAPE_TIMEOUT_KEY,
+    "true"
+  );
 
-  clearInterval(timerInterval);
+  cancelWireDrag();
 
-  document.getElementById("escapeRoomTimer").textContent =
-    "⏰ ESCAPE ROOM 00:00";
+  document.getElementById(
+    "escapeRoomTimer"
+  ).textContent = "⏰ ESCAPE ROOM 00:00";
 
-  document.getElementById("escapeRoomTimeout").style.display =
-    "flex";
+  document.getElementById(
+    "escapeRoomTimeout"
+  ).style.display = "flex";
 }
 
-/* COMPUTER COMPONENTS */
+// ========================================
+// SHARED SECRET WORD
+// ========================================
 
-const components = [
+const WORD_POOL = [
+  "ALGORITHMS",
+  "AUTOMATION",
+  "BLOCKCHAIN",
+  "BOOTLOADER",
+  "CLUSTERING",
+  "CONTAINERS",
+  "CONTROLLER",
+  "DATACENTER",
+  "DEPLOYMENT",
+  "DEVELOPERS",
+  "EXECUTABLE",
+  "FILESYSTEM",
+  "HARDDRIVES",
+  "HYPERVISOR",
+  "JAVASCRIPT",
+  "KUBERNETES",
+  "MAINFRAMES",
+  "MICROCHIPS",
+  "MIDDLEWARE",
+  "MONITORING",
+  "NETWORKING",
+  "PARAMETERS",
+  "POWERSHELL",
+  "PROCESSING",
+  "PROCESSORS",
+  "PROGRAMMER",
+  "REPOSITORY",
+  "RESOLUTION",
+  "SEMAPHORES",
+  "SERVERLESS",
+  "SIMULATION",
+  "SUBROUTINE",
+  "TECHNOLOGY",
+  "THROUGHPUT",
+  "TRANSISTOR",
+  "TYPESCRIPT",
+  "VERSIONING",
+  "WEBMASTERS",
+  "WORKSPACES"
+].filter(word => word.length === 10);
+
+function getSharedSecretWord() {
+  let word = sessionStorage.getItem("secretWord");
+
+  if (!word || !/^[A-Z]{10}$/.test(word)) {
+    word = WORD_POOL[
+      Math.floor(Math.random() * WORD_POOL.length)
+    ];
+
+    sessionStorage.setItem("secretWord", word);
+  }
+
+  return word;
+}
+
+const secretWord = getSharedSecretWord();
+const easyLetters = secretWord.slice(0, 3);
+
+// ========================================
+// SCRAMBLED REWARD
+// ========================================
+
+function scrambleReward(letters) {
+  const key = "easyRewardLetters";
+  const saved = sessionStorage.getItem(key);
+
+  if (
+    saved &&
+    [...saved].sort().join("") ===
+    [...letters].sort().join("")
+  ) {
+    return saved;
+  }
+
+  const mixed = [...letters];
+
+  for (let i = mixed.length - 1; i > 0; i--) {
+    const j = Math.floor(
+      Math.random() * (i + 1)
+    );
+
+    [mixed[i], mixed[j]] = [
+      mixed[j],
+      mixed[i]
+    ];
+  }
+
+  if (
+    mixed.join("") === letters &&
+    new Set(mixed).size > 1
+  ) {
+    const index = mixed.findIndex(
+      letter => letter !== mixed[0]
+    );
+
+    [mixed[0], mixed[index]] = [
+      mixed[index],
+      mixed[0]
+    ];
+  }
+
+  const reward = mixed.join("");
+
+  sessionStorage.setItem(key, reward);
+
+  return reward;
+}
+
+// ========================================
+// COMPUTER COMPONENTS
+// ========================================
+
+const allComponents = [
   {
     id: "cpu",
     color: "#ff5555",
@@ -761,114 +980,328 @@ const components = [
     detail: "Storage",
     icon: "📀",
     slot: "I keep your files when the computer is off."
+  },
+  {
+    id: "motherboard",
+    color: "#a855f7",
+    name: "MOTHERBOARD",
+    detail: "Main circuit board",
+    icon: "🔌",
+    slot: "I connect all the computer components together."
+  },
+  {
+    id: "psu",
+    color: "#f97316",
+    name: "POWER SUPPLY",
+    detail: "PSU",
+    icon: "⚡",
+    slot: "I supply electricity to the computer."
+  },
+  {
+    id: "fan",
+    color: "#06b6d4",
+    name: "COOLING FAN",
+    detail: "Cooling",
+    icon: "🌬️",
+    slot: "I move air to cool computer parts."
+  },
+  {
+    id: "hdd",
+    color: "#ec4899",
+    name: "HDD",
+    detail: "Hard disk",
+    icon: "💽",
+    slot: "I store files on spinning magnetic disks."
+  },
+  {
+    id: "network",
+    color: "#84cc16",
+    name: "NETWORK CARD",
+    detail: "Networking",
+    icon: "🌐",
+    slot: "I connect a computer to a network."
+  },
+  {
+    id: "sound",
+    color: "#14b8a6",
+    name: "SOUND CARD",
+    detail: "Audio",
+    icon: "🎵",
+    slot: "I process sound for speakers and headphones."
+  },
+  {
+    id: "heatsink",
+    color: "#f59e0b",
+    name: "HEAT SINK",
+    detail: "Heat control",
+    icon: "🌡️",
+    slot: "I carry heat away from computer chips."
+  },
+  {
+    id: "optical",
+    color: "#8b5cf6",
+    name: "OPTICAL DRIVE",
+    detail: "Disc reader",
+    icon: "💿",
+    slot: "I read CDs and DVDs."
+  },
+  {
+    id: "wifi",
+    color: "#38bdf8",
+    name: "WI-FI ADAPTER",
+    detail: "Wireless",
+    icon: "📶",
+    slot: "I connect to wireless networks."
+  },
+  {
+    id: "battery",
+    color: "#fb7185",
+    name: "CMOS BATTERY",
+    detail: "Clock power",
+    icon: "🔋",
+    slot: "I keep the computer clock running when powered off."
+  },
+  {
+    id: "case",
+    color: "#c084fc",
+    name: "COMPUTER CASE",
+    detail: "Enclosure",
+    icon: "🗄️",
+    slot: "I protect and hold the internal parts."
+  },
+  {
+    id: "ethernet",
+    color: "#2dd4bf",
+    name: "ETHERNET PORT",
+    detail: "Wired connection",
+    icon: "🔗",
+    slot: "I connect a network cable to the computer."
+  },
+  {
+    id: "bios",
+    color: "#f472b6",
+    name: "BIOS CHIP",
+    detail: "Startup firmware",
+    icon: "🔧",
+    slot: "I help start the computer before the operating system loads."
+  },
+  {
+    id: "usb",
+    color: "#60a5fa",
+    name: "USB PORT",
+    detail: "Peripheral connection",
+    icon: "🔌",
+    slot: "I let you plug in flash drives, mice, and keyboards."
+  },
+  {
+    id: "keyboard",
+    color: "#facc15",
+    name: "KEYBOARD",
+    detail: "Typing device",
+    icon: "⌨️",
+    slot: "I let you type letters, numbers, and commands."
+  },
+  {
+    id: "mouse",
+    color: "#4ade80",
+    name: "MOUSE",
+    detail: "Pointing device",
+    icon: "🖱️",
+    slot: "I move the pointer and click items on the screen."
+  },
+  {
+    id: "monitor",
+    color: "#a78bfa",
+    name: "MONITOR",
+    detail: "Display device",
+    icon: "🖥️",
+    slot: "I display text, pictures, and videos for you to see."
+  },
+  {
+    id: "webcam",
+    color: "#fb923c",
+    name: "WEBCAM",
+    detail: "Video input",
+    icon: "📷",
+    slot: "I capture live video for online calls."
+  },
+  {
+    id: "microphone",
+    color: "#2dd4bf",
+    name: "MICROPHONE",
+    detail: "Audio input",
+    icon: "🎤",
+    slot: "I turn your voice into an audio signal the computer can use."
+  },
+  {
+    id: "speakers",
+    color: "#f87171",
+    name: "SPEAKERS",
+    detail: "Audio output",
+    icon: "🔊",
+    slot: "I play music, voices, and other sounds out loud."
+  },
+  {
+    id: "printer",
+    color: "#818cf8",
+    name: "PRINTER",
+    detail: "Paper output",
+    icon: "🖨️",
+    slot: "I put digital documents and pictures onto paper."
+  },
+  {
+    id: "scanner",
+    color: "#34d399",
+    name: "SCANNER",
+    detail: "Image input",
+    icon: "📄",
+    slot: "I turn a paper document into a digital image."
+  },
+  {
+    id: "flashdrive",
+    color: "#fbbf24",
+    name: "USB FLASH DRIVE",
+    detail: "Portable storage",
+    icon: "💾",
+    slot: "I carry files between computers in a small removable device."
+  },
+  {
+    id: "thermalpaste",
+    color: "#c084fc",
+    name: "THERMAL PASTE",
+    detail: "Heat transfer",
+    icon: "🧴",
+    slot: "I fill tiny gaps so heat moves better from a chip to its cooler."
+  },
+  {
+    id: "router",
+    color: "#38bdf8",
+    name: "ROUTER",
+    detail: "Network traffic",
+    icon: "📡",
+    slot: "I direct data between your home network and other networks."
+  },
+  {
+    id: "ups",
+    color: "#fb7185",
+    name: "UPS",
+    detail: "Backup power",
+    icon: "🔋",
+    slot: "I provide temporary battery power during an electricity outage."
   }
 ];
 
-/* RANDOM TASKS: ONE SET PER ESCAPE ROOM */
+// ========================================
+// RANDOM COMPONENTS PER ESCAPE ROOM
+// ========================================
+
 const TASKS_KEY = "easyRandomTasks";
-const TIME_KEY = "easyRandomSeconds";
 const GAME_KEY = "easyRandomGameWord";
-const currentGameWord = sessionStorage.getItem("secretWord");
-if (sessionStorage.getItem(GAME_KEY) !== currentGameWord) {
+
+if (
+  sessionStorage.getItem(GAME_KEY) !== secretWord
+) {
   sessionStorage.removeItem(TASKS_KEY);
-  sessionStorage.removeItem(TIME_KEY);
-  sessionStorage.setItem(GAME_KEY, currentGameWord || "");
+  sessionStorage.setItem(GAME_KEY, secretWord);
 }
-
-const allComponents = [
-  ...components,
-  { id: "motherboard", color: "#a855f7", name: "MOTHERBOARD", detail: "Main circuit board", icon: "🔌", slot: "I connect all the computer components together." },
-  { id: "psu", color: "#f97316", name: "POWER SUPPLY", detail: "PSU", icon: "⚡", slot: "I supply electricity to the computer." },
-  { id: "fan", color: "#06b6d4", name: "COOLING FAN", detail: "Cooling", icon: "🌬️", slot: "I move air to cool computer parts." },
-  { id: "hdd", color: "#ec4899", name: "HDD", detail: "Hard disk", icon: "💽", slot: "I store files on spinning magnetic disks." },
-  { id: "network", color: "#84cc16", name: "NETWORK CARD", detail: "Networking", icon: "🌐", slot: "I connect a computer to a network." },
-  { id: "sound", color: "#14b8a6", name: "SOUND CARD", detail: "Audio", icon: "🎵", slot: "I process sound for speakers and headphones." },
-  { id: "heatsink", color: "#f59e0b", name: "HEAT SINK", detail: "Heat control", icon: "🌡️", slot: "I carry heat away from computer chips." },
-  { id: "optical", color: "#8b5cf6", name: "OPTICAL DRIVE", detail: "Disc reader", icon: "💿", slot: "I read CDs and DVDs." },
-  { id: "wifi", color: "#38bdf8", name: "WI-FI ADAPTER", detail: "Wireless", icon: "📶", slot: "I connect to wireless networks." },
-  { id: "battery", color: "#fb7185", name: "CMOS BATTERY", detail: "Clock power", icon: "🔋", slot: "I keep the computer clock running when powered off." },
-  { id: "case", color: "#c084fc", name: "COMPUTER CASE", detail: "Enclosure", icon: "🗄️", slot: "I protect and hold the internal parts." },
-  { id: "ethernet", color: "#2dd4bf", name: "ETHERNET PORT", detail: "Wired connection", icon: "🔗", slot: "I connect a network cable to the computer." },
-  { id: "bios", color: "#f472b6", name: "BIOS CHIP", detail: "Startup firmware", icon: "🔧", slot: "I help start the computer before the operating system loads." },
-  { id: "usb", color: "#60a5fa", name: "USB PORT", detail: "Peripheral connection", icon: "🔌", slot: "I let you plug in flash drives, mice, and keyboards." },
-  { id: "keyboard", color: "#facc15", name: "KEYBOARD", detail: "Typing device", icon: "⌨️", slot: "I let you type letters, numbers, and commands." },
-  { id: "mouse", color: "#4ade80", name: "MOUSE", detail: "Pointing device", icon: "🖱️", slot: "I move the pointer and click items on the screen." },
-  { id: "monitor", color: "#a78bfa", name: "MONITOR", detail: "Display device", icon: "🖥️", slot: "I display text, pictures, and videos for you to see." },
-  { id: "webcam", color: "#fb923c", name: "WEBCAM", detail: "Video input", icon: "📷", slot: "I capture live video for online calls." },
-  { id: "microphone", color: "#2dd4bf", name: "MICROPHONE", detail: "Audio input", icon: "🎤", slot: "I turn your voice into an audio signal the computer can use." },
-  { id: "speakers", color: "#f87171", name: "SPEAKERS", detail: "Audio output", icon: "🔊", slot: "I play music, voices, and other sounds out loud." },
-  { id: "printer", color: "#818cf8", name: "PRINTER", detail: "Paper output", icon: "🖨️", slot: "I put digital documents and pictures onto paper." },
-  { id: "scanner", color: "#34d399", name: "SCANNER", detail: "Image input", icon: "📄", slot: "I turn a paper document into a digital image." },
-  { id: "flashdrive", color: "#fbbf24", name: "USB FLASH DRIVE", detail: "Portable storage", icon: "💾", slot: "I carry files between computers in a small removable device." },
-  { id: "thermalpaste", color: "#c084fc", name: "THERMAL PASTE", detail: "Heat transfer", icon: "🧴", slot: "I fill tiny gaps so heat moves better from a chip to its cooler." },
-  { id: "router", color: "#38bdf8", name: "ROUTER", detail: "Network traffic", icon: "📡", slot: "I direct data between your home network and other networks." },
-  { id: "ups", color: "#fb7185", name: "UPS", detail: "Backup power", icon: "🔋", slot: "I provide temporary battery power during an electricity outage." }
-];
-
-let chosenIds;
-try { chosenIds = JSON.parse(sessionStorage.getItem(TASKS_KEY)); } catch { chosenIds = null; }
-if (!Array.isArray(chosenIds) || chosenIds.length !== 4 ||
-    chosenIds.some(id => !allComponents.some(part => part.id === id))) {
-  chosenIds = shuffle(allComponents).slice(0, 4).map(part => part.id);
-  sessionStorage.setItem(TASKS_KEY, JSON.stringify(chosenIds));
-}
-components.length = 0;
-components.push(...chosenIds.map(id => allComponents.find(part => part.id === id)));
-
-let roundSeconds = Number(sessionStorage.getItem(TIME_KEY));
-if (!Number.isInteger(roundSeconds) || roundSeconds < 60 || roundSeconds > 90) {
-  roundSeconds = 60 + Math.floor(Math.random() * 31);
-  sessionStorage.setItem(TIME_KEY, String(roundSeconds));
-}
-
-/* GAME STATE */
-
-let installed = new Set();
-let selected = null;
-let started = false;
-let expired = false;
-let won = false;
-
-let timeLeft = roundSeconds;
-let timerInterval = null;
-let endTime = 0;
-
-const get = id => document.getElementById(id);
-
-/* SHUFFLE COMPONENTS */
 
 function shuffle(array) {
   const copy = [...array];
 
   for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    const j = Math.floor(
+      Math.random() * (i + 1)
+    );
 
-    [copy[i], copy[j]] = [copy[j], copy[i]];
+    [copy[i], copy[j]] = [
+      copy[j],
+      copy[i]
+    ];
   }
 
   return copy;
 }
 
-/* STATUS MESSAGE */
+let chosenIds;
+
+try {
+  chosenIds = JSON.parse(
+    sessionStorage.getItem(TASKS_KEY)
+  );
+} catch {
+  chosenIds = null;
+}
+
+if (
+  !Array.isArray(chosenIds) ||
+  chosenIds.length !== 4 ||
+  chosenIds.some(
+    id => !allComponents.some(
+      part => part.id === id
+    )
+  )
+) {
+  chosenIds = shuffle(allComponents)
+    .slice(0, 4)
+    .map(part => part.id);
+
+  sessionStorage.setItem(
+    TASKS_KEY,
+    JSON.stringify(chosenIds)
+  );
+}
+
+const components = chosenIds.map(
+  id => allComponents.find(
+    part => part.id === id
+  )
+);
+
+// ========================================
+// GAME STATE
+// ========================================
+
+let installed = new Set();
+let selected = null;
+let started = false;
+let won = false;
+let draggingWire = null;
+
+const get = id =>
+  document.getElementById(id);
+
+// ========================================
+// STATUS
+// ========================================
 
 function showStatus(message, success = false) {
   get("status").textContent = message;
-  get("status").classList.toggle("success", success);
-}
 
-/* UPDATE PROGRESS */
+  get("status").classList.toggle(
+    "success",
+    success
+  );
+}
 
 function updateProgress() {
   const count = installed.size;
 
-  get("count").textContent = `${count} / 4 INSTALLED`;
-  get("fill").style.width = `${count * 25}%`;
+  get("count").textContent =
+    `${count} / 4 INSTALLED`;
+
+  get("fill").style.width =
+    `${count * 25}%`;
 
   get("bootBtn").disabled =
-    !started || expired || won || count !== 4;
+    !started || won || count !== 4;
 
-  if (count === 4 && started && !expired) {
-    get("system").textContent = "READY TO BOOT";
+  if (
+    count === 4 &&
+    started &&
+    !won
+  ) {
+    get("system").textContent =
+      "READY TO BOOT";
 
     showStatus(
       "✓ All components installed! Press BOOT COMPUTER.",
@@ -877,36 +1310,50 @@ function updateProgress() {
   }
 }
 
-/* INSTALL COMPONENT */
+// ========================================
+// INSTALL COMPONENT
+// ========================================
 
 function installComponent(componentId, slotId) {
   if (!escapeTimeAvailable()) return;
-  if (!started || expired || won) return;
+  if (!started || won) return;
   if (!componentId || installed.has(componentId)) return;
 
   const slot = document.querySelector(
     `.slot[data-id="${slotId}"]`
   );
 
+  if (!slot || slot.classList.contains("good")) {
+    return;
+  }
+
   if (componentId === slotId) {
     installed.add(componentId);
 
     slot.classList.add("good");
-    slot.querySelector(".hint").textContent = "✓ INSTALLED";
+
+    slot.querySelector(".hint").textContent =
+      "✓ INSTALLED";
 
     const part = document.querySelector(
       `.part[data-id="${componentId}"]`
     );
 
-    part.classList.add("installed");
+    if (part) {
+      part.classList.add("installed");
+    }
 
     selected = null;
 
-    document.querySelectorAll(".part").forEach(part => {
-      part.classList.remove("selected");
-    });
+    document.querySelectorAll(".part").forEach(
+      item => item.classList.remove("selected")
+    );
 
-    showStatus("✓ Component installed correctly!", true);
+    showStatus(
+      "✓ Component installed correctly!",
+      true
+    );
+
     updateProgress();
     drawWires();
 
@@ -919,11 +1366,15 @@ function installComponent(componentId, slotId) {
       slot.classList.remove("bad");
     }, 400);
 
-    showStatus("✕ WRONG SOCKET! Try again.");
+    showStatus(
+      "✕ WRONG SOCKET! Try again."
+    );
   }
 }
 
-/* CREATE COMPUTER BOARD */
+// ========================================
+// CREATE BOARD
+// ========================================
 
 function createBoard() {
   get("parts").replaceChildren();
@@ -934,7 +1385,6 @@ function createBoard() {
 
     part.className = "part disabled";
     part.dataset.id = component.id;
-    part.draggable = false;
     part.tabIndex = 0;
 
     part.innerHTML = `
@@ -947,29 +1397,48 @@ function createBoard() {
 
     part.addEventListener("click", () => {
       if (!escapeTimeAvailable()) return;
-      if (!started || expired || won) return;
+      if (!started || won) return;
       if (installed.has(component.id)) return;
 
       selected = component.id;
 
-      document.querySelectorAll(".part").forEach(item => {
-        item.classList.toggle(
-          "selected",
-          item.dataset.id === component.id
-        );
-      });
+      document.querySelectorAll(".part").forEach(
+        item => {
+          item.classList.toggle(
+            "selected",
+            item.dataset.id === component.id
+          );
+        }
+      );
 
       showStatus(
         `Selected ${component.name}. Choose its socket.`
       );
     });
 
-    // Drag a live colored wire using a mouse or finger.
-    part.addEventListener("pointerdown", event => {
-      if (!started || expired || won || installed.has(component.id)) return;
-      if (!escapeTimeAvailable()) return;
-      beginWireDrag(event, part, component);
-    });
+    part.addEventListener(
+      "pointerdown",
+      event => {
+        if (!started || won) return;
+        if (installed.has(component.id)) return;
+        if (!escapeTimeAvailable()) return;
+
+        beginWireDrag(event, part, component);
+      }
+    );
+
+    part.addEventListener(
+      "keydown",
+      event => {
+        if (
+          event.key === "Enter" ||
+          event.key === " "
+        ) {
+          event.preventDefault();
+          part.click();
+        }
+      }
+    );
 
     get("parts").appendChild(part);
   }
@@ -990,159 +1459,257 @@ function createBoard() {
       installComponent(selected, component.id);
     });
 
-    slot.addEventListener("dragover", event => {
-      if (!escapeTimeAvailable()) return;
-      if (!started || expired || won) return;
-
-      event.preventDefault();
-      slot.classList.add("over");
-    });
-
-    slot.addEventListener("dragleave", () => {
-      slot.classList.remove("over");
-    });
-
-    slot.addEventListener("drop", event => {
-      event.preventDefault();
-      slot.classList.remove("over");
-
-      installComponent(
-        event.dataTransfer.getData("text/plain"),
-        component.id
-      );
-    });
+    slot.addEventListener(
+      "keydown",
+      event => {
+        if (
+          event.key === "Enter" ||
+          event.key === " "
+        ) {
+          event.preventDefault();
+          slot.click();
+        }
+      }
+    );
 
     get("slots").appendChild(slot);
   }
 }
 
-/* LIVE COLORED WIRE WHILE HOLDING / DRAGGING */
-let draggingWire = null;
+// ========================================
+// WIRE POSITIONS
+// ========================================
 
 function wirePoint(element, fromStart) {
-  const boardRect = get("board").getBoundingClientRect();
+  const boardRect = get("board")
+    .getBoundingClientRect();
+
   const rect = element.getBoundingClientRect();
-  const stacked = window.matchMedia("(max-width: 560px)").matches;
+
+  const stacked = window.matchMedia(
+    "(max-width: 560px)"
+  ).matches;
+
   return {
-    x: (stacked ? rect.left + rect.width / 2 : (fromStart ? rect.right : rect.left)) - boardRect.left,
-    y: (stacked ? (fromStart ? rect.bottom : rect.top) : rect.top + rect.height / 2) - boardRect.top
+    x: (
+      stacked
+        ? rect.left + rect.width / 2
+        : (fromStart ? rect.right : rect.left)
+    ) - boardRect.left,
+
+    y: (
+      stacked
+        ? (fromStart ? rect.bottom : rect.top)
+        : rect.top + rect.height / 2
+    ) - boardRect.top
   };
 }
 
 function wireCurve(a, b) {
-  const stacked = window.matchMedia("(max-width: 560px)").matches;
+  const stacked = window.matchMedia(
+    "(max-width: 560px)"
+  ).matches;
+
   if (stacked) {
-    const mid = (a.y + b.y) / 2;
-    return `M ${a.x} ${a.y} C ${a.x} ${mid}, ${b.x} ${mid}, ${b.x} ${b.y}`;
+    const middle = (a.y + b.y) / 2;
+
+    return (
+      `M ${a.x} ${a.y} ` +
+      `C ${a.x} ${middle}, ` +
+      `${b.x} ${middle}, ${b.x} ${b.y}`
+    );
   }
-  const mid = (a.x + b.x) / 2;
-  return `M ${a.x} ${a.y} C ${mid} ${a.y}, ${mid} ${b.y}, ${b.x} ${b.y}`;
+
+  const middle = (a.x + b.x) / 2;
+
+  return (
+    `M ${a.x} ${a.y} ` +
+    `C ${middle} ${a.y}, ` +
+    `${middle} ${b.y}, ${b.x} ${b.y}`
+  );
 }
+
+// ========================================
+// LIVE DRAGGING WIRES
+// ========================================
 
 function beginWireDrag(event, part, component) {
   if (draggingWire) return;
+
   event.preventDefault();
-  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-  path.setAttribute("stroke", component.color);
+
+  const path = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "path"
+  );
+
+  path.setAttribute(
+    "stroke",
+    component.color
+  );
+
   get("wireLayer").appendChild(path);
-  draggingWire = { pointerId: event.pointerId, part, component, path };
+
+  draggingWire = {
+    pointerId: event.pointerId,
+    part,
+    component,
+    path
+  };
+
   moveWireDrag(event);
-  window.addEventListener("pointermove", moveWireDrag);
-  window.addEventListener("pointerup", finishWireDrag);
-  window.addEventListener("pointercancel", cancelWireDrag);
+
+  window.addEventListener(
+    "pointermove",
+    moveWireDrag
+  );
+
+  window.addEventListener(
+    "pointerup",
+    finishWireDrag
+  );
+
+  window.addEventListener(
+    "pointercancel",
+    cancelWireDrag
+  );
 }
 
 function moveWireDrag(event) {
-  if (!draggingWire || event.pointerId !== draggingWire.pointerId) return;
-  const rect = get("board").getBoundingClientRect();
-  const start = wirePoint(draggingWire.part, true);
-  const end = { x: event.clientX - rect.left, y: event.clientY - rect.top };
-  draggingWire.path.setAttribute("d", wireCurve(start, end));
+  if (
+    !draggingWire ||
+    event.pointerId !== draggingWire.pointerId
+  ) {
+    return;
+  }
+
+  const rect = get("board")
+    .getBoundingClientRect();
+
+  const start = wirePoint(
+    draggingWire.part,
+    true
+  );
+
+  const end = {
+    x: event.clientX - rect.left,
+    y: event.clientY - rect.top
+  };
+
+  draggingWire.path.setAttribute(
+    "d",
+    wireCurve(start, end)
+  );
 }
 
 function cancelWireDrag() {
   if (!draggingWire) return;
+
   draggingWire.path.remove();
   draggingWire = null;
-  window.removeEventListener("pointermove", moveWireDrag);
-  window.removeEventListener("pointerup", finishWireDrag);
-  window.removeEventListener("pointercancel", cancelWireDrag);
+
+  window.removeEventListener(
+    "pointermove",
+    moveWireDrag
+  );
+
+  window.removeEventListener(
+    "pointerup",
+    finishWireDrag
+  );
+
+  window.removeEventListener(
+    "pointercancel",
+    cancelWireDrag
+  );
 }
 
 function finishWireDrag(event) {
-  if (!draggingWire || event.pointerId !== draggingWire.pointerId) return;
-  const componentId = draggingWire.component.id;
-  const target = document.elementFromPoint(event.clientX, event.clientY);
-  const slot = target && target.closest(".slot");
+  if (
+    !draggingWire ||
+    event.pointerId !== draggingWire.pointerId
+  ) {
+    return;
+  }
+
+  const componentId =
+    draggingWire.component.id;
+
+  const target = document.elementFromPoint(
+    event.clientX,
+    event.clientY
+  );
+
+  const slot = target &&
+    target.closest(".slot");
+
   cancelWireDrag();
-  if (slot) installComponent(componentId, slot.dataset.id);
+
+  if (slot) {
+    installComponent(
+      componentId,
+      slot.dataset.id
+    );
+  }
 }
 
-/* DRAW COLORED WIRES BETWEEN MATCHED COMPONENTS AND SOCKETS */
+// ========================================
+// DRAW COMPLETED WIRES
+// ========================================
+
 function drawWires() {
+  if (draggingWire) return;
+
   const board = get("board");
   const svg = get("wireLayer");
-  const boardRect = board.getBoundingClientRect();
-  const stacked = window.matchMedia("(max-width: 560px)").matches;
 
   svg.replaceChildren();
 
   for (const component of components) {
-    if (!installed.has(component.id)) continue;
+    if (!installed.has(component.id)) {
+      continue;
+    }
 
     const part = document.querySelector(
       `.part[data-id="${component.id}"]`
     );
+
     const slot = document.querySelector(
       `.slot[data-id="${component.id}"]`
     );
+
     if (!part || !slot) continue;
 
-    const a = part.getBoundingClientRect();
-    const b = slot.getBoundingClientRect();
-
-    // Desktop: connect right-to-left. Mobile: connect bottom-to-top.
-    const x1 = (stacked ? a.left + a.width / 2 : a.right) - boardRect.left;
-    const y1 = (stacked ? a.bottom : a.top + a.height / 2) - boardRect.top;
-    const x2 = (stacked ? b.left + b.width / 2 : b.left) - boardRect.left;
-    const y2 = (stacked ? b.top : b.top + b.height / 2) - boardRect.top;
+    const a = wirePoint(part, true);
+    const b = wirePoint(slot, false);
 
     const path = document.createElementNS(
-      "http://www.w3.org/2000/svg", "path"
+      "http://www.w3.org/2000/svg",
+      "path"
     );
-    let curve;
-    if (stacked) {
-      const middleY = (y1 + y2) / 2;
-      curve = `M ${x1} ${y1} C ${x1} ${middleY}, ${x2} ${middleY}, ${x2} ${y2}`;
-    } else {
-      const middleX = (x1 + x2) / 2;
-      curve = `M ${x1} ${y1} C ${middleX} ${y1}, ${middleX} ${y2}, ${x2} ${y2}`;
-    }
-    path.setAttribute("d", curve);
-    path.setAttribute("stroke", component.color);
+
+    path.setAttribute(
+      "d",
+      wireCurve(a, b)
+    );
+
+    path.setAttribute(
+      "stroke",
+      component.color
+    );
+
     svg.appendChild(path);
   }
 }
 
-window.addEventListener("resize", drawWires);
+window.addEventListener(
+  "resize",
+  drawWires
+);
 
-/* 60-SECOND GAME TIMER */
-
-function updateTimer() {
-  const minutes = Math.floor(timeLeft / 60);
-  const seconds = timeLeft % 60;
-
-  get("timer").textContent =
-    `TIME LEFT ${String(minutes).padStart(2, "0")}:` +
-    String(seconds).padStart(2, "0");
-
-  get("timer").classList.toggle(
-    "urgent",
-    started && timeLeft <= 10
-  );
-}
-
-/* TEACHER REACTIONS */
+// ========================================
+// TEACHER REACTIONS
+// ========================================
 
 function setTeacher(state) {
   const image = get("teacherImage");
@@ -1170,153 +1737,112 @@ function setTeacher(state) {
 
   image.src = src;
   image.alt = alt;
+
   message.textContent = words;
   message.hidden = !words;
 }
 
-/* START GAME */
+// ========================================
+// START GAME
+// ========================================
 
 function startGame() {
   if (!escapeTimeAvailable()) return;
-  if (started || expired || won) return;
+  if (started || won) return;
 
   started = true;
+
   setTeacher("watching");
 
-  endTime = Date.now() + roundSeconds * 1000;
-
   get("startBtn").disabled = true;
+
   get("system").textContent = "OFFLINE";
 
-  document.querySelectorAll(".part").forEach(part => {
-    part.classList.remove("disabled");
-    part.draggable = true;
-  });
+  document.querySelectorAll(".part").forEach(
+    part => part.classList.remove("disabled")
+  );
 
-  showStatus("Game started! Install all four components.");
+  showStatus(
+    "Game started! Install all four components."
+  );
 
   updateProgress();
-
-  timerInterval = setInterval(() => {
-    if (!escapeTimeAvailable()) {
-      clearInterval(timerInterval);
-      return;
-    }
-
-    timeLeft = Math.max(
-      0,
-      Math.ceil((endTime - Date.now()) / 1000)
-    );
-
-    updateTimer();
-
-    if (timeLeft === 0) {
-      timeOut();
-    }
-  }, 100);
 }
 
-/* 60-SECOND TIMEOUT */
+// ========================================
+// RESULT SCREEN
+// ========================================
 
-function timeOut() {
-  if (expired || won) return;
+function showResult() {
+  get("result").classList.remove("failed");
 
-  expired = true;
-  started = false;
-
-  setTeacher("thinking");
-  clearInterval(timerInterval);
-
-  get("system").textContent = "TIME OUT";
-  get("bootBtn").disabled = true;
-
-  showStatus("⏰ TIME OUT! Try again.");
-
-  showResult(false);
-}
-
-/* RESULT SCREEN */
-
-function showResult(success) {
-  const result = get("result");
-
-  result.classList.toggle("failed", !success);
-
-  get("resultIcon").textContent =
-    success ? "🔓" : "⏰";
+  get("resultIcon").textContent = "🔓";
 
   get("resultTitle").textContent =
-    success ? "ACCESS GRANTED!" : "TIME OUT!";
+    "ACCESS GRANTED!";
 
   get("resultMessage").textContent =
-    success
-      ? "COMPUTER REBUILT • SYSTEM ONLINE"
-      : "YOUR TASK TIMER HAS EXPIRED";
+    "COMPUTER REBUILT • SYSTEM ONLINE";
 
   get("codeLabel").textContent =
-    success
-      ? "YOUR SECRET ACCESS CODE"
-      : "THE COMPUTER IS STILL LOCKED";
+    "YOUR COLLECTED LETTERS";
 
-get("resultCode").textContent = success
-  ? sessionStorage.getItem("secretWord").slice(0, 3)
-  : "LOCKED";
+  get("resultCode").textContent =
+    scrambleReward(easyLetters);
+
   get("resultFooter").textContent =
-    success
-      ? "Challenge completed successfully."
-      : "Try again to restore the system.";
+    "Challenge completed successfully.";
 
   get("continueBtn").textContent =
-    success ? "CONTINUE" : "↻ TRY AGAIN";
+    "CONTINUE";
 
-  get("resultTeacher").hidden = !success;
-  get("resultTeacherMessage").hidden = !success;
+  get("resultTeacher").hidden = false;
+
+  get("resultTeacherMessage").hidden = false;
 
   get("overlay").classList.add("show");
 }
 
-/* BOOT COMPUTER */
+// ========================================
+// BOOT COMPUTER
+// ========================================
 
 function bootComputer() {
   if (!escapeTimeAvailable()) return;
-  if (!started || expired || won) return;
-  if (installed.size !== 4) return;
+  if (!started || won) return;
 
-  if (Date.now() >= endTime) {
-    timeOut();
-    return;
-  }
+  if (installed.size !== 4) return;
 
   won = true;
   started = false;
 
   setTeacher("joyful");
-  clearInterval(timerInterval);
 
   get("system").textContent = "ONLINE";
   get("bootBtn").disabled = true;
 
-  sessionStorage.setItem("easyComplete", "true");
+  sessionStorage.setItem(
+    "easyComplete",
+    "true"
+  );
 
-  showResult(true);
+  showResult();
 }
 
-/* RESET GAME */
+// ========================================
+// RESET GAME
+// ========================================
 
 function resetGame() {
   if (!escapeTimeAvailable()) return;
-  cancelWireDrag();
 
-  clearInterval(timerInterval);
+  cancelWireDrag();
 
   installed.clear();
 
   selected = null;
   started = false;
-  expired = false;
   won = false;
-
-  timeLeft = roundSeconds;
 
   setTeacher("thinking");
 
@@ -1328,61 +1854,92 @@ function resetGame() {
   createBoard();
   drawWires();
   updateProgress();
-  updateTimer();
 
-  showStatus("Press START GAME to begin.");
+  showStatus(
+    "Press START GAME to begin."
+  );
 }
 
-/* BUTTON EVENTS */
+// ========================================
+// BUTTON EVENTS
+// ========================================
 
-get("startBtn").addEventListener("click", startGame);
+get("startBtn").addEventListener(
+  "click",
+  startGame
+);
 
-get("bootBtn").addEventListener("click", bootComputer);
+get("bootBtn").addEventListener(
+  "click",
+  bootComputer
+);
 
-get("resetBtn").addEventListener("click", resetGame);
+get("resetBtn").addEventListener(
+  "click",
+  resetGame
+);
 
-get("backBtn").addEventListener("click", () => {
-  window.location.href = "screen4.html";
-});
+get("backBtn").addEventListener(
+  "click",
+  () => {
+    window.location.href = "screen4.html";
+  }
+);
 
-get("continueBtn").addEventListener("click", () => {
-  if (!escapeTimeAvailable()) return;
+get("continueBtn").addEventListener(
+  "click",
+  () => {
+    if (!escapeTimeAvailable()) return;
 
-  if (expired) {
-    resetGame();
-  } else {
     get("overlay").classList.remove("show");
   }
-});
+);
 
-/* RESTART OVERALL ESCAPE ROOM */
+// ========================================
+// RESTART ESCAPE ROOM
+// ========================================
 
-get("restartEscapeBtn").addEventListener("click", () => {
-  sessionStorage.removeItem(ESCAPE_END_KEY);
-  sessionStorage.removeItem(ESCAPE_TIMEOUT_KEY);
-  sessionStorage.removeItem(ESCAPE_FINISHED_KEY);
+get("restartEscapeBtn").addEventListener(
+  "click",
+  () => {
+    const keysToClear = [
+      ESCAPE_END_KEY,
+      ESCAPE_TIMEOUT_KEY,
+      ESCAPE_FINISHED_KEY,
+      "easyComplete",
+      "mediumComplete",
+      "hardComplete",
+      "secretWord",
+      "easyRewardLetters",
+      "mediumRewardLetters",
+      "hardRewardLetters",
+      TASKS_KEY,
+      GAME_KEY,
+      "easyRandomSeconds"
+    ];
 
-  sessionStorage.removeItem("easyComplete");
-  sessionStorage.removeItem("mediumComplete");
-  sessionStorage.removeItem("hardComplete");
-  sessionStorage.removeItem("secretWord");
-  sessionStorage.removeItem(TASKS_KEY);
-  sessionStorage.removeItem(TIME_KEY);
-  sessionStorage.removeItem(GAME_KEY);
+    for (const key of keysToClear) {
+      sessionStorage.removeItem(key);
+    }
 
-  window.location.href = "screen4.html";
-});
+    window.location.href = "screen4.html";
+  }
+);
 
-/* INITIALIZE */
+// ========================================
+// INITIALIZE
+// ========================================
 
 updateOverallEscapeTimer();
 
-setInterval(updateOverallEscapeTimer, 250);
+setInterval(
+  updateOverallEscapeTimer,
+  250
+);
 
 if (!overallEscapeExpired) {
   resetGame();
 }
-
 </script>
 
 </body>
