@@ -435,7 +435,7 @@ button:disabled {
   display: none;
 }
 
-/* SHARED 20-MINUTE TIMER */
+/* SHARED 15-MINUTE TIMER */
 
 #escapeRoomTimer {
   position: sticky;
@@ -545,7 +545,7 @@ button:disabled {
 
 <!-- SHARED ESCAPE ROOM TIMER -->
 <div id="escapeRoomTimer">
-  ⏰ ESCAPE ROOM 20:00
+  ⏰ ESCAPE ROOM 15:00
 </div>
 
 <!-- TEACHER -->
@@ -704,7 +704,7 @@ button:disabled {
 
   <h3>YOU DIDN'T ESCAPE THE ROOM!</h3>
 
-  <p>The 20-minute countdown has ended.</p>
+  <p>The 15-minute countdown has ended.</p>
 
   <button id="restartEscapeBtn">
     ↻ TRY AGAIN
@@ -715,14 +715,14 @@ button:disabled {
 "use strict";
 
 // ========================================
-// SHARED 20-MINUTE ESCAPE TIMER
+// SHARED 15-MINUTE ESCAPE TIMER
 // ========================================
 
 const ESCAPE_END_KEY = "escapeRoomEndTime";
 const ESCAPE_TIMEOUT_KEY = "escapeRoomTimedOut";
 const ESCAPE_FINISHED_KEY = "escapeRoomFinished";
 
-const ESCAPE_DURATION = 20 * 60 * 1000;
+const ESCAPE_DURATION = 15 * 60 * 1000;
 
 let overallEscapeExpired = false;
 
