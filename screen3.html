@@ -15,7 +15,7 @@
 body {
   margin: 0;
   min-height: 100vh;
-   background: #000 !important;
+  background: #000;
   color: white;
   font-family: Arial, sans-serif;
   display: flex;
@@ -26,9 +26,8 @@ body {
   padding: 20px;
 }
 
-/* ===== RED MATRIX BACKGROUND ===== */
+/* RED MATRIX BACKGROUND */
 
-/* Animated falling code */
 #matrix {
   position: fixed;
   inset: 0;
@@ -38,7 +37,6 @@ body {
   pointer-events: none;
 }
 
-/* Dark overlay for readability */
 .matrix-overlay {
   position: fixed;
   inset: 0;
@@ -51,26 +49,17 @@ body {
   pointer-events: none;
 }
 
-/* Keep game content above Matrix */
-body > *:not(#matrix):not(.matrix-overlay) {
-  z-index: 2;
-}
-
-/* Keep popups and victory screens on top */
-#winScreen,
-#timeoutScreen {
-  position: fixed !important;
-  z-index: 200 !important;
-}
-
+/* MAIN CONTAINER */
 
 .container {
+  position: relative;
+  z-index: 2;
   width: 90%;
   max-width: 800px;
   padding: 30px;
   border: 2px solid red;
   border-radius: 15px;
-  background: #140505;
+  background: rgba(20, 5, 5, 0.94);
   box-shadow: 0 0 40px #a00000;
   animation: appear 1s ease;
 }
@@ -93,6 +82,69 @@ h1 {
   color: #ffaaaa;
 }
 
+/* TEN-MINUTE TIMER */
+
+.timer-box {
+  margin: 20px auto;
+  padding: 15px;
+  max-width: 350px;
+  background: #220909;
+  border: 2px solid #ff3333;
+  border-radius: 12px;
+  box-shadow: 0 0 20px #ff000055;
+}
+
+.timer-label {
+  color: #ffaaaa;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+#puzzleTimer {
+  display: block;
+  margin: 10px 0;
+  color: #ff4444;
+  font-size: 42px;
+  font-weight: 900;
+  font-family: monospace;
+}
+
+.timer-progress {
+  width: 100%;
+  height: 12px;
+  background: #100505;
+  border: 1px solid #803030;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+#timerBar {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    #990000,
+    #ff3333
+  );
+  transition: width 0.25s linear;
+}
+
+.timer-box.urgent {
+  animation: urgentGlow 0.7s infinite alternate;
+}
+
+@keyframes urgentGlow {
+  from {
+    box-shadow: 0 0 10px red;
+  }
+  to {
+    box-shadow: 0 0 30px red;
+  }
+}
+
+/* SYSTEM LOCK */
+
 .locked {
   border: 3px solid red;
   border-radius: 12px;
@@ -105,22 +157,72 @@ h1 {
   font-size: clamp(24px, 5vw, 40px);
 }
 
+/* THREE CLICKABLE PUZZLE BUTTONS */
+
 .icons {
   display: flex;
   justify-content: space-around;
-  gap: 10px;
+  gap: 12px;
   margin: 30px 0;
 }
 
-.item {
+.puzzle-btn {
   flex: 1;
-  color: #ff5555;
-  font-size: 17px;
+  min-width: 0;
+  margin-top: 0;
+  padding: 20px 10px;
+  background: #210909;
+  border: 2px solid #ff3333;
+  border-radius: 12px;
+  color: #ff7777;
+  cursor: pointer;
+  transition: 0.3s;
+  font-family: Arial, sans-serif;
 }
 
-.item span {
+.puzzle-btn:hover:not(:disabled) {
+  background: #4b1010;
+  border-color: #ff6666;
+  box-shadow: 0 0 25px #ff000088;
+  transform: translateY(-5px);
+}
+
+.puzzle-btn span {
+  display: block;
   font-size: 35px;
 }
+
+.puzzle-btn p {
+  margin: 10px 0;
+}
+
+.puzzle-btn .puzzle-name {
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.puzzle-btn .status {
+  color: #ff5555;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.puzzle-btn .status.solved {
+  color: #60efa5;
+  text-shadow: 0 0 12px #00ff88;
+}
+
+.puzzle-btn.completed {
+  background: #10271b;
+  border-color: #60efa5;
+}
+
+.puzzle-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* MESSAGE */
 
 .message {
   background: #270909;
@@ -130,7 +232,9 @@ h1 {
   line-height: 1.6;
 }
 
-button {
+/* BEGIN BUTTON */
+
+#beginButton {
   margin-top: 25px;
   padding: 18px 30px;
   background: #cc0000;
@@ -140,14 +244,40 @@ button {
   font-size: 18px;
   font-weight: bold;
   cursor: pointer;
+  transition: 0.2s;
 }
 
-button:hover {
+#beginButton:hover:not(:disabled) {
   background: red;
   box-shadow: 0 0 20px red;
 }
 
-/* SHOCKED TEACHER - BOTTOM LEFT */
+#beginButton:disabled {
+  background: #350d0d;
+  border-color: #754040;
+  color: #a47777;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+#beginButton.unlocked {
+  background: #176b38;
+  border-color: #60efa5;
+  box-shadow: 0 0 20px #00ff8855;
+}
+
+#beginButton.unlocked:hover {
+  background: #229b52;
+}
+
+#accessMessage {
+  margin-top: 15px;
+  min-height: 20px;
+  color: #ff8888;
+  font-weight: bold;
+}
+
+/* TEACHER */
 
 .teacher-area {
   position: fixed;
@@ -162,28 +292,8 @@ button:hover {
 .teacher-image {
   display: block;
   width: 300px;
-
   height: auto;
   filter: drop-shadow(0 5px 15px #000);
-}
-
-/* SPEECH BUBBLE */
-
-.speech-bubble span {
-  color: #e00000;
-}
-
-.speech-bubble::after {
-  content: "";
-  position: absolute;
-  bottom: -13px;
-  left: 30px;
-  width: 20px;
-  height: 20px;
-  background: white;
-  border-right: 3px solid #111;
-  border-bottom: 3px solid #111;
-  transform: rotate(45deg);
 }
 
 /* ANIMATIONS */
@@ -224,12 +334,20 @@ button:hover {
     padding: 15px;
   }
 
-  .item {
-    font-size: 13px;
+  .puzzle-btn {
+    padding: 12px 5px;
   }
 
-  .item span {
+  .puzzle-btn span {
     font-size: 26px;
+  }
+
+  .puzzle-btn .puzzle-name {
+    font-size: 12px;
+  }
+
+  .puzzle-btn .status {
+    font-size: 11px;
   }
 
   .teacher-area {
@@ -238,18 +356,25 @@ button:hover {
     bottom: 5px;
   }
 
-  .speech-bubble {
-    width: 145px;
-    left: 30px;
-    padding: 9px;
-    font-size: 13px;
+  .teacher-image {
+    width: 180px;
+  }
+
+  #puzzleTimer {
+    font-size: 34px;
+  }
+
+  #beginButton {
+    font-size: 15px;
+    padding: 15px 20px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .container,
   h1,
-  .teacher-area {
+  .teacher-area,
+  .timer-box {
     animation: none;
   }
 }
@@ -258,7 +383,7 @@ button:hover {
 
 <body>
 
-<!-- ORIGINAL SYSTEM HACKED SCREEN -->
+<!-- MAIN SCREEN -->
 
 <div class="container">
 
@@ -272,78 +397,344 @@ button:hover {
     Your computer has been HACKED.
   </p>
 
-  <div class="locked">
-    <h2>🔒 EVERYTHING IS LOCKED!</h2>
+  <!-- TIMER -->
+
+  <div class="timer-box" id="timerBox">
+    <div class="timer-label">
+      ⏰ RESTORE THE SYSTEM
+    </div>
+
+    <span id="puzzleTimer">10:00</span>
+
+    <div class="timer-progress">
+      <div id="timerBar"></div>
+    </div>
   </div>
+
+  <!-- LOCK STATUS -->
+
+  <div class="locked">
+    <h2 id="systemHeading">
+      🔒 EVERYTHING IS LOCKED!
+    </h2>
+  </div>
+
+  <!-- CLICKABLE PUZZLE BUTTONS -->
 
   <div class="icons">
 
-    <div class="item">
+    <button
+      type="button"
+      class="puzzle-btn"
+      id="websitesButton"
+      onclick="openPuzzle('website.html')"
+    >
       <span>🌐</span>
-      <p>Websites</p>
-      <p>🔒 LOCKED</p>
-    </div>
+      <p class="puzzle-name">Websites</p>
+      <p class="status" id="websitesStatus">
+        🔒 LOCKED
+      </p>
+    </button>
 
-    <div class="item">
+    <button
+      type="button"
+      class="puzzle-btn"
+      id="filesButton"
+      onclick="openPuzzle('files.html')"
+    >
       <span>📁</span>
-      <p>Files</p>
-      <p>🔒 LOCKED</p>
-    </div>
+      <p class="puzzle-name">Files</p>
+      <p class="status" id="filesStatus">
+        🔒 LOCKED
+      </p>
+    </button>
 
-    <div class="item">
+    <button
+      type="button"
+      class="puzzle-btn"
+      id="applicationsButton"
+      onclick="openPuzzle('applications.html')"
+    >
       <span>💻</span>
-      <p>Applications</p>
-      <p>🔒 LOCKED</p>
-    </div>
+      <p class="puzzle-name">Applications</p>
+      <p class="status" id="applicationsStatus">
+        🔒 LOCKED
+      </p>
+    </button>
 
   </div>
 
-  <div class="message">
+  <!-- INSTRUCTIONS -->
+
+  <div class="message" id="systemMessage">
     WARNING! A hacker has taken control
     of the computer system.
 
     <p>
-      Solve the security challenges
-      to restore access and escape!
+      Click Websites, Files, and Applications
+      to solve their puzzles and restore access!
     </p>
   </div>
 
-  <button onclick="startEscape()">
-    BEGIN ESCAPE CHALLENGE →
+  <!-- MAIN ESCAPE BUTTON -->
+
+  <button
+    type="button"
+    id="beginButton"
+    onclick="startEscape()"
+    disabled
+  >
+    🔒 BEGIN ESCAPE CHALLENGE →
   </button>
+
+  <p id="accessMessage" aria-live="polite">
+    Complete all three puzzles to unlock.
+  </p>
 
 </div>
 
-<!-- SMALL SHOCKED TEACHER -->
+<!-- SHOCKED TEACHER -->
 
 <div class="teacher-area">
-
-
   <img
     src="Shocked.png"
     alt="Shocked teacher"
     class="teacher-image"
   >
-
 </div>
 
-<!-- RED MATRIX BACKGROUND -->
+<!-- RED MATRIX -->
+
 <canvas id="matrix"></canvas>
 <div class="matrix-overlay"></div>
 
-
 <script>
+"use strict";
 
-/* ===== ANIMATED RED MATRIX RAIN ===== */
+/* ==========================
+   TIMER SETTINGS
+========================== */
+
+const PUZZLE_TIMER_KEY = "puzzleEndTime";
+const PUZZLE_DURATION = 10 * 60 * 1000;
+
+const WEBSITE_KEY = "websitesSolved";
+const FILES_KEY = "filesSolved";
+const APPLICATIONS_KEY = "applicationsSolved";
+
+const $ = id => document.getElementById(id);
+
+let puzzleInterval = null;
+
+function initializePuzzleTimer() {
+  const saved = Number(
+    sessionStorage.getItem(PUZZLE_TIMER_KEY)
+  );
+
+  if (!Number.isFinite(saved) || saved <= 0) {
+    sessionStorage.setItem(
+      PUZZLE_TIMER_KEY,
+      String(Date.now() + PUZZLE_DURATION)
+    );
+  }
+}
+
+function puzzleHasTime() {
+  const endTime = Number(
+    sessionStorage.getItem(PUZZLE_TIMER_KEY)
+  );
+
+  return Number.isFinite(endTime) &&
+    endTime > 0 &&
+    Date.now() < endTime;
+}
+
+/* ==========================
+   CHECK COMPLETION
+========================== */
+
+function allPuzzlesSolved() {
+  return (
+    sessionStorage.getItem(WEBSITE_KEY) === "true" &&
+    sessionStorage.getItem(FILES_KEY) === "true" &&
+    sessionStorage.getItem(APPLICATIONS_KEY) === "true"
+  );
+}
+
+function updateLockStatus() {
+  const websites =
+    sessionStorage.getItem(WEBSITE_KEY) === "true";
+
+  const files =
+    sessionStorage.getItem(FILES_KEY) === "true";
+
+  const applications =
+    sessionStorage.getItem(APPLICATIONS_KEY) === "true";
+
+  const puzzles = [
+    ["websitesStatus", "websitesButton", websites],
+    ["filesStatus", "filesButton", files],
+    ["applicationsStatus", "applicationsButton", applications]
+  ];
+
+  puzzles.forEach(([statusId, buttonId, solved]) => {
+    const status = $(statusId);
+    const button = $(buttonId);
+
+    status.textContent =
+      solved ? "🔓 SOLVED" : "🔒 LOCKED";
+
+    status.classList.toggle("solved", solved);
+    button.classList.toggle("completed", solved);
+    button.disabled = !puzzleHasTime();
+  });
+
+  const complete = allPuzzlesSolved();
+  const hasTime = puzzleHasTime();
+
+  if (complete) {
+    $("systemHeading").textContent =
+      "🔓 SYSTEM ACCESS RESTORED!";
+
+    $("systemHeading").style.color = "#60efa5";
+
+    $("systemMessage").innerHTML =
+      "All three systems have been restored!" +
+      "<p>You're ready for the escape challenge.</p>";
+  } else {
+    $("systemHeading").textContent =
+      "🔒 EVERYTHING IS LOCKED!";
+
+    $("systemHeading").style.color = "";
+  }
+
+  $("beginButton").disabled = !complete || !hasTime;
+
+  $("beginButton").classList.toggle(
+    "unlocked",
+    complete && hasTime
+  );
+
+  $("beginButton").textContent =
+    complete && hasTime
+      ? "🔓 BEGIN ESCAPE CHALLENGE →"
+      : "🔒 BEGIN ESCAPE CHALLENGE →";
+
+  $("accessMessage").textContent =
+    !hasTime
+      ? "⏰ TIME'S UP! SYSTEM LOCKED."
+      : complete
+        ? "✓ ALL SYSTEMS RESTORED! YOU MAY ENTER."
+        : "Solve Websites, Files, and Applications first.";
+}
+
+/* ==========================
+   TIMER COUNTDOWN
+========================== */
+
+function updatePuzzleTimer() {
+  const endTime = Number(
+    sessionStorage.getItem(PUZZLE_TIMER_KEY)
+  );
+
+  const remaining = Math.max(
+    0,
+    endTime - Date.now()
+  );
+
+  const seconds = Math.ceil(remaining / 1000);
+
+  const minutes = String(
+    Math.floor(seconds / 60)
+  ).padStart(2, "0");
+
+  const secs = String(
+    seconds % 60
+  ).padStart(2, "0");
+
+  $("puzzleTimer").textContent =
+    `${minutes}:${secs}`;
+
+  const percentage = Math.max(
+    0,
+    Math.min(
+      100,
+      (remaining / PUZZLE_DURATION) * 100
+    )
+  );
+
+  $("timerBar").style.width =
+    percentage + "%";
+
+  $("timerBox").classList.toggle(
+    "urgent",
+    remaining > 0 && seconds <= 60
+  );
+
+  updateLockStatus();
+
+  if (remaining <= 0) {
+    clearInterval(puzzleInterval);
+  }
+}
+
+/* ==========================
+   OPEN PUZZLE PAGES
+========================== */
+
+function openPuzzle(filename) {
+  if (!puzzleHasTime()) {
+    $("accessMessage").textContent =
+      "⏰ TIME'S UP! ACCESS DENIED!";
+    return;
+  }
+
+  window.location.href = filename;
+}
+
+/* ==========================
+   BEGIN ESCAPE CHALLENGE
+========================== */
+
+function startEscape() {
+  if (!puzzleHasTime()) {
+    $("accessMessage").textContent =
+      "⏰ TIME'S UP! ACCESS DENIED!";
+    return;
+  }
+
+  if (!allPuzzlesSolved()) {
+    $("accessMessage").textContent =
+      "🔒 SOLVE ALL THREE PUZZLES FIRST!";
+    return;
+  }
+
+  // Start the separate 15-minute timer
+  // when the main escape room begins.
+
+  if (!sessionStorage.getItem("escapeRoomEndTime")) {
+    sessionStorage.setItem(
+      "escapeRoomEndTime",
+      String(Date.now() + 15 * 60 * 1000)
+    );
+  }
+
+  window.location.href = "screen4.html";
+}
+
+/* ==========================
+   RED MATRIX BACKGROUND
+========================== */
 
 (function () {
-  const canvas = document.getElementById("matrix");
+  const canvas = $("matrix");
   const ctx = canvas.getContext("2d");
 
   const characters =
     "01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&@";
 
   const fontSize = 18;
+
   let columns;
   let drops;
 
@@ -351,7 +742,9 @@ button:hover {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    columns = Math.ceil(canvas.width / fontSize);
+    columns = Math.ceil(
+      canvas.width / fontSize
+    );
 
     drops = Array.from(
       { length: columns },
@@ -360,7 +753,9 @@ button:hover {
   }
 
   function drawMatrix() {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.06)";
+    ctx.fillStyle =
+      "rgba(0, 0, 0, 0.06)";
+
     ctx.fillRect(
       0,
       0,
@@ -406,9 +801,23 @@ button:hover {
   setInterval(drawMatrix, 45);
 })();
 
-function startEscape() {
-  window.location.href = "screen4.html";
-}
+/* ==========================
+   START GAME
+========================== */
+
+initializePuzzleTimer();
+updatePuzzleTimer();
+
+puzzleInterval = setInterval(
+  updatePuzzleTimer,
+  250
+);
+
+// Refresh the statuses when
+// returning from a puzzle page.
+window.addEventListener("pageshow", () => {
+  updatePuzzleTimer();
+});
 
 </script>
 

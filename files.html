@@ -1,0 +1,1617 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>HACKED // File Recovery</title>
+
+  <style>
+    :root {
+      --red: #ff454e;
+      --green: #48e69b;
+      --panel: #170e13;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 25px 15px 170px;
+
+      background: #000;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    /* ==============================
+       RED MATRIX BACKGROUND
+    ============================== */
+
+    #matrix {
+      position: fixed;
+      inset: 0;
+
+      width: 100%;
+      height: 100%;
+
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .matrix-overlay {
+      position: fixed;
+      inset: 0;
+
+      background: radial-gradient(
+        circle,
+        rgba(0, 0, 0, 0.2),
+        rgba(0, 0, 0, 0.85)
+      );
+
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .container {
+      position: relative;
+      z-index: 2;
+
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    /* ==============================
+       HEADER
+    ============================== */
+
+    header {
+      text-align: center;
+    }
+
+    .warning {
+      color: #ff7777;
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 3px;
+    }
+
+    h1 {
+      color: var(--red);
+      font-size: clamp(30px, 6vw, 48px);
+      text-shadow: 0 0 20px #ff0000;
+    }
+
+    .instructions {
+      color: #ffbbbb;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    /* ==============================
+       GAME INFORMATION
+    ============================== */
+
+    .game-info {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+
+      margin: 25px 0;
+    }
+
+    .info-box {
+      flex: 1;
+      max-width: 250px;
+
+      padding: 16px;
+
+      background: #210d15;
+      border: 2px solid #a83540;
+      border-radius: 12px;
+
+      text-align: center;
+    }
+
+    .info-label {
+      color: #ff9999;
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    .info-value {
+      margin-top: 8px;
+      font-size: 25px;
+      font-weight: bold;
+    }
+
+    #timer {
+      color: #ff5555;
+      font-family: monospace;
+    }
+
+    /* ==============================
+       TIMER BAR
+    ============================== */
+
+    .timer-track {
+      height: 10px;
+
+      background: #280909;
+      border: 1px solid #993333;
+      border-radius: 20px;
+
+      overflow: hidden;
+    }
+
+    #timerBar {
+      width: 100%;
+      height: 100%;
+
+      background: var(--red);
+      transition: width 0.3s linear;
+    }
+
+    /* ==============================
+       GAME PANEL
+    ============================== */
+
+    .game-panel {
+      margin-top: 25px;
+      padding: 25px;
+
+      background: rgba(20, 8, 12, 0.95);
+      border: 2px solid #a83540;
+      border-radius: 15px;
+
+      box-shadow: 0 0 35px #8a101055;
+    }
+
+    .section-title {
+      margin-bottom: 18px;
+
+      color: #ffaaaa;
+      font-size: 14px;
+      font-weight: bold;
+      letter-spacing: 2px;
+
+      text-align: center;
+    }
+
+    /* ==============================
+       FILE GRID
+    ============================== */
+
+    .file-grid {
+      display: grid;
+      grid-template-columns: repeat(
+        auto-fit,
+        minmax(175px, 1fr)
+      );
+
+      gap: 12px;
+    }
+
+    .file-card {
+      padding: 18px 10px;
+
+      background: #25131a;
+      border: 2px solid #8b3844;
+      border-radius: 10px;
+
+      text-align: center;
+      cursor: grab;
+
+      transition: 0.2s;
+      user-select: none;
+    }
+
+    .file-card:hover {
+      background: #3a1821;
+      border-color: #ff5555;
+
+      transform: translateY(-2px);
+    }
+
+    .file-card.selected {
+      border-color: #ffcc55;
+      background: #493419;
+
+      box-shadow: 0 0 18px #ffcc5555;
+    }
+
+    .file-card.dragging {
+      opacity: 0.4;
+    }
+
+    .file-card.sorted {
+      opacity: 0.45;
+      cursor: default;
+    }
+
+    .file-icon {
+      font-size: 35px;
+      margin-bottom: 10px;
+    }
+
+    .file-name {
+      color: white;
+      font-family: monospace;
+      font-size: 13px;
+      font-weight: bold;
+
+      overflow-wrap: anywhere;
+    }
+
+    .file-description {
+      margin-top: 8px;
+
+      color: #b99da3;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    /* ==============================
+       DROP FOLDERS
+    ============================== */
+
+    .folders {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+
+      margin-top: 25px;
+    }
+
+    .folder {
+      min-height: 185px;
+      padding: 22px 15px;
+
+      border: 3px dashed;
+      border-radius: 15px;
+
+      text-align: center;
+      cursor: pointer;
+
+      transition: 0.2s;
+    }
+
+    .folder.safe {
+      background: #10271d;
+      border-color: #31bb78;
+    }
+
+    .folder.danger {
+      background: #321018;
+      border-color: #ff454e;
+    }
+
+    .folder.drag-over {
+      transform: scale(1.03);
+      box-shadow: 0 0 25px #ffffff55;
+    }
+
+    .folder-icon {
+      font-size: 48px;
+    }
+
+    .folder h2 {
+      font-size: 20px;
+      margin: 10px 0;
+    }
+
+    .folder.safe h2 {
+      color: #66ffae;
+    }
+
+    .folder.danger h2 {
+      color: #ff7777;
+    }
+
+    .folder p {
+      color: #c9b6b9;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .folder-count {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    /* ==============================
+       FEEDBACK
+    ============================== */
+
+    #feedback {
+      min-height: 55px;
+      margin-top: 22px;
+
+      color: #ffaaaa;
+      font-weight: bold;
+      line-height: 1.5;
+
+      text-align: center;
+    }
+
+    /* ==============================
+       BUTTONS
+    ============================== */
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+
+      margin-top: 15px;
+    }
+
+    button {
+      padding: 14px 22px;
+
+      background: #c62828;
+      color: white;
+
+      border: 0;
+      border-radius: 9px;
+
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #ff3333;
+    }
+
+    button.secondary {
+      background: #321821;
+      border: 1px solid #ff5555;
+    }
+
+    /* ==============================
+       BALD TEACHER
+    ============================== */
+
+    .teacher-area {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+
+      z-index: 10;
+
+      pointer-events: none;
+    }
+
+    .teacher-image {
+      width: clamp(110px, 15vw, 170px);
+      max-height: 220px;
+
+      object-fit: contain;
+      filter: drop-shadow(0 8px 15px black);
+    }
+
+    .speech-bubble {
+      position: absolute;
+      bottom: 155px;
+      left: 95px;
+
+      width: 230px;
+      padding: 13px;
+
+      background: white;
+      color: #111;
+
+      border: 3px solid black;
+      border-radius: 12px;
+
+      font-size: 13px;
+      font-weight: bold;
+      line-height: 1.4;
+
+      box-shadow: 0 0 20px #0008;
+    }
+
+    /* ==============================
+       END SCREENS
+    ============================== */
+
+    .overlay {
+      display: none;
+
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+
+      padding: 20px;
+
+      background: rgba(0, 0, 0, 0.94);
+
+      justify-content: center;
+      align-items: center;
+    }
+
+    .overlay.show {
+      display: flex;
+    }
+
+    .result {
+      width: 100%;
+      max-width: 520px;
+      padding: 35px 25px;
+
+      background: #190a0e;
+      border: 2px solid var(--green);
+      border-radius: 15px;
+
+      text-align: center;
+      box-shadow: 0 0 40px #00ff7755;
+    }
+
+    .result h2 {
+      color: #75ffb3;
+      font-size: 32px;
+    }
+
+    .result p {
+      color: #c6e7d5;
+      line-height: 1.6;
+    }
+
+    .timeout-result {
+      border-color: var(--red);
+      box-shadow: 0 0 40px #ff000055;
+    }
+
+    .timeout-result h2 {
+      color: var(--red);
+    }
+
+    /* ==============================
+       MOBILE
+    ============================== */
+
+    @media (max-width: 600px) {
+      .game-panel {
+        padding: 15px;
+      }
+
+      .file-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .file-card {
+        padding: 14px 7px;
+      }
+
+      .file-name {
+        font-size: 11px;
+      }
+
+      .folders {
+        gap: 9px;
+      }
+
+      .folder {
+        padding: 15px 7px;
+        min-height: 165px;
+      }
+
+      .folder h2 {
+        font-size: 15px;
+      }
+
+      .folder-icon {
+        font-size: 35px;
+      }
+
+      .speech-bubble {
+        bottom: 100px;
+        left: 45px;
+        width: 170px;
+        font-size: 11px;
+      }
+
+      .teacher-image {
+        width: 110px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ==============================
+       MATRIX BACKGROUND
+  ============================== -->
+
+  <canvas id="matrix"></canvas>
+  <div class="matrix-overlay"></div>
+
+
+  <!-- ==============================
+       MAIN GAME
+  ============================== -->
+
+  <div class="container">
+
+    <header>
+
+      <p class="warning">
+        ⚠ FILE SYSTEM COMPROMISED ⚠
+      </p>
+
+      <h1>📁 FILE RECOVERY</h1>
+
+      <p class="instructions">
+        The hacker mixed dangerous files with
+        important school documents!
+
+        <br><br>
+
+        Drag each file into the correct folder.
+
+        <br>
+
+        On mobile, tap a file and then tap a folder.
+
+        <br><br>
+
+        <strong>
+          No hearts. Unlimited retries.
+          The timer is your only enemy!
+        </strong>
+      </p>
+
+    </header>
+
+
+    <!-- GAME INFORMATION -->
+
+    <div class="game-info">
+
+      <div class="info-box">
+
+        <div class="info-label">
+          TIME LEFT
+        </div>
+
+        <div class="info-value" id="timer">
+          10:00
+        </div>
+
+      </div>
+
+      <div class="info-box">
+
+        <div class="info-label">
+          FILES RECOVERED
+        </div>
+
+        <div class="info-value" id="progress">
+          0 / 10
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- TIMER BAR -->
+
+    <div class="timer-track">
+      <div id="timerBar"></div>
+    </div>
+
+
+    <!-- FILES -->
+
+    <main class="game-panel">
+
+      <div class="section-title">
+        ◈ UNSORTED FILES ◈
+      </div>
+
+      <div class="file-grid" id="fileGrid"></div>
+
+
+      <!-- DROP FOLDERS -->
+
+      <div class="folders">
+
+        <div
+          class="folder safe"
+          id="safeFolder"
+          data-type="safe"
+          role="button"
+          tabindex="0"
+          aria-label="Safe files folder"
+        >
+
+          <div class="folder-icon">📂</div>
+
+          <h2>SAFE FILES</h2>
+
+          <p>
+            Legitimate school documents
+            and trusted files.
+          </p>
+
+          <div class="folder-count" id="safeCount">
+            0 FILES
+          </div>
+
+        </div>
+
+
+        <div
+          class="folder danger"
+          id="dangerFolder"
+          data-type="danger"
+          role="button"
+          tabindex="0"
+          aria-label="Dangerous files folder"
+        >
+
+          <div class="folder-icon">🦠</div>
+
+          <h2>DANGEROUS FILES</h2>
+
+          <p>
+            Suspicious attachments,
+            malware and fake documents.
+          </p>
+
+          <div class="folder-count" id="dangerCount">
+            0 FILES
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- FEEDBACK -->
+
+      <div id="feedback" aria-live="polite">
+        Select a file to begin!
+      </div>
+
+
+      <!-- BUTTONS -->
+
+      <div class="actions">
+
+        <button
+          class="secondary"
+          id="hintBtn"
+        >
+          💡 TEACHER HINT
+        </button>
+
+        <button
+          class="secondary"
+          id="backBtn"
+        >
+          ← BACK TO SYSTEM
+        </button>
+
+      </div>
+
+    </main>
+
+  </div>
+
+
+  <!-- ==============================
+       BALD TEACHER
+  ============================== -->
+
+  <div class="teacher-area">
+
+    <div
+      class="speech-bubble"
+      id="teacherSpeech"
+    >
+      Be careful! Some files are traps!
+    </div>
+
+    <img
+      src="Watching.png"
+      alt="Bald teacher"
+      class="teacher-image"
+    >
+
+  </div>
+
+
+  <!-- ==============================
+       WIN SCREEN
+  ============================== -->
+
+  <div class="overlay" id="winScreen">
+
+    <div class="result">
+
+      <h2>🔓 FILES RECOVERED!</h2>
+
+      <p>
+        Amazing work!
+
+        <br><br>
+
+        You successfully sorted all 10 files.
+
+        <br><br>
+
+        📁 FILES: SOLVED
+      </p>
+
+      <button id="winBackBtn">
+        RETURN TO SYSTEM →
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- ==============================
+       TIMEOUT SCREEN
+  ============================== -->
+
+  <div class="overlay" id="timeoutScreen">
+
+    <div class="result timeout-result">
+
+      <h2>⏰ TIME'S UP!</h2>
+
+      <p>
+        The 10-minute security timer has expired.
+
+        <br><br>
+
+        The files remain locked!
+      </p>
+
+      <button id="timeoutBackBtn">
+        ← BACK TO SYSTEM
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <script>
+    "use strict";
+
+
+    /* ==============================
+       SETTINGS
+    ============================== */
+
+    const HUB_PAGE = "screen3.html";
+
+    const TIMER_KEY = "puzzleEndTime";
+
+    const GAME_DURATION = 10 * 60 * 1000;
+
+    const TOTAL_FILES = 10;
+
+    const $ = id => document.getElementById(id);
+
+
+    /* ==============================
+       RANDOM FILE BANK
+    ============================== */
+
+    // Files are fictional.
+    // Their descriptions provide clues.
+    // Do not actually open unknown files.
+
+    const fileBank = [
+
+      {
+        name: "Math_Homework.pdf",
+        description: "PDF from the official school portal",
+        type: "safe",
+        reason: "A normal PDF from a trusted school source."
+      },
+
+      {
+        name: "Science_Notes.docx",
+        description: "Document shared by your teacher",
+        type: "safe",
+        reason: "A trusted classroom document."
+      },
+
+      {
+        name: "School_Timetable.xlsx",
+        description: "Spreadsheet from the school office",
+        type: "safe",
+        reason: "A legitimate school timetable."
+      },
+
+      {
+        name: "Class_Photo.jpg",
+        description: "Image from the class shared folder",
+        type: "safe",
+        reason: "A photo from a known school folder."
+      },
+
+      {
+        name: "Reading_List.txt",
+        description: "Text file from the school library",
+        type: "safe",
+        reason: "A simple text file from a trusted source."
+      },
+
+      {
+        name: "School_Handbook.pdf",
+        description: "Handbook from the official school website",
+        type: "safe",
+        reason: "An official school handbook."
+      },
+
+      {
+        name: "Art_Project.png",
+        description: "Picture saved from your own class project",
+        type: "safe",
+        reason: "An image from your own school project."
+      },
+
+      {
+        name: "English_Essay.docx",
+        description: "Document you created for English class",
+        type: "safe",
+        reason: "A document you created yourself."
+      },
+
+      {
+        name: "Exam_Answers.exe",
+        description: "Unknown sender promises leaked exam answers",
+        type: "danger",
+        reason: "An executable disguised as exam answers."
+      },
+
+      {
+        name: "Homework.pdf.exe",
+        description: "Unexpected email attachment",
+        type: "danger",
+        reason: "The real extension is .exe, not .pdf."
+      },
+
+      {
+        name: "Free_Grades_Booster.exe",
+        description: "Unknown website promises better grades",
+        type: "danger",
+        reason: "An untrusted executable download."
+      },
+
+      {
+        name: "School_Update.bat",
+        description: "Unexpected script from an unknown sender",
+        type: "danger",
+        reason: "An unexpected batch script can execute commands."
+      },
+
+      {
+        name: "Important_Notice.js",
+        description: "Unrequested script sent in a chat",
+        type: "danger",
+        reason: "An unexpected JavaScript file can run code."
+      },
+
+      {
+        name: "Free_Games_Setup.exe",
+        description: "Random pop-up offers a free download",
+        type: "danger",
+        reason: "A download from an untrusted pop-up."
+      },
+
+      {
+        name: "Report_Card.zip",
+        description: "Unexpected archive asking you to run its contents",
+        type: "danger",
+        reason: "The archive asks you to execute unknown files."
+      },
+
+      {
+        name: "Teacher_Message.scr",
+        description: "Unknown sender says to open immediately",
+        type: "danger",
+        reason: "A .scr file can be an executable program."
+      },
+
+      {
+        name: "Prize_Winner.cmd",
+        description: "Stranger claims you won a school prize",
+        type: "danger",
+        reason: "An untrusted command script is dangerous."
+      },
+
+      {
+        name: "School_Passwords.txt",
+        description: "Unknown sender asks you to share this file",
+        type: "danger",
+        reason: "A suspicious request involving passwords."
+      }
+
+    ];
+
+
+    /* ==============================
+       RANDOM TEACHER REACTIONS
+    ============================== */
+
+    const correctReactions = [
+      "YES! You sorted that correctly!",
+      "Excellent! Another file recovered!",
+      "Nice! The hacker is losing!",
+      "BOOM! Great cybersecurity skills!",
+      "Correct! Keep going!"
+    ];
+
+    const wrongReactions = [
+      "NOOO! Wrong folder!",
+      "AHHH! Look at the file extension!",
+      "The hacker nearly tricked us!",
+      "Wait! Check where that file came from!",
+      "My bald head senses danger!"
+    ];
+
+    const startReactions = [
+      "Don't trust unknown attachments!",
+      "Look closely at those file names!",
+      "The hacker has mixed up everything!",
+      "We must recover these files!",
+      "Watch out for suspicious downloads!"
+    ];
+
+
+    /* ==============================
+       GAME STATE
+    ============================== */
+
+    let files = [];
+
+    let selectedFileId = null;
+
+    let sortedCount = 0;
+    let safeCount = 0;
+    let dangerCount = 0;
+
+    let gameEnded = false;
+
+
+    /* ==============================
+       RANDOM HELPERS
+    ============================== */
+
+    function shuffle(array) {
+      const copy = [...array];
+
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(
+          Math.random() * (i + 1)
+        );
+
+        [copy[i], copy[j]] = [
+          copy[j],
+          copy[i]
+        ];
+      }
+
+      return copy;
+    }
+
+
+    function randomItem(array) {
+      return array[
+        Math.floor(Math.random() * array.length)
+      ];
+    }
+
+
+    function teacherSay(message) {
+      $("teacherSpeech").textContent = message;
+    }
+
+
+    /* ==============================
+       SHARED TEN-MINUTE TIMER
+    ============================== */
+
+    function initializeTimer() {
+      const saved = Number(
+        sessionStorage.getItem(TIMER_KEY)
+      );
+
+      if (
+        !Number.isFinite(saved) ||
+        saved <= 0
+      ) {
+        sessionStorage.setItem(
+          TIMER_KEY,
+          String(Date.now() + GAME_DURATION)
+        );
+      }
+    }
+
+
+    function hasTime() {
+      const endTime = Number(
+        sessionStorage.getItem(TIMER_KEY)
+      );
+
+      return (
+        Number.isFinite(endTime) &&
+        endTime > 0 &&
+        Date.now() < endTime
+      );
+    }
+
+
+    function updateTimer() {
+      const endTime = Number(
+        sessionStorage.getItem(TIMER_KEY)
+      );
+
+      const remaining = Math.max(
+        0,
+        endTime - Date.now()
+      );
+
+      const seconds = Math.ceil(
+        remaining / 1000
+      );
+
+      const minutes = String(
+        Math.floor(seconds / 60)
+      ).padStart(2, "0");
+
+      const secs = String(
+        seconds % 60
+      ).padStart(2, "0");
+
+      $("timer").textContent =
+        `${minutes}:${secs}`;
+
+      $("timerBar").style.width =
+        Math.max(
+          0,
+          Math.min(
+            100,
+            (remaining / GAME_DURATION) * 100
+          )
+        ) + "%";
+
+      if (remaining <= 0 && !gameEnded) {
+        showTimeout();
+      }
+    }
+
+
+    /* ==============================
+       START RANDOM FILE CHALLENGE
+    ============================== */
+
+    function startGame() {
+      if (!hasTime()) {
+        showTimeout();
+        return;
+      }
+
+      // Select five safe and five dangerous
+      // files so every game is balanced.
+
+      const safeFiles = shuffle(
+        fileBank.filter(file => file.type === "safe")
+      ).slice(0, 5);
+
+      const dangerousFiles = shuffle(
+        fileBank.filter(file => file.type === "danger")
+      ).slice(0, 5);
+
+      files = shuffle([
+        ...safeFiles,
+        ...dangerousFiles
+      ]).map((file, index) => ({
+        ...file,
+        id: index,
+        sorted: false
+      }));
+
+      selectedFileId = null;
+
+      sortedCount = 0;
+      safeCount = 0;
+      dangerCount = 0;
+
+      gameEnded = false;
+
+      updateProgress();
+
+      teacherSay(randomItem(startReactions));
+
+      renderFiles();
+    }
+
+
+    /* ==============================
+       DISPLAY FILE CARDS
+    ============================== */
+
+    function renderFiles() {
+      const grid = $("fileGrid");
+
+      grid.innerHTML = "";
+
+      files.forEach(file => {
+        const card = document.createElement("div");
+
+        card.className = "file-card";
+        card.id = `file-${file.id}`;
+
+        card.draggable = !file.sorted;
+
+        card.setAttribute("role", "button");
+        card.setAttribute("tabindex", "0");
+
+        card.setAttribute(
+          "aria-label",
+          `${file.name}. ${file.description}`
+        );
+
+        const icon = document.createElement("div");
+        icon.className = "file-icon";
+        icon.textContent = "📄";
+
+        const name = document.createElement("div");
+        name.className = "file-name";
+        name.textContent = file.name;
+
+        const description = document.createElement("div");
+        description.className = "file-description";
+        description.textContent = file.description;
+
+        card.appendChild(icon);
+        card.appendChild(name);
+        card.appendChild(description);
+
+
+        // Click or tap to select.
+
+        card.addEventListener("click", () => {
+          selectFile(file.id);
+        });
+
+
+        // Keyboard selection.
+
+        card.addEventListener("keydown", event => {
+          if (
+            event.key === "Enter" ||
+            event.key === " "
+          ) {
+            event.preventDefault();
+            selectFile(file.id);
+          }
+        });
+
+
+        // Desktop drag and drop.
+
+        card.addEventListener("dragstart", event => {
+          if (file.sorted || gameEnded) {
+            event.preventDefault();
+            return;
+          }
+
+          selectedFileId = file.id;
+
+          event.dataTransfer.setData(
+            "text/plain",
+            String(file.id)
+          );
+
+          event.dataTransfer.effectAllowed = "move";
+
+          card.classList.add("dragging");
+        });
+
+
+        card.addEventListener("dragend", () => {
+          card.classList.remove("dragging");
+        });
+
+        grid.appendChild(card);
+      });
+    }
+
+
+    /* ==============================
+       SELECT FILE
+    ============================== */
+
+    function selectFile(fileId) {
+      if (gameEnded || !hasTime()) {
+        return;
+      }
+
+      const file = files.find(
+        item => item.id === fileId
+      );
+
+      if (!file || file.sorted) {
+        return;
+      }
+
+      selectedFileId = fileId;
+
+      document.querySelectorAll(
+        ".file-card"
+      ).forEach(card => {
+        card.classList.remove("selected");
+      });
+
+      $(`file-${fileId}`).classList.add(
+        "selected"
+      );
+
+      $("feedback").textContent =
+        `Selected ${file.name}. Now choose a folder.`;
+    }
+
+
+    /* ==============================
+       SORT FILE
+    ============================== */
+
+    function sortFile(fileId, folderType) {
+      if (gameEnded || !hasTime()) {
+        return;
+      }
+
+      const file = files.find(
+        item => item.id === fileId
+      );
+
+      if (!file || file.sorted) {
+        return;
+      }
+
+      if (file.type === folderType) {
+        file.sorted = true;
+
+        sortedCount++;
+
+        if (folderType === "safe") {
+          safeCount++;
+        } else {
+          dangerCount++;
+        }
+
+        $("feedback").textContent =
+          `✓ CORRECT! ${file.reason}`;
+
+        $("feedback").style.color = "#75ffb3";
+
+        teacherSay(randomItem(correctReactions));
+
+        const card = $(`file-${file.id}`);
+
+        card.classList.remove("selected");
+        card.classList.add("sorted");
+
+        card.draggable = false;
+
+        card.style.display = "none";
+
+        selectedFileId = null;
+
+        updateProgress();
+
+        if (sortedCount === TOTAL_FILES) {
+          winGame();
+        }
+
+      } else {
+        $("feedback").textContent =
+          `✗ WRONG FOLDER! ${file.reason}`;
+
+        $("feedback").style.color = "#ff7777";
+
+        teacherSay(randomItem(wrongReactions));
+      }
+    }
+
+
+    /* ==============================
+       SET UP DROP FOLDERS
+    ============================== */
+
+    function setupFolder(folderId, folderType) {
+      const folder = $(folderId);
+
+
+      folder.addEventListener("dragover", event => {
+        if (gameEnded) {
+          return;
+        }
+
+        event.preventDefault();
+
+        folder.classList.add("drag-over");
+      });
+
+
+      folder.addEventListener("dragleave", () => {
+        folder.classList.remove("drag-over");
+      });
+
+
+      folder.addEventListener("drop", event => {
+        event.preventDefault();
+
+        folder.classList.remove("drag-over");
+
+        const fileId = Number(
+          event.dataTransfer.getData("text/plain")
+        );
+
+        if (!Number.isInteger(fileId)) {
+          return;
+        }
+
+        sortFile(fileId, folderType);
+      });
+
+
+      // Tap selected file, then tap folder.
+
+      folder.addEventListener("click", () => {
+        if (selectedFileId !== null) {
+          sortFile(selectedFileId, folderType);
+        }
+      });
+
+
+      folder.addEventListener("keydown", event => {
+        if (
+          event.key === "Enter" ||
+          event.key === " "
+        ) {
+          event.preventDefault();
+
+          if (selectedFileId !== null) {
+            sortFile(selectedFileId, folderType);
+          }
+        }
+      });
+    }
+
+
+    /* ==============================
+       UPDATE PROGRESS
+    ============================== */
+
+    function updateProgress() {
+      $("progress").textContent =
+        `${sortedCount} / ${TOTAL_FILES}`;
+
+      $("safeCount").textContent =
+        `${safeCount} FILES`;
+
+      $("dangerCount").textContent =
+        `${dangerCount} FILES`;
+    }
+
+
+    /* ==============================
+       RANDOM TEACHER HINT
+    ============================== */
+
+    function showHint() {
+      if (gameEnded || !hasTime()) {
+        return;
+      }
+
+      const hints = [
+        "Check the full file extension!",
+        "A .pdf.exe file is actually an executable!",
+        "Unexpected scripts can be dangerous!",
+        "Look at who sent the file!",
+        "A familiar filename doesn't prove a file is safe!",
+        "Never run an unknown attachment!"
+      ];
+
+      teacherSay(randomItem(hints));
+    }
+
+
+    /* ==============================
+       WIN GAME
+    ============================== */
+
+    function winGame() {
+      if (gameEnded || !hasTime()) {
+        return;
+      }
+
+      gameEnded = true;
+
+      sessionStorage.setItem(
+        "filesSolved",
+        "true"
+      );
+
+      teacherSay(
+        "WE DID IT! ALL FILES ARE RECOVERED!"
+      );
+
+      $("winScreen").classList.add("show");
+    }
+
+
+    /* ==============================
+       TIMEOUT
+    ============================== */
+
+    function showTimeout() {
+      if (gameEnded) {
+        return;
+      }
+
+      gameEnded = true;
+
+      teacherSay(
+        "OH NO! THE TIMER RAN OUT!"
+      );
+
+      $("timeoutScreen").classList.add("show");
+    }
+
+
+    /* ==============================
+       RETURN TO LOCKED SYSTEM
+    ============================== */
+
+    function returnToHub() {
+      window.location.href = HUB_PAGE;
+    }
+
+
+    /* ==============================
+       BUTTON EVENTS
+    ============================== */
+
+    $("hintBtn").addEventListener(
+      "click",
+      showHint
+    );
+
+    $("backBtn").addEventListener(
+      "click",
+      returnToHub
+    );
+
+    $("winBackBtn").addEventListener(
+      "click",
+      returnToHub
+    );
+
+    $("timeoutBackBtn").addEventListener(
+      "click",
+      returnToHub
+    );
+
+
+    /* ==============================
+       RED MATRIX RAIN
+    ============================== */
+
+    (function () {
+      const canvas = $("matrix");
+      const ctx = canvas.getContext("2d");
+
+      const characters =
+        "01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&@";
+
+      const fontSize = 18;
+
+      let drops = [];
+
+
+      function resizeMatrix() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const columns = Math.ceil(
+          canvas.width / fontSize
+        );
+
+        drops = Array.from(
+          { length: columns },
+          () => Math.random() * -50
+        );
+      }
+
+
+      function drawMatrix() {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.06)";
+
+        ctx.fillRect(
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+
+        ctx.fillStyle = "#ff2020";
+        ctx.font = fontSize + "px monospace";
+
+        for (let i = 0; i < drops.length; i++) {
+          const character = characters[
+            Math.floor(
+              Math.random() * characters.length
+            )
+          ];
+
+          ctx.fillText(
+            character,
+            i * fontSize,
+            drops[i] * fontSize
+          );
+
+          if (
+            drops[i] * fontSize > canvas.height &&
+            Math.random() > 0.975
+          ) {
+            drops[i] = 0;
+          }
+
+          drops[i]++;
+        }
+      }
+
+
+      resizeMatrix();
+
+      window.addEventListener(
+        "resize",
+        resizeMatrix
+      );
+
+      setInterval(drawMatrix, 45);
+    })();
+
+
+    /* ==============================
+       INITIALIZE GAME
+    ============================== */
+
+    initializeTimer();
+
+    setupFolder("safeFolder", "safe");
+    setupFolder("dangerFolder", "danger");
+
+    $("timer").textContent = "10:00";
+
+    updateTimer();
+
+    setInterval(updateTimer, 250);
+
+    startGame();
+
+  </script>
+
+</body>
+</html>

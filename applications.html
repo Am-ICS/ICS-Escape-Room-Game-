@@ -1,0 +1,1641 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>HACKED // Applications Security</title>
+
+  <style>
+    :root {
+      --red: #ff454e;
+      --green: #48e69b;
+      --yellow: #ffd166;
+      --panel: #151015;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 24px 16px 160px;
+      background: #000;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    /* ==============================
+       RED MATRIX BACKGROUND
+    ============================== */
+
+    #matrix {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .matrix-overlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(
+        circle,
+        rgba(0, 0, 0, 0.25),
+        rgba(0, 0, 0, 0.88)
+      );
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .container {
+      position: relative;
+      z-index: 2;
+      max-width: 1050px;
+      margin: auto;
+    }
+
+    /* ==============================
+       HEADER
+    ============================== */
+
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .warning {
+      color: #ff7777;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 3px;
+    }
+
+    h1 {
+      color: var(--red);
+      font-size: clamp(29px, 5vw, 46px);
+      text-shadow: 0 0 20px #ff0000;
+      margin: 12px 0;
+    }
+
+    .instructions {
+      color: #d7afb6;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    /* ==============================
+       GAME INFORMATION
+    ============================== */
+
+    .game-info {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin: 22px 0;
+    }
+
+    .info-box {
+      flex: 1;
+      max-width: 260px;
+      padding: 15px;
+      background: #210d15;
+      border: 2px solid #a83540;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .info-label {
+      color: #ffaaaa;
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    .info-value {
+      margin-top: 8px;
+      font-size: 26px;
+      font-weight: 900;
+    }
+
+    #timer {
+      color: #ff6565;
+      font-family: monospace;
+    }
+
+    .timer-track {
+      height: 9px;
+      background: #260b10;
+      border: 1px solid #92303b;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 25px;
+    }
+
+    #timerBar {
+      height: 100%;
+      width: 100%;
+      background: var(--red);
+      transition: width 0.25s linear;
+    }
+
+    /* ==============================
+       TASK MANAGER WINDOW
+    ============================== */
+
+    .task-manager {
+      background: #14151b;
+      border: 2px solid #a93c47;
+      border-radius: 13px;
+      overflow: hidden;
+      box-shadow: 0 0 40px #8a101066;
+    }
+
+    .window-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 14px 18px;
+      background: #252630;
+      border-bottom: 1px solid #4c3b43;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .window-controls {
+      display: flex;
+      gap: 7px;
+    }
+
+    .window-controls span {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #ff5555;
+    }
+
+    .window-controls span:nth-child(2) {
+      background: #ffcc55;
+    }
+
+    .window-controls span:nth-child(3) {
+      background: #4bdb87;
+    }
+
+    .window-tabs {
+      display: flex;
+      gap: 20px;
+      padding: 14px 18px;
+      background: #1c1d25;
+      border-bottom: 1px solid #3c3540;
+      color: #aeb0bb;
+      font-size: 13px;
+    }
+
+    .window-tabs .active {
+      color: white;
+      font-weight: bold;
+      border-bottom: 2px solid var(--red);
+      padding-bottom: 6px;
+    }
+
+    .system-warning {
+      padding: 15px 18px;
+      background: #3a151d;
+      border-bottom: 1px solid #8f3542;
+      color: #ffb3b8;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* ==============================
+       PROCESS TABLE
+    ============================== */
+
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 700px;
+      font-size: 13px;
+    }
+
+    th {
+      padding: 15px 12px;
+      background: #23232d;
+      color: #bcbcc7;
+      text-align: left;
+      font-size: 11px;
+      letter-spacing: 1px;
+    }
+
+    td {
+      padding: 15px 12px;
+      border-top: 1px solid #30303a;
+      color: #e4e4e8;
+      vertical-align: middle;
+    }
+
+    tbody tr {
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    tbody tr:hover {
+      background: #2d252e;
+    }
+
+    tbody tr.selected {
+      background: #49303b;
+      outline: 1px solid #ff646b;
+    }
+
+    tbody tr.completed {
+      opacity: 0.55;
+      cursor: default;
+    }
+
+    .process-name {
+      font-weight: bold;
+      color: white;
+    }
+
+    .process-icon {
+      font-size: 20px;
+      margin-right: 8px;
+    }
+
+    .cpu-high {
+      color: #ff7777;
+      font-weight: bold;
+    }
+
+    .cpu-normal {
+      color: #8ce5b4;
+    }
+
+    .status-running {
+      color: #ffb1b7;
+    }
+
+    .status-checked {
+      color: var(--green);
+      font-weight: bold;
+    }
+
+    /* ==============================
+       PROCESS INSPECTOR
+    ============================== */
+
+    .inspector {
+      margin-top: 18px;
+      padding: 22px;
+      background: #19121a;
+      border: 2px solid #a93c47;
+      border-radius: 12px;
+      box-shadow: 0 0 25px #8a101044;
+    }
+
+    .inspector h2 {
+      margin-top: 0;
+      color: #ff9ca3;
+      font-size: 17px;
+    }
+
+    .inspector-name {
+      color: white;
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 18px;
+      overflow-wrap: anywhere;
+    }
+
+    .details {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .detail {
+      padding: 14px;
+      background: #271821;
+      border: 1px solid #6f3440;
+      border-radius: 8px;
+      overflow-wrap: anywhere;
+    }
+
+    .detail-label {
+      display: block;
+      color: #ff9ca3;
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      margin-bottom: 7px;
+    }
+
+    .detail-value {
+      color: #fff;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* ==============================
+       BUTTONS
+    ============================== */
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 13px 19px;
+      border: 0;
+      border-radius: 8px;
+      color: white;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    button:hover {
+      filter: brightness(1.2);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .keep-btn {
+      background: #177a4d;
+    }
+
+    .quarantine-btn {
+      background: #c62828;
+    }
+
+    .secondary-btn {
+      background: #321821;
+      border: 1px solid #ff5555;
+    }
+
+    /* ==============================
+       FEEDBACK
+    ============================== */
+
+    #feedback {
+      min-height: 48px;
+      margin-top: 20px;
+      color: #ffaaaa;
+      font-weight: bold;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    /* ==============================
+       TEACHER
+    ============================== */
+
+    .teacher-area {
+      position: fixed;
+      left: 10px;
+      bottom: 10px;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .teacher-image {
+      width: clamp(100px, 15vw, 165px);
+      max-height: 220px;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 15px black);
+    }
+
+    .speech-bubble {
+      position: absolute;
+      bottom: 150px;
+      left: 95px;
+      width: 240px;
+      padding: 13px;
+      background: white;
+      color: #111;
+      border: 3px solid black;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: bold;
+      line-height: 1.4;
+      box-shadow: 0 0 20px #0008;
+    }
+
+    /* ==============================
+       END SCREENS
+    ============================== */
+
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.95);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .overlay.show {
+      display: flex;
+    }
+
+    .result {
+      width: 100%;
+      max-width: 520px;
+      padding: 35px 25px;
+      background: #190d14;
+      border: 2px solid var(--green);
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 0 40px #00ff7755;
+    }
+
+    .result h2 {
+      color: #75ffb3;
+      font-size: 32px;
+    }
+
+    .result p {
+      color: #c6e7d5;
+      line-height: 1.7;
+    }
+
+    .timeout-result {
+      border-color: var(--red);
+      box-shadow: 0 0 40px #ff000055;
+    }
+
+    .timeout-result h2 {
+      color: var(--red);
+    }
+
+    /* ==============================
+       MOBILE
+    ============================== */
+
+    @media (max-width: 600px) {
+      .details {
+        grid-template-columns: 1fr;
+      }
+
+      .inspector {
+        padding: 15px;
+      }
+
+      .speech-bubble {
+        width: 170px;
+        left: 45px;
+        bottom: 100px;
+        font-size: 11px;
+      }
+
+      .teacher-image {
+        width: 105px;
+      }
+
+      .game-info {
+        gap: 8px;
+      }
+
+      .info-box {
+        padding: 12px 7px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- RED MATRIX BACKGROUND -->
+
+  <canvas id="matrix"></canvas>
+  <div class="matrix-overlay"></div>
+
+
+  <div class="container">
+
+    <!-- HEADER -->
+
+    <header>
+
+      <p class="warning">
+        ⚠ SECURITY BREACH DETECTED ⚠
+      </p>
+
+      <h1>💻 APPLICATIONS SECURITY</h1>
+
+      <p class="instructions">
+        The hacker has hidden dangerous programs
+        among legitimate running applications!
+
+        <br><br>
+
+        Select a process in Task Manager.
+        Inspect its publisher, permissions,
+        source, and behavior.
+
+        <br>
+
+        Choose <strong>KEEP RUNNING</strong>
+        for trusted applications or
+        <strong>QUARANTINE</strong>
+        for suspicious ones.
+
+        <br><br>
+
+        <strong>
+          Unlimited retries. No hearts.
+          The shared timer keeps running!
+        </strong>
+      </p>
+
+    </header>
+
+
+    <!-- TIMER AND PROGRESS -->
+
+    <div class="game-info">
+
+      <div class="info-box">
+        <div class="info-label">TIME LEFT</div>
+        <div class="info-value" id="timer">10:00</div>
+      </div>
+
+      <div class="info-box">
+        <div class="info-label">PROCESSES SECURED</div>
+        <div class="info-value" id="progress">0 / 10</div>
+      </div>
+
+    </div>
+
+    <div class="timer-track">
+      <div id="timerBar"></div>
+    </div>
+
+
+    <!-- TASK MANAGER -->
+
+    <main class="task-manager">
+
+      <div class="window-title">
+
+        <span>🖥️ Task Manager — Processes</span>
+
+        <div class="window-controls">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+      </div>
+
+
+      <div class="window-tabs">
+        <span class="active">Processes</span>
+        <span>Performance</span>
+        <span>Startup Apps</span>
+      </div>
+
+
+      <div class="system-warning">
+        ⚠ UNKNOWN PROCESSES DETECTED.
+        Inspect each application before allowing
+        it to continue running.
+      </div>
+
+
+      <div class="table-wrapper">
+
+        <table>
+
+          <thead>
+            <tr>
+              <th>APPLICATION</th>
+              <th>PID</th>
+              <th>CPU</th>
+              <th>MEMORY</th>
+              <th>STATUS</th>
+            </tr>
+          </thead>
+
+          <tbody id="processTable"></tbody>
+
+        </table>
+
+      </div>
+
+    </main>
+
+
+    <!-- PROCESS INSPECTOR -->
+
+    <section class="inspector">
+
+      <h2>🔍 PROCESS INSPECTOR</h2>
+
+      <div class="inspector-name" id="selectedName">
+        Select a running process...
+      </div>
+
+      <div class="details">
+
+        <div class="detail">
+          <span class="detail-label">PUBLISHER</span>
+          <span class="detail-value" id="publisher">—</span>
+        </div>
+
+        <div class="detail">
+          <span class="detail-label">INSTALL SOURCE</span>
+          <span class="detail-value" id="source">—</span>
+        </div>
+
+        <div class="detail">
+          <span class="detail-label">PERMISSIONS</span>
+          <span class="detail-value" id="permissions">—</span>
+        </div>
+
+        <div class="detail">
+          <span class="detail-label">OBSERVED BEHAVIOR</span>
+          <span class="detail-value" id="behavior">—</span>
+        </div>
+
+      </div>
+
+
+      <!-- ACTIONS -->
+
+      <div class="actions">
+
+        <button class="keep-btn" id="keepBtn">
+          ✅ KEEP RUNNING
+        </button>
+
+        <button class="quarantine-btn" id="quarantineBtn">
+          🦠 QUARANTINE
+        </button>
+
+        <button class="secondary-btn" id="hintBtn">
+          💡 TEACHER HINT
+        </button>
+
+        <button class="secondary-btn" id="backBtn">
+          ← BACK TO SYSTEM
+        </button>
+
+      </div>
+
+
+      <div id="feedback" aria-live="polite">
+        Select a process to begin.
+      </div>
+
+    </section>
+
+  </div>
+
+
+  <!-- BALD TEACHER -->
+
+  <div class="teacher-area">
+
+    <div class="speech-bubble" id="teacherSpeech">
+      AHHH! The hacker is hiding in Task Manager!
+    </div>
+
+    <img
+      src="Watching.png"
+      alt="Bald teacher"
+      class="teacher-image"
+    >
+
+  </div>
+
+
+  <!-- WIN SCREEN -->
+
+  <div class="overlay" id="winScreen">
+
+    <div class="result">
+
+      <h2>🔓 APPLICATIONS SECURED!</h2>
+
+      <p>
+        INCREDIBLE!
+
+        <br><br>
+
+        All 10 processes have been classified correctly.
+
+        <br><br>
+
+        💻 APPLICATIONS: SOLVED
+      </p>
+
+      <button class="keep-btn" id="winBackBtn">
+        RETURN TO SYSTEM →
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- TIMEOUT SCREEN -->
+
+  <div class="overlay" id="timeoutScreen">
+
+    <div class="result timeout-result">
+
+      <h2>⏰ TIME'S UP!</h2>
+
+      <p>
+        The shared 10-minute security timer expired.
+
+        <br><br>
+
+        The hacker still controls the system!
+      </p>
+
+      <button class="quarantine-btn" id="timeoutBackBtn">
+        ← BACK TO SYSTEM
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <script>
+    "use strict";
+
+
+    /* ==============================
+       SETTINGS
+    ============================== */
+
+    const HUB_PAGE = "screen3.html";
+
+    const TIMER_KEY = "puzzleEndTime";
+
+    const GAME_DURATION = 10 * 60 * 1000;
+
+    const TOTAL_PROCESSES = 10;
+
+    const $ = id => document.getElementById(id);
+
+
+    /* ==============================
+       PROCESS BANK
+    ============================== */
+
+    // Fictional examples for this game.
+    // CPU usage alone does not prove an app is malicious.
+
+    const processBank = [
+
+      {
+        name: "School Browser",
+        icon: "🌐",
+        publisher: "Verified School IT",
+        source: "Official school software portal",
+        permissions: "Access to approved school websites",
+        behavior: "Opens classroom learning websites normally",
+        type: "safe",
+        reason: "Verified publisher and expected classroom behavior."
+      },
+
+      {
+        name: "Classroom Notes",
+        icon: "📝",
+        publisher: "Verified School IT",
+        source: "School-managed application catalog",
+        permissions: "Read and save classroom notes",
+        behavior: "Saves documents to the student's folder",
+        type: "safe",
+        reason: "Trusted school installation and normal permissions."
+      },
+
+      {
+        name: "Library Reader",
+        icon: "📚",
+        publisher: "School Library Services",
+        source: "Official school library portal",
+        permissions: "Read downloaded library books",
+        behavior: "Displays borrowed digital books",
+        type: "safe",
+        reason: "Legitimate library software with expected behavior."
+      },
+
+      {
+        name: "Video Classroom",
+        icon: "🎥",
+        publisher: "Verified Education Software",
+        source: "School-approved app store",
+        permissions: "Camera and microphone during lessons",
+        behavior: "Runs scheduled video classes",
+        type: "safe",
+        reason: "Approved app using expected video-call permissions."
+      },
+
+      {
+        name: "Homework Sync",
+        icon: "☁️",
+        publisher: "Verified School IT",
+        source: "Official school software portal",
+        permissions: "Sync assigned homework folders",
+        behavior: "Uploads completed homework to school storage",
+        type: "safe",
+        reason: "Expected syncing to an approved school service."
+      },
+
+      {
+        name: "Calculator Pro",
+        icon: "🧮",
+        publisher: "Verified Education Software",
+        source: "School-managed application catalog",
+        permissions: "Basic local calculations",
+        behavior: "Performs calculations without unusual access",
+        type: "safe",
+        reason: "Trusted source and limited, appropriate permissions."
+      },
+
+      {
+        name: "School Calendar",
+        icon: "📅",
+        publisher: "Verified School IT",
+        source: "Official school portal",
+        permissions: "Read school event schedules",
+        behavior: "Displays lessons, exams, and school events",
+        type: "safe",
+        reason: "Normal scheduling application."
+      },
+
+      {
+        name: "Presentation Viewer",
+        icon: "📊",
+        publisher: "Verified Education Software",
+        source: "Approved school app store",
+        permissions: "Read presentation files",
+        behavior: "Opens teacher-provided slide presentations",
+        type: "safe",
+        reason: "Approved software performing its expected task."
+      },
+
+      {
+        name: "FreeGradeHack.exe",
+        icon: "🦠",
+        publisher: "Unknown",
+        source: "Random pop-up advertisement",
+        permissions: "Administrator access and password storage",
+        behavior: "Attempts to read saved passwords",
+        type: "danger",
+        reason: "Unknown executable attempting credential access."
+      },
+
+      {
+        name: "SystemCleaner_2026.exe",
+        icon: "⚠️",
+        publisher: "Unverified Publisher",
+        source: "Unexpected browser download",
+        permissions: "Full disk access",
+        behavior: "Displays fake virus warnings and demands payment",
+        type: "danger",
+        reason: "Scareware behavior and an untrusted source."
+      },
+
+      {
+        name: "HomeworkHelper.scr",
+        icon: "🦠",
+        publisher: "Unknown",
+        source: "Unrequested email attachment",
+        permissions: "Run programs",
+        behavior: "Starts hidden background commands",
+        type: "danger",
+        reason: "Suspicious executable from an unexpected attachment."
+      },
+
+      {
+        name: "PasswordCollector",
+        icon: "🔑",
+        publisher: "Unknown",
+        source: "Unknown website",
+        permissions: "Read saved browser passwords",
+        behavior: "Sends stored login information to an unknown server",
+        type: "danger",
+        reason: "Credential theft and unauthorized data transfer."
+      },
+
+      {
+        name: "FakeAntivirus",
+        icon: "🚨",
+        publisher: "Unverified Publisher",
+        source: "Browser pop-up claiming the computer is infected",
+        permissions: "System configuration access",
+        behavior: "Demands payment before allowing normal computer use",
+        type: "danger",
+        reason: "Fake security warnings and extortion behavior."
+      },
+
+      {
+        name: "CameraSpy",
+        icon: "📷",
+        publisher: "Unknown",
+        source: "Installed without permission",
+        permissions: "Camera and microphone access",
+        behavior: "Activates the camera when no lesson is running",
+        type: "danger",
+        reason: "Unauthorized camera use."
+      },
+
+      {
+        name: "UpdateService_Fake",
+        icon: "⚙️",
+        publisher: "Unknown",
+        source: "Untrusted file-sharing site",
+        permissions: "Administrator access",
+        behavior: "Disables security software without approval",
+        type: "danger",
+        reason: "Untrusted process disabling security protections."
+      },
+
+      {
+        name: "ExamAnswersDownloader",
+        icon: "📥",
+        publisher: "Unknown",
+        source: "Suspicious exam-answer advertisement",
+        permissions: "Download and execute additional files",
+        behavior: "Silently installs unrelated programs",
+        type: "danger",
+        reason: "Unwanted software installation."
+      },
+
+      {
+        name: "BackgroundMiner",
+        icon: "⛏️",
+        publisher: "Unknown",
+        source: "Bundled with an untrusted download",
+        permissions: "Background processing",
+        behavior: "Uses computing resources without the user's consent",
+        type: "danger",
+        reason: "Unauthorized resource usage."
+      },
+
+      {
+        name: "RemoteControl_Unknown",
+        icon: "🖥️",
+        publisher: "Unknown",
+        source: "Installed through an unexpected attachment",
+        permissions: "Remote desktop and file access",
+        behavior: "Allows an unknown person to control the computer",
+        type: "danger",
+        reason: "Unauthorized remote access."
+      }
+
+    ];
+
+
+    /* ==============================
+       TEACHER REACTIONS
+    ============================== */
+
+    const correctReactions = [
+      "YES! That process is handled!",
+      "Excellent! We're taking back control!",
+      "BOOM! The hacker is losing!",
+      "Correct! Keep inspecting!",
+      "My bald head approves!"
+    ];
+
+    const wrongReactions = [
+      "AHHH! Check the publisher!",
+      "NOOO! Look at those permissions!",
+      "Wait! Where was that app installed from?",
+      "The hacker nearly tricked us!",
+      "Read the behavior carefully!"
+    ];
+
+    const startReactions = [
+      "AHHH! The hacker is hiding in Task Manager!",
+      "Some apps look normal but aren't!",
+      "Check the publisher and install source!",
+      "Don't quarantine our homework app!",
+      "We need to secure every process!"
+    ];
+
+
+    /* ==============================
+       GAME STATE
+    ============================== */
+
+    let processes = [];
+
+    let selectedProcessId = null;
+
+    let completedCount = 0;
+
+    let gameEnded = false;
+
+
+    /* ==============================
+       HELPERS
+    ============================== */
+
+    function shuffle(array) {
+      const copy = [...array];
+
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(
+          Math.random() * (i + 1)
+        );
+
+        [copy[i], copy[j]] = [
+          copy[j],
+          copy[i]
+        ];
+      }
+
+      return copy;
+    }
+
+
+    function randomItem(array) {
+      return array[
+        Math.floor(Math.random() * array.length)
+      ];
+    }
+
+
+    function teacherSay(message) {
+      $("teacherSpeech").textContent = message;
+    }
+
+
+    /* ==============================
+       SHARED TIMER
+    ============================== */
+
+    function initializeTimer() {
+      const saved = Number(
+        sessionStorage.getItem(TIMER_KEY)
+      );
+
+      if (
+        !Number.isFinite(saved) ||
+        saved <= 0
+      ) {
+        sessionStorage.setItem(
+          TIMER_KEY,
+          String(Date.now() + GAME_DURATION)
+        );
+      }
+    }
+
+
+    function hasTime() {
+      const endTime = Number(
+        sessionStorage.getItem(TIMER_KEY)
+      );
+
+      return (
+        Number.isFinite(endTime) &&
+        endTime > 0 &&
+        Date.now() < endTime
+      );
+    }
+
+
+    function updateTimer() {
+      const endTime = Number(
+        sessionStorage.getItem(TIMER_KEY)
+      );
+
+      const remaining = Math.max(
+        0,
+        endTime - Date.now()
+      );
+
+      const seconds = Math.ceil(
+        remaining / 1000
+      );
+
+      const minutes = String(
+        Math.floor(seconds / 60)
+      ).padStart(2, "0");
+
+      const secs = String(
+        seconds % 60
+      ).padStart(2, "0");
+
+      $("timer").textContent =
+        `${minutes}:${secs}`;
+
+      $("timerBar").style.width =
+        Math.max(
+          0,
+          Math.min(
+            100,
+            (remaining / GAME_DURATION) * 100
+          )
+        ) + "%";
+
+      if (remaining <= 0 && !gameEnded) {
+        showTimeout();
+      }
+    }
+
+
+    /* ==============================
+       START RANDOM CHALLENGE
+    ============================== */
+
+    function startGame() {
+      if (!hasTime()) {
+        showTimeout();
+        return;
+      }
+
+      const safeProcesses = shuffle(
+        processBank.filter(
+          process => process.type === "safe"
+        )
+      ).slice(0, 5);
+
+      const dangerousProcesses = shuffle(
+        processBank.filter(
+          process => process.type === "danger"
+        )
+      ).slice(0, 5);
+
+      processes = shuffle([
+        ...safeProcesses,
+        ...dangerousProcesses
+      ]).map((process, index) => ({
+        ...process,
+        id: index,
+        pid: Math.floor(Math.random() * 8000) + 1000,
+        cpu: Math.floor(Math.random() * 55) + 1,
+        memory: Math.floor(Math.random() * 450) + 30,
+        completed: false,
+        decision: null
+      }));
+
+      selectedProcessId = null;
+      completedCount = 0;
+      gameEnded = false;
+
+      updateProgress();
+
+      teacherSay(randomItem(startReactions));
+
+      renderProcesses();
+      clearInspector();
+    }
+
+
+    /* ==============================
+       DISPLAY TASK MANAGER
+    ============================== */
+
+    function renderProcesses() {
+      const tbody = $("processTable");
+
+      tbody.innerHTML = "";
+
+      processes.forEach(process => {
+        const row = document.createElement("tr");
+
+        row.id = `process-${process.id}`;
+
+        row.setAttribute("tabindex", "0");
+
+        row.setAttribute(
+          "aria-label",
+          `Inspect ${process.name}`
+        );
+
+        if (process.completed) {
+          row.classList.add("completed");
+        }
+
+        if (process.id === selectedProcessId) {
+          row.classList.add("selected");
+        }
+
+        const cpuClass =
+          process.cpu >= 40
+            ? "cpu-high"
+            : "cpu-normal";
+
+        const statusText = process.completed
+          ? (
+              process.decision === "safe"
+                ? "✓ Verified"
+                : "✓ Quarantined"
+            )
+          : "Running";
+
+        const statusClass = process.completed
+          ? "status-checked"
+          : "status-running";
+
+        row.innerHTML = `
+          <td>
+            <span class="process-icon">
+              ${process.icon}
+            </span>
+
+            <span class="process-name">
+              ${process.name}
+            </span>
+          </td>
+
+          <td>${process.pid}</td>
+
+          <td class="${cpuClass}">
+            ${process.cpu}%
+          </td>
+
+          <td>${process.memory} MB</td>
+
+          <td class="${statusClass}">
+            ${statusText}
+          </td>
+        `;
+
+        row.addEventListener("click", () => {
+          selectProcess(process.id);
+        });
+
+        row.addEventListener("keydown", event => {
+          if (
+            event.key === "Enter" ||
+            event.key === " "
+          ) {
+            event.preventDefault();
+            selectProcess(process.id);
+          }
+        });
+
+        tbody.appendChild(row);
+      });
+    }
+
+
+    /* ==============================
+       SELECT PROCESS
+    ============================== */
+
+    function selectProcess(processId) {
+      if (gameEnded || !hasTime()) {
+        return;
+      }
+
+      const process = processes.find(
+        item => item.id === processId
+      );
+
+      if (!process || process.completed) {
+        return;
+      }
+
+      selectedProcessId = processId;
+
+      $("selectedName").textContent =
+        `${process.icon} ${process.name}`;
+
+      $("publisher").textContent =
+        process.publisher;
+
+      $("source").textContent =
+        process.source;
+
+      $("permissions").textContent =
+        process.permissions;
+
+      $("behavior").textContent =
+        process.behavior;
+
+      $("feedback").textContent =
+        "Inspect the clues, then choose an action.";
+
+      $("feedback").style.color = "#ffaaaa";
+
+      renderProcesses();
+    }
+
+
+    /* ==============================
+       CLEAR INSPECTOR
+    ============================== */
+
+    function clearInspector() {
+      $("selectedName").textContent =
+        "Select a running process...";
+
+      $("publisher").textContent = "—";
+      $("source").textContent = "—";
+      $("permissions").textContent = "—";
+      $("behavior").textContent = "—";
+    }
+
+
+    /* ==============================
+       CHECK PLAYER DECISION
+    ============================== */
+
+    function checkDecision(decision) {
+      if (gameEnded || !hasTime()) {
+        return;
+      }
+
+      if (selectedProcessId === null) {
+        $("feedback").textContent =
+          "⚠ Select a process first!";
+
+        $("feedback").style.color = "#ffaaaa";
+
+        return;
+      }
+
+      const process = processes.find(
+        item => item.id === selectedProcessId
+      );
+
+      if (!process || process.completed) {
+        return;
+      }
+
+
+      // Correct decision.
+
+      if (decision === process.type) {
+        process.completed = true;
+        process.decision = decision;
+
+        completedCount++;
+
+        $("feedback").textContent =
+          `✓ CORRECT! ${process.reason}`;
+
+        $("feedback").style.color = "#75ffb3";
+
+        teacherSay(randomItem(correctReactions));
+
+        selectedProcessId = null;
+
+        clearInspector();
+        updateProgress();
+        renderProcesses();
+
+        if (completedCount === TOTAL_PROCESSES) {
+          winGame();
+        }
+
+      } else {
+
+        // Wrong decision:
+        // No hearts and no attempt penalty.
+
+        $("feedback").textContent =
+          `✗ WRONG ACTION! ${process.reason}`;
+
+        $("feedback").style.color = "#ff7777";
+
+        teacherSay(randomItem(wrongReactions));
+      }
+    }
+
+
+    /* ==============================
+       UPDATE PROGRESS
+    ============================== */
+
+    function updateProgress() {
+      $("progress").textContent =
+        `${completedCount} / ${TOTAL_PROCESSES}`;
+    }
+
+
+    /* ==============================
+       TEACHER HINT
+    ============================== */
+
+    function showHint() {
+      if (gameEnded || !hasTime()) {
+        return;
+      }
+
+      const hints = [
+        "Check the publisher. Is it verified?",
+        "Where did the application come from?",
+        "Does the app need those permissions?",
+        "A familiar name doesn't prove an app is safe!",
+        "High CPU usage alone doesn't mean malware!",
+        "Unexpected remote access is a warning sign!",
+        "Look for suspicious background behavior!"
+      ];
+
+      teacherSay(randomItem(hints));
+    }
+
+
+    /* ==============================
+       WIN GAME
+    ============================== */
+
+    function winGame() {
+      if (gameEnded || !hasTime()) {
+        return;
+      }
+
+      gameEnded = true;
+
+      sessionStorage.setItem(
+        "applicationsSolved",
+        "true"
+      );
+
+      teacherSay(
+        "WE DID IT! THE APPLICATIONS ARE SECURE!"
+      );
+
+      $("winScreen").classList.add("show");
+    }
+
+
+    /* ==============================
+       TIMEOUT
+    ============================== */
+
+    function showTimeout() {
+      if (gameEnded) {
+        return;
+      }
+
+      gameEnded = true;
+
+      teacherSay(
+        "NOOO! THE SYSTEM TIMER RAN OUT!"
+      );
+
+      $("timeoutScreen").classList.add("show");
+    }
+
+
+    /* ==============================
+       BUTTON EVENTS
+    ============================== */
+
+    $("keepBtn").addEventListener(
+      "click",
+      () => checkDecision("safe")
+    );
+
+    $("quarantineBtn").addEventListener(
+      "click",
+      () => checkDecision("danger")
+    );
+
+    $("hintBtn").addEventListener(
+      "click",
+      showHint
+    );
+
+    $("backBtn").addEventListener(
+      "click",
+      () => {
+        location.href = HUB_PAGE;
+      }
+    );
+
+    $("winBackBtn").addEventListener(
+      "click",
+      () => {
+        location.href = HUB_PAGE;
+      }
+    );
+
+    $("timeoutBackBtn").addEventListener(
+      "click",
+      () => {
+        location.href = HUB_PAGE;
+      }
+    );
+
+
+    /* ==============================
+       RED MATRIX RAIN
+    ============================== */
+
+    (function () {
+      const canvas = $("matrix");
+      const ctx = canvas.getContext("2d");
+
+      const characters =
+        "01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&@";
+
+      const fontSize = 18;
+
+      let drops = [];
+
+
+      function resizeMatrix() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const columns = Math.ceil(
+          canvas.width / fontSize
+        );
+
+        drops = Array.from(
+          { length: columns },
+          () => Math.random() * -50
+        );
+      }
+
+
+      function drawMatrix() {
+        ctx.fillStyle = "rgba(0, 0, 0, 0.06)";
+
+        ctx.fillRect(
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+
+        ctx.fillStyle = "#ff2020";
+        ctx.font = fontSize + "px monospace";
+
+        for (let i = 0; i < drops.length; i++) {
+          const character = characters[
+            Math.floor(
+              Math.random() * characters.length
+            )
+          ];
+
+          ctx.fillText(
+            character,
+            i * fontSize,
+            drops[i] * fontSize
+          );
+
+          if (
+            drops[i] * fontSize > canvas.height &&
+            Math.random() > 0.975
+          ) {
+            drops[i] = 0;
+          }
+
+          drops[i]++;
+        }
+      }
+
+
+      resizeMatrix();
+
+      window.addEventListener(
+        "resize",
+        resizeMatrix
+      );
+
+      setInterval(drawMatrix, 45);
+    })();
+
+
+    /* ==============================
+       INITIALIZE GAME
+    ============================== */
+
+    initializeTimer();
+
+    updateTimer();
+
+    setInterval(updateTimer, 250);
+
+    startGame();
+
+  </script>
+
+</body>
+</html>
