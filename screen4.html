@@ -81,6 +81,37 @@ body::before {
   }
 }
 
+/* SHARED TIMER PROGRESS BAR */
+.timer-box { width: min(100%, 370px); }
+.timer-track {
+  height: 13px;
+  width: 100%;
+  margin-top: 12px;
+  background: #110a0f;
+  border: 1px solid #82303e;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.timer-fill {
+  height: 100%;
+  width: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #b81935, #ff4656, #ff858c);
+  box-shadow: 0 0 12px #ff465699;
+  transition: width 0.25s linear, background 0.25s;
+}
+.timer-box.urgent .timer-fill {
+  background: #ff2222;
+  box-shadow: 0 0 15px #ff2222;
+}
+.timer-percent {
+  margin-top: 7px;
+  font-size: 11px;
+  font-weight: bold;
+  color: #e7a1aa;
+  letter-spacing: 1px;
+}
+
 /* HEADING */
 
 .heading {
@@ -657,6 +688,10 @@ body::before {
         ⏰ ESCAPE ROOM TIME LEFT
       </div>
       <div id="countdown">15:00</div>
+      <div class="timer-track" id="timerTrack" role="progressbar" aria-label="Escape room time remaining" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
+        <div class="timer-fill" id="timerFill"></div>
+      </div>
+      <div class="timer-percent" id="timerPercent">100% TIME REMAINING</div>
     </div>
   </div>
 
@@ -1405,6 +1440,9 @@ function showTimeout() {
 
   $("timeoutScreen").style.display = "flex";
   $("countdown").textContent = "00:00";
+  $("timerFill").style.width = "0%";
+  $("timerPercent").textContent = "0% TIME REMAINING";
+  $("timerTrack").setAttribute("aria-valuenow", "0");
   $("answerInput").disabled = true;
   $("unlockBtn").disabled = true;
 
@@ -1444,6 +1482,15 @@ function updateTimer() {
 
   $("countdown").textContent =
     `${minutes}:${secs}`;
+
+  const totalDuration = GAME_MINUTES * 60 * 1000;
+  const percent = Math.max(0, Math.min(100,
+    (remaining / totalDuration) * 100
+  ));
+  $("timerFill").style.width = `${percent}%`;
+  $("timerPercent").textContent =
+    `${Math.ceil(percent)}% TIME REMAINING`;
+  $("timerTrack").setAttribute("aria-valuenow", String(Math.round(percent)));
 
   $("timerBox").classList.toggle(
     "urgent",
