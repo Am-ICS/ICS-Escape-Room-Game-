@@ -57,15 +57,11 @@ body {
 }
 
 .menu button:hover {
-  background: #304454;
-  border-color: white;
-}
-
-.menu .security {
-  background: #24472b;
   border-color: #72ff65;
   box-shadow: 0 0 15px #72ff65;
 }
+
+
 
 .next {
   position: absolute;
@@ -117,11 +113,11 @@ body {
 function choose(option) {
 
   if (option === "lab") {
-    alert("Computer lab access is locked!");
+    window.location.href = "lab.html" ;
   }
 
   if (option === "course") {
-    alert("Course information is unavailable!");
+    window.location.href = "course.html";
   }
 
   if (option === "security") {
