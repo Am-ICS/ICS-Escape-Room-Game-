@@ -618,6 +618,44 @@ button:disabled {
     align-self: center;
   }
 }
+
+/* Keep the completed-answer popup centered, never at the bottom. */
+body > #overlay {
+  position: fixed !important;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 200 !important;
+}
+body > #overlay.show {
+  display: flex !important;
+}
+body > #overlay .result {
+  position: relative;
+  margin: auto;
+  max-height: calc(100vh - 36px);
+  overflow-y: auto;
+}
+
+/* FIX: the Matrix content selector must not move the teacher out of the corner. */
+body > .teacher-area {
+  position: fixed !important;
+  left: 10px;
+  bottom: 10px;
+  z-index: 80;
+}
+
+/* Teacher stays at the bottom while the game is played. */
+.teacher-area { pointer-events: none; }
+
+/* Show the original teacher celebration when BOOT COMPUTER succeeds. */
+#overlay.show { z-index: 150 !important; }
+#overlay.show .result-teacher { max-height: 190px; }
+@media (max-width: 560px) {
+  body > .teacher-area { left: 5px; bottom: 5px; }
+}
+
 </style>
 </head>
 
@@ -2007,10 +2045,13 @@ function showResult() {
   get("continueBtn").textContent =
     "CONTINUE";
 
+  get("resultTeacher").src = "Joyful.png";
   get("resultTeacher").hidden = false;
 
+  get("resultTeacherMessage").textContent = "YAY! WE GOT THE ANSWER!";
   get("resultTeacherMessage").hidden = false;
 
+  get("teacherImage").closest(".teacher-area").style.visibility = "hidden";
   get("overlay").classList.add("show");
 }
 
@@ -2063,6 +2104,7 @@ function resetGame() {
   get("system").textContent = "STANDBY";
 
   get("overlay").classList.remove("show");
+  get("teacherImage").closest(".teacher-area").style.visibility = "visible";
 
   createBoard();
   drawWires();

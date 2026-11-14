@@ -82,7 +82,7 @@ h1 {
   color: #ffaaaa;
 }
 
-/* TEN-MINUTE TIMER */
+/* SHARED FIVE-MINUTE TIMER */
 
 .timer-box {
   margin: 20px auto;
@@ -378,6 +378,32 @@ h1 {
     animation: none;
   }
 }
+
+/* TIMEOUT OVERLAY */
+.timeout-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.96);
+  padding: 20px;
+  align-items: center;
+  justify-content: center;
+}
+.timeout-overlay.show { display: flex; }
+.timeout-panel {
+  width: 100%;
+  max-width: 520px;
+  padding: 35px 25px;
+  background: #190a0e;
+  border: 2px solid #ff454e;
+  border-radius: 15px;
+  box-shadow: 0 0 40px #ff000055;
+  text-align: center;
+}
+.timeout-panel h2 { color: #ff454e; font-size: clamp(26px, 5vw, 38px); }
+.timeout-panel p { color: #ffbbbb; line-height: 1.6; }
+
 </style>
 </head>
 
@@ -404,7 +430,7 @@ h1 {
       ⏰ RESTORE THE SYSTEM
     </div>
 
-    <span id="puzzleTimer">10:00</span>
+    <span id="puzzleTimer">05:00</span>
 
     <div class="timer-progress">
       <div id="timerBar"></div>
@@ -508,6 +534,16 @@ h1 {
 <canvas id="matrix"></canvas>
 <div class="matrix-overlay"></div>
 
+
+<!-- TIMEOUT MESSAGE: VISIBLE FOR 5 SECONDS BEFORE RESTART -->
+<div class="timeout-overlay" id="timeoutScreen" role="alertdialog" aria-modal="true" aria-labelledby="timeoutTitle">
+  <div class="timeout-panel">
+    <h2 id="timeoutTitle">⏰ TIME'S UP! YOU FAILED!</h2>
+    <p>The 5-minute security timer has expired.</p>
+    <p>Returning to the beginning in 5 seconds...</p>
+  </div>
+</div>
+
 <script>
 "use strict";
 
@@ -516,7 +552,7 @@ h1 {
 ========================== */
 
 const PUZZLE_TIMER_KEY = "puzzleEndTime";
-const PUZZLE_DURATION = 10 * 60 * 1000;
+const PUZZLE_DURATION = 5 * 60 * 1000;
 
 const WEBSITE_KEY = "websitesSolved";
 const FILES_KEY = "filesSolved";
@@ -525,6 +561,7 @@ const APPLICATIONS_KEY = "applicationsSolved";
 const $ = id => document.getElementById(id);
 
 let puzzleInterval = null;
+let timeoutStarted = false;
 
 function initializePuzzleTimer() {
   const saved = Number(
@@ -674,7 +711,7 @@ function updatePuzzleTimer() {
   updateLockStatus();
 
   if (remaining <= 0) {
-    clearInterval(puzzleInterval);
+    showTimeout();
   }
 }
 
@@ -683,7 +720,7 @@ function updatePuzzleTimer() {
 ========================== */
 
 function openPuzzle(filename) {
-  if (!puzzleHasTime()) {
+  if (timeoutStarted || !puzzleHasTime()) {
     $("accessMessage").textContent =
       "⏰ TIME'S UP! ACCESS DENIED!";
     return;
@@ -697,7 +734,7 @@ function openPuzzle(filename) {
 ========================== */
 
 function startEscape() {
-  if (!puzzleHasTime()) {
+  if (timeoutStarted || !puzzleHasTime()) {
     $("accessMessage").textContent =
       "⏰ TIME'S UP! ACCESS DENIED!";
     return;
@@ -818,6 +855,38 @@ puzzleInterval = setInterval(
 window.addEventListener("pageshow", () => {
   updatePuzzleTimer();
 });
+/* ==========================
+   GAME OVER - FULL RESTART
+========================== */
+
+function showTimeout() {
+  if (timeoutStarted) return;
+  timeoutStarted = true;
+  clearInterval(puzzleInterval);
+  $("puzzleTimer").textContent = "00:00";
+  $("timerBar").style.width = "0%";
+  $("timeoutScreen").classList.add("show");
+  setTimeout(restartEntireGame, 5000);
+}
+
+function restartEntireGame() {
+
+  // Remove progress from the first stage.
+  sessionStorage.removeItem("puzzleEndTime");
+  sessionStorage.removeItem("websitesSolved");
+  sessionStorage.removeItem("filesSolved");
+  sessionStorage.removeItem("applicationsSolved");
+
+  // Remove progress from the escape challenge.
+  sessionStorage.removeItem("escapeRoomEndTime");
+  sessionStorage.removeItem("easyComplete");
+  sessionStorage.removeItem("mediumComplete");
+  sessionStorage.removeItem("hardComplete");
+  sessionStorage.removeItem("secretWord");
+
+  // Return to the beginning.
+  window.location.replace("index.html");
+}
 
 </script>
 

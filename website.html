@@ -525,12 +525,7 @@
 
       <div class="info-box">
         <div class="info-label">TIME LEFT</div>
-        <div class="info-value" id="timer">10:00</div>
-      </div>
-
-      <div class="info-box">
-        <div class="info-label">LIVES</div>
-        <div class="info-value" id="hearts">❤️❤️❤️</div>
+        <div class="info-value" id="timer">05:00</div>
       </div>
 
       <div class="info-box">
@@ -710,7 +705,7 @@
     const HUB_PAGE = "screen3.html";
 
     const TIMER_KEY = "puzzleEndTime";
-    const DURATION = 10 * 60 * 1000;
+    const DURATION = 5 * 60 * 1000;
 
     const TOTAL_ROUNDS = 5;
 
@@ -921,7 +916,6 @@
 
     let questions = [];
     let currentRound = 0;
-    let hearts = 3;
 
     let answered = false;
     let gameEnded = false;
@@ -1023,7 +1017,7 @@
       $("timerBar").style.width =
         percentage + "%";
 
-      if (remaining <= 0 && !gameEnded) {
+      if (remaining <= 0) {
         loseGame(true);
       }
     }
@@ -1045,14 +1039,12 @@
       );
 
       currentRound = 0;
-      hearts = 3;
       answered = false;
       gameEnded = false;
 
       $("winScreen").classList.remove("show");
       $("loseScreen").classList.remove("show");
 
-      $("hearts").textContent = "❤️❤️❤️";
 
       teacherSay(randomItem(startReactions));
 
@@ -1147,14 +1139,9 @@
         }
 
       } else {
-        hearts--;
 
         selectedButton.classList.add("wrong");
         selectedButton.disabled = true;
-
-        $("hearts").textContent =
-          "❤️".repeat(hearts) +
-          "🖤".repeat(3 - hearts);
 
         $("feedback").textContent =
           "✗ FAKE WEBSITE! Check the address again.";
@@ -1162,10 +1149,6 @@
         $("feedback").style.color = "#ff7777";
 
         teacherSay(randomItem(wrongReactions));
-
-        if (hearts <= 0) {
-          loseGame(false);
-        }
       }
     }
 
@@ -1239,10 +1222,14 @@
        LOSE GAME
     ============================== */
 
+    let timeoutRedirecting = false;
+
     function loseGame(timedOut) {
-      if (gameEnded) {
+      if (timedOut) {
+        showTimeout();
         return;
       }
+      if (gameEnded) return;
 
       gameEnded = true;
 
@@ -1251,7 +1238,7 @@
         : "💀 ACCESS DENIED!";
 
       $("loseMessage").textContent = timedOut
-        ? "The ten-minute security timer has expired."
+        ? "The five-minute security timer has expired."
         : "You lost all three hearts. Try again!";
 
       $("retryButton").disabled = timedOut;
@@ -1265,6 +1252,23 @@
       $("loseScreen").classList.add("show");
     }
 
+
+    function showTimeout() {
+      if (timeoutRedirecting) return;
+      timeoutRedirecting = true;
+      gameEnded = true;
+      $("loseTitle").textContent = "⏰ TIME'S UP! YOU FAILED!";
+      $("loseMessage").textContent = "The 5-minute security timer has expired. Returning to the beginning...";
+      $("retryButton").disabled = true;
+      $("loseScreen").classList.add("show");
+      teacherSay("OH NO! WE RAN OUT OF TIME!");
+      setTimeout(() => {
+        ["puzzleEndTime", "websitesSolved", "filesSolved", "applicationsSolved",
+         "escapeRoomEndTime", "easyComplete", "mediumComplete", "hardComplete", "secretWord"]
+          .forEach(key => sessionStorage.removeItem(key));
+        window.location.replace("index.html");
+      }, 5000);
+    }
 
     /* ==============================
        RESTART PUZZLE

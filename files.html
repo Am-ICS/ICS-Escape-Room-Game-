@@ -1,4 +1,4 @@
-
+v  
 <!DOCTYPE html>
 <html lang="en">
 
@@ -583,7 +583,7 @@
         </div>
 
         <div class="info-value" id="timer">
-          10:00
+          05:00
         </div>
 
       </div>
@@ -770,19 +770,17 @@
 
     <div class="result timeout-result">
 
-      <h2>⏰ TIME'S UP!</h2>
+      <h2>⏰ TIME'S UP! YOU FAILED!</h2>
 
       <p>
-        The 10-minute security timer has expired.
+        The 5-minute security timer has expired.
 
         <br><br>
 
         The files remain locked!
       </p>
 
-      <button id="timeoutBackBtn">
-        ← BACK TO SYSTEM
-      </button>
+      <p>Returning to the start in 5 seconds...</p>
 
     </div>
 
@@ -801,7 +799,7 @@
 
     const TIMER_KEY = "puzzleEndTime";
 
-    const GAME_DURATION = 10 * 60 * 1000;
+    const GAME_DURATION = 5 * 60 * 1000;
 
     const TOTAL_FILES = 10;
 
@@ -989,6 +987,7 @@
     let dangerCount = 0;
 
     let gameEnded = false;
+    let timeoutRedirecting = false;
 
 
     /* ==============================
@@ -1026,7 +1025,7 @@
 
 
     /* ==============================
-       SHARED TEN-MINUTE TIMER
+       SHARED FIVE-MINUTE TIMER
     ============================== */
 
     function initializeTimer() {
@@ -1093,7 +1092,7 @@
           )
         ) + "%";
 
-      if (remaining <= 0 && !gameEnded) {
+      if (remaining <= 0) {
         showTimeout();
       }
     }
@@ -1466,17 +1465,29 @@
     ============================== */
 
     function showTimeout() {
-      if (gameEnded) {
+      if (timeoutRedirecting) {
         return;
       }
 
+      timeoutRedirecting = true;
       gameEnded = true;
 
-      teacherSay(
-        "OH NO! THE TIMER RAN OUT!"
-      );
-
+      $("winScreen").classList.remove("show");
       $("timeoutScreen").classList.add("show");
+
+      setTimeout(() => {
+        sessionStorage.removeItem("puzzleEndTime");
+        sessionStorage.removeItem("websitesSolved");
+        sessionStorage.removeItem("filesSolved");
+        sessionStorage.removeItem("applicationsSolved");
+        sessionStorage.removeItem("escapeRoomEndTime");
+        sessionStorage.removeItem("easyComplete");
+        sessionStorage.removeItem("mediumComplete");
+        sessionStorage.removeItem("hardComplete");
+        sessionStorage.removeItem("secretWord");
+
+        window.location.replace("index.html");
+      }, 5000);
     }
 
 
@@ -1508,10 +1519,6 @@
       returnToHub
     );
 
-    $("timeoutBackBtn").addEventListener(
-      "click",
-      returnToHub
-    );
 
 
     /* ==============================
@@ -1603,7 +1610,7 @@
     setupFolder("safeFolder", "safe");
     setupFolder("dangerFolder", "danger");
 
-    $("timer").textContent = "10:00";
+    $("timer").textContent = "5:00";
 
     updateTimer();
 
