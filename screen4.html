@@ -1,1214 +1,939 @@
+
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>HACKED - Escape Room</title>
 
 <style>
-
 * {
-
   box-sizing: border-box;
-
 }
 
 body {
-
   margin: 0;
-
   min-height: 100vh;
-
   background:
-
-    radial-gradient(ellipse at 50% 0%, #3c101b 0%, transparent 55%),
-
+    radial-gradient(ellipse at top, #39101b, transparent 60%),
     #09090c;
-
   color: white;
-
   font-family: Arial, sans-serif;
-
-  overflow-x: hidden;
-
 }
 
 body::before {
-
   content: "";
-
   position: fixed;
-
   inset: 0;
-
   pointer-events: none;
-
   background-image:
-
     linear-gradient(#ff33330a 1px, transparent 1px),
-
     linear-gradient(90deg, #ff33330a 1px, transparent 1px);
-
   background-size: 35px 35px;
-
 }
 
 .container {
-
   position: relative;
-
-  max-width: 1100px;
-
+  max-width: 1120px;
   margin: auto;
-
-  padding: 30px 24px 50px;
-
+  padding: 25px 20px 60px;
 }
 
-/* 20-MINUTE COUNTDOWN */
+/* TIMER */
 
 .timer-area {
-
   display: flex;
-
   justify-content: center;
-
-  margin-bottom: 25px;
-
+  margin-bottom: 20px;
 }
 
 .timer-box {
-
   text-align: center;
-
-  padding: 14px 35px;
-
-  background: #210d15;
-
+  background: #220d15;
   border: 2px solid #ff4545;
-
   border-radius: 12px;
-
+  padding: 12px 35px;
   box-shadow: 0 0 25px #ff000044;
-
 }
 
 .timer-label {
-
-  color: #ff9999;
-
+  color: #ffaaaa;
   font-size: 12px;
-
   font-weight: bold;
-
   letter-spacing: 3px;
-
   margin-bottom: 8px;
-
 }
 
 #countdown {
-
-  color: #ff5555;
-
-  font-size: clamp(34px, 6vw, 50px);
-
+  font-size: 44px;
   font-weight: 900;
-
+  color: #ff5555;
   font-variant-numeric: tabular-nums;
-
-  text-shadow: 0 0 20px #ff000077;
-
 }
 
 .timer-box.urgent {
-
-  background: #700000;
-
-  animation: timerBlink 0.7s infinite;
-
+  animation: blink 0.7s infinite;
 }
 
-.timer-box.urgent #countdown {
-
-  color: white;
-
-}
-
-@keyframes timerBlink {
-
+@keyframes blink {
   50% {
-
-    box-shadow: 0 0 40px #ff0000;
-
+    background: #850000;
   }
-
-}
-
-/* CONFUSED TEACHER - BOTTOM LEFT LIKE SYSTEM HACKED */
-
-.teacher-area {
-
-  position: fixed;
-
-  bottom: 10px;
-
-  left: 10px;
-
-  width: 190px;
-
-  z-index: 5;
-
-  pointer-events: none;
-
-  animation: teacherAppear 0.8s ease-out;
-
-}
-
-.teacher-image {
-
-  display: block;
-
-  width: 300px;
-
-  max-width: none;
-
-  height: auto;
-
-  object-fit: contain;
-
-  filter: drop-shadow(0 5px 15px #000);
-
-}
-
-@keyframes teacherAppear {
-
-  from {
-
-    opacity: 0;
-
-    transform: translateX(-40px);
-
-  }
-
-  to {
-
-    opacity: 1;
-
-    transform: translateX(0);
-
-  }
-
 }
 
 /* HEADING */
 
 .heading {
-
   text-align: center;
-
-  margin-bottom: 35px;
-
+  margin-bottom: 30px;
 }
 
-.heading p {
-
+.topline {
   color: #ff7777;
-
   font-size: 12px;
-
   font-weight: bold;
-
   letter-spacing: 4px;
-
 }
 
-h1 {
-
+.heading h1 {
   color: #ff4545;
-
-  font-size: clamp(30px, 5vw, 54px);
-
+  font-size: clamp(30px, 5vw, 52px);
   text-shadow: 0 0 25px #b40000;
-
   margin: 12px 0;
-
 }
 
-.heading .description {
-
+.description {
   color: #c9a7ad;
-
   font-size: 14px;
-
-  letter-spacing: 0;
-
-  font-weight: normal;
-
+  line-height: 1.6;
 }
 
-/* MAIN LAYOUT */
+/* ORIGINAL TWO-COLUMN DESIGN */
 
 .layout {
-
   display: grid;
-
-  grid-template-columns: minmax(0, 1fr) 310px;
-
+  grid-template-columns: minmax(0, 1fr) 390px;
   gap: 25px;
-
-  align-items: stretch;
-
+  align-items: start;
 }
 
-/* TOWER SECTION */
-
-.tower-section {
-
-  border: 1px solid #7e2c39;
-
+.tower-section,
+.panel {
+  background: linear-gradient(145deg, #251019, #100b10);
+  border: 1px solid #a43b47;
   border-radius: 16px;
-
-  padding: 25px 15px;
-
-  background: linear-gradient(145deg, #1c1018, #100b10);
-
-  box-shadow: 0 0 25px #ff000012;
-
+  padding: 25px 18px;
+  box-shadow: 0 0 25px #ff000018;
 }
 
 .section-title {
-
-  color: #ff8383;
-
-  font-size: 12px;
-
-  letter-spacing: 2px;
-
+  color: #ff8888;
   text-align: center;
-
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 2px;
   margin-bottom: 25px;
-
 }
 
-/* CHALLENGE TOWER */
+/* ORIGINAL THREE-FLOOR TOWER */
 
 .tower {
-
   position: relative;
-
-  width: 100%;
-
   max-width: 500px;
-
-  height: 360px;
-
+  height: 370px;
   margin: auto;
-
 }
 
 .floor {
-
   position: absolute;
-
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
-  background: linear-gradient(135deg, #371720, #1c1118);
-
+  background: linear-gradient(135deg, #421a26, #211019);
   border: 2px solid #e34b54;
-
   color: #ff7777;
-
   font-size: 42px;
-
   font-weight: 900;
-
   cursor: pointer;
-
-  transition: background 0.2s, filter 0.2s;
-
-  text-shadow: 0 0 12px #ff555555;
-
+  transition: 0.2s;
 }
 
-.floor:hover,
-
-.floor.selected {
-
-  background: linear-gradient(135deg, #a62b3a, #57202d);
-
+.floor:hover:not(.locked) {
+  background: #922737;
   color: white;
+}
 
-  filter: drop-shadow(0 0 9px #ff404080);
-
+.floor.completed {
+  background: linear-gradient(135deg, #214c35, #12291d);
+  border-color: #60efa5;
+  color: #60efa5;
 }
 
 .one {
-
   top: 0;
-
   left: 35%;
-
   width: 30%;
-
   height: 120px;
-
   clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%);
-
 }
 
 .two {
-
   top: 120px;
-
   left: 29%;
-
   width: 42%;
-
   height: 120px;
-
   clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%);
-
 }
 
 .three {
-
   top: 240px;
-
   left: 22%;
-
   width: 56%;
-
   height: 120px;
-
   clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%);
-
 }
 
 .challenge-btn {
-
   position: absolute;
-
   background: #210f17;
-
-  color: #ff9999;
-
+  color: #ffaaaa;
   border: 1px solid #e03c46;
-
   border-radius: 8px;
-
-  padding: 13px 15px;
-
+  padding: 13px;
   font-weight: 900;
-
-  letter-spacing: 1px;
-
   cursor: pointer;
-
   box-shadow: 0 0 12px #ff333322;
-
   transition: 0.2s;
-
 }
 
-.challenge-btn:hover {
-
+.challenge-btn:hover:not(.locked) {
   background: #a52a38;
-
   color: white;
-
   transform: scale(1.05);
+}
 
+.challenge-btn.completed {
+  background: #173726;
+  color: #60efa5;
+  border-color: #60efa5;
 }
 
 .easy {
-
   top: 40px;
-
   left: 0;
-
 }
 
 .medium {
-
   top: 155px;
-
   right: 0;
-
 }
 
 .hard {
-
   top: 275px;
-
   left: 0;
-
 }
 
-/* PIN PANEL */
+/* HARD IS VISIBLE BUT LOCKED */
+
+.floor.locked {
+  background: linear-gradient(135deg, #281923, #160f17);
+  border-color: #76515b;
+  color: #84616b;
+  cursor: not-allowed;
+}
+
+.challenge-btn.locked {
+  background: #181016;
+  border-color: #76515b;
+  color: #a3848d;
+  cursor: not-allowed;
+}
+
+.tower-progress {
+  text-align: center;
+  margin-top: 15px;
+  color: #ffb2b2;
+  font-size: 13px;
+}
+
+#hardMessage {
+  text-align: center;
+  color: #ff929a;
+  font-size: 13px;
+  font-weight: bold;
+  min-height: 20px;
+}
+
+/* TEACHER FIX */
+
+/* TEACHER STAYS AT BOTTOM-LEFT */
+
+.teacher-area {
+  position: fixed;
+  bottom: 0;
+  left: 20px;
+  z-index: 10;
+
+  display: block;
+  margin: 0;
+  padding: 0;
+  min-height: 0;
+  border: none;
+
+  pointer-events: none;
+}
+
+.teacher-image {
+  display: block;
+  width: 200px;
+  max-width: 35vw;
+  max-height: 45vh;
+  height: auto;
+  object-fit: contain;
+  object-position: bottom left;
+}
+
+/* FINAL SYSTEM PANEL */
 
 .panel {
-
-  border: 1px solid #b43a42;
-
-  border-radius: 16px;
-
-  padding: 25px 22px;
-
-  background: linear-gradient(160deg, #251019, #100b10);
-
   text-align: center;
-
-  box-shadow: 0 0 25px #ff000018;
-
 }
 
 .panel h2 {
-
   color: #ff5555;
-
   font-size: 30px;
-
-  margin: 5px 0 10px;
-
+  margin: 0 0 8px;
   text-shadow: 0 0 15px #ff000055;
-
 }
 
-#challengeName {
-
-  color: #ff9a9a;
-
+.panel-subtitle {
+  color: #ffaaaa;
   font-size: 12px;
-
-  font-weight: bold;
-
   letter-spacing: 2px;
-
-}
-
-.lock {
-
-  font-size: 65px;
-
-  margin: 18px 0;
-
-  filter: drop-shadow(0 0 12px #ff454555);
-
-}
-
-.pin-label {
-
-  color: #d7b4bc;
-
-  font-size: 14px;
-
-}
-
-.pin-boxes {
-
-  display: flex;
-
-  justify-content: center;
-
-  gap: 4px;
-
-  margin: 22px 0 15px;
-
-}
-
-.pin-box {
-
-  flex: 1;
-
-  min-width: 0;
-
-  height: 38px;
-
-  border: 1px solid #b43a42;
-
-  border-radius: 4px;
-
-  background: #30141e;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  font-size: 14px;
-
   font-weight: bold;
+}
 
-  color: #ffb2b2;
+.lock-icon {
+  font-size: 52px;
+  margin: 12px 0;
+}
 
+.instructions {
+  color: #d8b4bd;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* EASY, MEDIUM, HARD BOXES */
+
+.stamp-group {
+  margin-top: 14px;
+  padding: 13px 10px;
+  background: #160d12;
+  border: 1px solid #6c303b;
+  border-radius: 10px;
+}
+
+.stamp-title {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.easy-title {
+  color: #60efa5;
+}
+
+.medium-title {
+  color: #ffd36b;
+}
+
+.hard-title {
+  color: #ff737d;
+}
+
+.stamps {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.stamp {
+  width: 58px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #30141e;
+  border: 2px dashed #7a3846;
+  border-radius: 10px;
+  color: #9c6d79;
+  font-size: 26px;
+  font-weight: 900;
+}
+
+.stamp.earned {
+  color: white;
+  border: 2px solid #ff737d;
+  box-shadow: 0 0 14px #ff454533;
+}
+
+.stamp.hard-earned {
+  background: #173726;
+  color: #60efa5;
+  border: 2px solid #60efa5;
+  box-shadow: 0 0 14px #60efa533;
+}
+
+.stamp-note {
+  margin-top: 10px;
+  color: #aa8c96;
+  font-size: 11px;
+}
+
+/* PASSWORD PREVIEW - NO ANSWERS SHOWN */
+
+.hint-section {
+  margin-top: 18px;
+  padding: 15px 10px;
+  background: #281c10;
+  border: 1px solid #d6a34a;
+  border-radius: 10px;
+}
+
+.hint-title {
+  color: #ffd783;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.password-preview {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.preview-box {
+  height: 37px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #190e13;
+  border: 1px solid #6c303b;
+  border-radius: 5px;
+  color: #b28e97;
+  font-family: monospace;
+  font-size: 19px;
+  font-weight: 900;
+}
+
+.hint-note {
+  color: #e4bd7e;
+  font-size: 11px;
+  margin-top: 10px;
+  line-height: 1.5;
+}
+
+/* PASSWORD INPUT */
+
+.answer-label {
+  display: block;
+  margin: 20px 0 10px;
+  color: #ffb4b9;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+#answerInput {
+  width: 100%;
+  padding: 15px 8px;
+  background: #120a0f;
+  border: 2px solid #b43a42;
+  border-radius: 9px;
+  outline: none;
+  color: white;
+  font-family: monospace;
+  font-size: 22px;
+  font-weight: 900;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+#answerInput:focus {
+  border-color: #ff7d85;
+  box-shadow: 0 0 18px #ff454544;
+}
+
+#answerInput:disabled {
+  opacity: 0.45;
+}
+
+.answer-count {
+  margin-top: 7px;
+  color: #ad8992;
+  font-size: 12px;
 }
 
 .unlock {
-
   width: 100%;
-
   margin-top: 15px;
-
   padding: 15px;
-
   border: 1px solid #ff6969;
-
   border-radius: 8px;
-
   background: linear-gradient(135deg, #e53535, #a80000);
-
   color: white;
-
   font-size: 16px;
-
   font-weight: 900;
-
   cursor: pointer;
-
-  box-shadow: 0 5px 18px #ff000033;
-
-  transition: 0.2s;
-
 }
 
-.unlock:hover {
-
-  background: #ff4545;
-
-  transform: translateY(-2px);
-
+.unlock:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 #message {
-
-  min-height: 25px;
-
+  min-height: 30px;
+  margin-top: 15px;
   font-weight: bold;
-
   font-size: 13px;
-
+  line-height: 1.5;
 }
 
 .footer {
-
   text-align: center;
-
   color: #aaa;
-
   margin-top: 25px;
-
-  font-size: 14px;
-
+  font-size: 13px;
 }
 
 .back {
-
   display: block;
-
   margin: 20px auto;
-
   padding: 12px 30px;
-
   background: #1a0d12;
-
   color: white;
-
   border: 1px solid #e34b54;
-
   border-radius: 8px;
-
   cursor: pointer;
-
   font-weight: bold;
-
 }
 
-.back:hover {
-
-  background: #672027;
-
-}
-
-/* FINAL WIN SCREEN */
+/* VICTORY */
 
 #winScreen {
-
   display: none;
-
   position: fixed;
-
   inset: 0;
-
-  background:
-
-    radial-gradient(ellipse at center, #123523, #09090c 75%);
-
   z-index: 100;
-
+  background: radial-gradient(ellipse at center, #123523, #09090c 75%);
   flex-direction: column;
-
-  justify-content: center;
-
   align-items: center;
-
+  justify-content: center;
   text-align: center;
-
   padding: 20px;
-
-  overflow-y: auto;
-
-  opacity: 0;
-
-  transition: opacity 2.5s ease;
-
 }
 
 #winScreen.visible {
-
   display: flex;
-
-}
-
-#winScreen.fade-in {
-
-  opacity: 1;
-
 }
 
 #winScreen h1 {
-
   color: #45df83;
-
-  text-shadow: 0 0 25px #168a45;
-
   font-size: clamp(30px, 6vw, 48px);
-
-  animation: winGlow 2.5s ease-in-out infinite alternate;
-
+  text-shadow: 0 0 25px #168a45;
 }
-
-#winScreen p {
-
-  color: #ddd;
-
-}
-
-@keyframes winGlow {
-
-  from {
-
-    text-shadow: 0 0 10px #168a45;
-
-  }
-
-  to {
-
-    text-shadow: 0 0 35px #54e9a0;
-
-  }
-
-}
-
-/* JOYFUL TEACHER */
 
 .win-teacher {
-
-  width: clamp(170px, 30vw, 280px);
-
-  max-height: 35vh;
-
+  width: auto;
+  max-width: 80vw;
+  height: min(280px, 35vh);
   object-fit: contain;
-
   margin: 12px auto;
-
-  filter: drop-shadow(0 0 20px #54e9a055);
-
-  animation: teacherCelebrate 2.5s ease-in-out infinite;
-
-}
-
-@keyframes teacherCelebrate {
-
-  0%, 100% {
-
-    transform: translateY(0) scale(1);
-
-  }
-
-  50% {
-
-    transform: translateY(-15px) scale(1.04);
-
-  }
-
 }
 
 .win-message {
-
   padding: 20px 26px;
-
   max-width: 550px;
-
   background: white;
-
   color: #171717;
-
   border: 4px solid #111;
-
   border-radius: 20px;
-
   font-size: clamp(19px, 4vw, 30px);
-
   font-weight: 900;
-
   line-height: 1.4;
-
-  box-shadow: 0 0 30px #54e9a055;
-
-  animation: messageAppear 1.8s ease both;
-
-}
-
-@keyframes messageAppear {
-
-  from {
-
-    opacity: 0;
-
-    transform: translateY(30px) scale(0.85);
-
-  }
-
-  to {
-
-    opacity: 1;
-
-    transform: translateY(0) scale(1);
-
-  }
-
 }
 
 .win-message strong {
-
   color: #d71920;
-
 }
 
-.win-subtitle {
-
-  color: #8fffc0 !important;
-
-  font-weight: bold;
-
-  letter-spacing: 2px;
-
-  font-size: 13px;
-
-}
-
-/* TIMEOUT SCREEN */
+/* TIMEOUT */
 
 #timeoutScreen {
-
   display: none;
-
   position: fixed;
-
   inset: 0;
-
   z-index: 200;
-
-  background:
-
-    radial-gradient(ellipse at center, #3c101b, #09090c 75%);
-
+  background: radial-gradient(ellipse at center, #3c101b, #09090c 75%);
   flex-direction: column;
-
-  justify-content: center;
-
   align-items: center;
-
+  justify-content: center;
   text-align: center;
-
   padding: 25px;
-
 }
 
 #timeoutScreen h1 {
-
   color: #ff4545;
-
   font-size: clamp(32px, 7vw, 58px);
-
-  text-shadow: 0 0 30px #ff0000;
-
-}
-
-#timeoutScreen h2 {
-
-  color: white;
-
-  font-size: clamp(20px, 4vw, 32px);
-
-}
-
-#timeoutScreen p {
-
-  color: #ffb1b1;
-
 }
 
 .retry-button {
-
   padding: 16px 35px;
-
   margin-top: 20px;
-
-  background: linear-gradient(135deg, #e53535, #a80000);
-
+  background: #c71d25;
   border: 2px solid #ff6969;
-
   border-radius: 10px;
-
   color: white;
-
   font-size: 18px;
-
   font-weight: 900;
-
   cursor: pointer;
-
-}
-
-.retry-button:hover {
-
-  background: #ff4545;
-
 }
 
 /* MOBILE */
 
-@media (max-width: 750px) {
-
+@media (max-width: 800px) {
   .layout {
-
     grid-template-columns: 1fr;
-
   }
 
   .panel {
-
+    max-width: 440px;
     width: 100%;
-
-    max-width: 400px;
-
     margin: auto;
-
-  }
-
-  .challenge-btn {
-
-    font-size: 11px;
-
-    padding: 10px 8px;
-
   }
 
   .container {
-
-    padding: 25px 12px 190px;
-
+    padding: 20px 12px 50px;
   }
 
-  .teacher-area {
-
-    width: 110px;
-
-    left: 5px;
-
-    bottom: 5px;
-
+  .challenge-btn {
+    font-size: 11px;
+    padding: 10px;
   }
 
   .teacher-image {
-
-    width: 230px;
-
+    height: 180px;
   }
-
 }
 
-@media (prefers-reduced-motion: reduce) {
-
-  .win-teacher,
-
-  #winScreen h1,
-
-  .win-message,
-
-  .timer-box.urgent,
-
-  .teacher-area {
-
-    animation: none;
-
+@media (max-width: 390px) {
+  .preview-box {
+    font-size: 15px;
+    height: 32px;
   }
 
+  .password-preview {
+    gap: 2px;
+  }
 }
-
-/* FINAL LETTER ARRANGEMENT */
-.collection-status { color: #ffaaaa; font-size: 13px; line-height: 1.6; }
-.pin-box { min-height: 38px; }
-.letter-tiles[hidden] { display: none; }
-.letter-tiles { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin: 18px 0 12px; }
-.letter-tile { min-height: 46px; border: 1px solid #ff6565; border-radius: 7px; background: #401823; color: white; font-size: 20px; font-weight: 900; cursor: pointer; }
-.letter-tile:hover:not(:disabled) { background: #9b2d3a; }
-.letter-tile:disabled { opacity: .25; cursor: default; }
-.tile-actions { display: flex; gap: 8px; }
-.tile-action { flex: 1; padding: 10px; background: #24131a; border: 1px solid #9c3c49; border-radius: 7px; color: white; font-weight: bold; cursor: pointer; }
-.tile-action:disabled { opacity: .4; cursor: default; }
-.unlock:disabled { opacity: .45; cursor: not-allowed; transform: none; }
 </style>
-
 </head>
 
 <body>
 
 <div class="container">
 
-  <!-- 20-MINUTE TIMER -->
+  <!-- TIMER -->
 
   <div class="timer-area">
-
     <div class="timer-box" id="timerBox">
-
       <div class="timer-label">
-
         ⏰ ESCAPE ROOM TIME LEFT
-
       </div>
-
       <div id="countdown">20:00</div>
-
     </div>
-
   </div>
 
   <!-- HEADING -->
 
   <div class="heading">
-
-    <p>⚠ HACKED // ESCAPE ROOM ⚠</p>
+    <p class="topline">
+      ⚠ HACKED // ESCAPE ROOM ⚠
+    </p>
 
     <h1>SELECT A CHALLENGE</h1>
 
     <p class="description">
-
-      Three security levels. One secret password. Save the system.
-
+      Complete EASY and MEDIUM to unlock HARD.
+      Collect your stamps and solve the secret
+      ten-letter password!
     </p>
-
   </div>
 
   <div class="layout">
 
-    <!-- LEFT: CHALLENGE TOWER -->
+    <!-- ORIGINAL TOWER -->
 
     <div class="tower-section">
 
       <div class="section-title">
-
         ◈ SECURITY CHALLENGE TOWER ◈
-
       </div>
 
       <div class="tower">
 
+        <!-- EASY -->
+
         <div
-
-          class="floor one selected"
-
-          id="floor1"
-
-          onclick="window.location.href='rebuild_computer_with_teacher.html'">
-
+          class="floor one"
+          id="easyFloor"
+          onclick="goToChallenge('rebuild_computer_with_teacher.html')"
+        >
           1
-
-        </div>
-
-        <div
-
-          class="floor two"
-
-          id="floor2"
-
-          onclick="window.location.href='morsecodelight.html'">
-
-          2
-
-        </div>
-
-        <div
-
-          class="floor three"
-
-          id="floor3"
-
-          onclick="window.location.href='binary.html'">
-
-          3
-
         </div>
 
         <button
-
           class="challenge-btn easy"
-
-          onclick="window.location.href='rebuild_computer_with_teacher.html'">
-
+          id="easyButton"
+          onclick="goToChallenge('rebuild_computer_with_teacher.html')"
+        >
           EASY
-
         </button>
 
-        <button
+        <!-- MEDIUM -->
 
+        <div
+          class="floor two"
+          id="mediumFloor"
+          onclick="goToChallenge('morsecodelight.html')"
+        >
+          2
+        </div>
+
+        <button
           class="challenge-btn medium"
-
-          onclick="window.location.href='morsecodelight.html'">
-
+          id="mediumButton"
+          onclick="goToChallenge('morsecodelight.html')"
+        >
           MEDIUM
-
         </button>
 
+        <!-- HARD VISIBLE FROM START -->
+
+        <div
+          class="floor three locked"
+          id="hardFloor"
+          onclick="goToChallenge('binary.html')"
+        >
+          🔒
+        </div>
+
         <button
-
-          class="challenge-btn hard"
-
-          onclick="window.location.href='binary.html'">
-
-          HARD
-
+          class="challenge-btn hard locked"
+          id="hardButton"
+          onclick="goToChallenge('binary.html')"
+        >
+          🔒 HARD
         </button>
 
       </div>
 
+      <p class="tower-progress" id="towerProgress">
+        0 / 3 CHALLENGES COMPLETE
+      </p>
+
+      <p id="hardMessage">
+        🔒 Complete EASY and MEDIUM to unlock HARD.
+      </p>
+
+      <!-- TEACHER FULLY VISIBLE -->
+
+      <div class="teacher-area">
+        <img
+          id="teacherImage"
+          src="Confused.png"
+          alt="Confused teacher"
+          class="teacher-image"
+        >
+      </div>
+
     </div>
 
-<!-- RIGHT: SECRET WORD PIN -->
+    <!-- FINAL LOCK PANEL -->
 
-<div class="panel">
+    <div class="panel">
 
-  <h2>🔐 SOLVE</h2>
+      <h2>🔐 SOLVE</h2>
 
-  <p id="challengeName">FINAL SYSTEM LOCK</p>
+      <p class="panel-subtitle">
+        FINAL SYSTEM LOCK
+      </p>
 
-  <div class="lock" id="lockIcon">🔒</div>
+      <div class="lock-icon" id="lockIcon">
+        🔒
+      </div>
 
-  <p class="pin-label">
+      <p class="instructions" id="collectionStatus">
+        Complete EASY and MEDIUM to collect stamps.
+      </p>
 
-    <strong>CRACK THE SECRET PASSWORD!</strong>
+      <!-- EASY -->
 
-  </p>
+      <div class="stamp-group">
 
-  <p>Finish EASY (3 letters), MEDIUM (3 letters), and HARD (4 letters).</p>
-  <p>Then arrange your <strong>10 collected letters</strong> into the correct word.</p>
-  <p id="collectionStatus" class="collection-status" aria-live="polite"></p>
-  <div class="pin-boxes" id="pinBoxes" aria-label="Your arranged password"></div>
-  <div id="letterTiles" class="letter-tiles" aria-label="Scrambled collected letters"></div>
-  <div class="tile-actions">
-    <button type="button" class="tile-action" id="undoBtn" onclick="undoLetter()">⌫ UNDO</button>
-    <button type="button" class="tile-action" id="clearBtn" onclick="clearLetters()">↻ CLEAR</button>
+        <div class="stamp-title easy-title">
+          🟢 EASY — 3 LETTER STAMPS
+        </div>
+
+        <div class="stamps" id="easyStamps">
+          <div class="stamp">?</div>
+          <div class="stamp">?</div>
+          <div class="stamp">?</div>
+        </div>
+
+        <div class="stamp-note" id="easyNote">
+          Complete EASY to collect stamps.
+        </div>
+
+      </div>
+
+      <!-- MEDIUM -->
+
+      <div class="stamp-group">
+
+        <div class="stamp-title medium-title">
+          🟡 MEDIUM — 3 LETTER STAMPS
+        </div>
+
+        <div class="stamps" id="mediumStamps">
+          <div class="stamp">?</div>
+          <div class="stamp">?</div>
+          <div class="stamp">?</div>
+        </div>
+
+        <div class="stamp-note" id="mediumNote">
+          Complete MEDIUM to collect stamps.
+        </div>
+
+      </div>
+
+      <!-- HARD CHECKMARKS -->
+
+      <div class="stamp-group">
+
+        <div class="stamp-title hard-title">
+          🔴 HARD — 3 COMPLETION CHECKS
+        </div>
+
+        <div class="stamps" id="hardStamps">
+          <div class="stamp">?</div>
+          <div class="stamp">?</div>
+          <div class="stamp">?</div>
+        </div>
+
+        <div class="stamp-note" id="hardNote">
+          🔒 HARD is locked.
+        </div>
+
+      </div>
+
+      <!-- SECRET PASSWORD -->
+
+      <div class="hint-section">
+
+        <div class="hint-title">
+          🔐 SECRET 10-LETTER PASSWORD
+        </div>
+
+        <div
+          class="password-preview"
+          id="passwordPreview"
+        ></div>
+
+        <div class="hint-note">
+          All ten positions are hidden.
+          Complete the challenges and figure
+          out the secret password!
+        </div>
+
+      </div>
+
+      <!-- PASSWORD INPUT -->
+
+      <label class="answer-label" for="answerInput">
+        ⌨️ TYPE YOUR 10-LETTER PASSWORD
+      </label>
+
+      <input
+        id="answerInput"
+        type="text"
+        maxlength="10"
+        placeholder="??????????"
+        autocomplete="off"
+        autocapitalize="characters"
+        spellcheck="false"
+        disabled
+      >
+
+      <div class="answer-count" id="answerCount">
+        0 / 10 LETTERS
+      </div>
+
+      <button
+        class="unlock"
+        id="unlockBtn"
+        onclick="checkAnswer()"
+        disabled
+      >
+        🔓 UNLOCK SYSTEM
+      </button>
+
+      <p id="message" aria-live="polite"></p>
+
+    </div>
+
   </div>
 
-  <button class="unlock" onclick="checkWord()">
-
-    🔓 UNLOCK SYSTEM
-
-  </button>
-
-  <p id="message"></p>
-
-</div>
-
-</div>
-
-<p class="footer">
-
-  Solve 3 challenges → Collect letters → Form 1 word → Escape!
-
-</p>
+  <p class="footer">
+    COMPLETE ALL THREE CHALLENGES TO UNLOCK THE SYSTEM.
+  </p>
 
   <button
-
     class="back"
-
-    onclick="location.href='screen3.html'">
-
+    onclick="location.href='screen3.html'"
+  >
     ← BACK
-
   </button>
 
 </div>
 
-<!-- CONFUSED TEACHER FIXED AT BOTTOM LEFT -->
-
-<div class="teacher-area">
-
-  <img
-
-    src="Confused.png"
-
-    alt="Confused teacher"
-
-    class="teacher-image"
-
-  >
-
-</div>
-
-<!-- FINAL ESCAPE VICTORY SCREEN -->
+<!-- VICTORY SCREEN -->
 
 <div id="winScreen">
 
   <h1>🔓 SYSTEM RESTORED!</h1>
 
   <img
-
     src="Joyful.png"
-
-    alt="Teacher celebrating"
-
+    alt="Happy teacher"
     class="win-teacher"
-
   >
 
   <div class="win-message">
-
-    CONGRATS!!<br>
-
+    CONGRATS!!
+    <br>
     <strong>YOU ESCAPED THE ROOM!!</strong>
-
   </div>
 
-  <p class="win-subtitle">
-
-    🎉 ALL SYSTEMS ONLINE • ESCAPE SUCCESSFUL 🎉
-
+  <p style="color:#8fffc0">
+    🎉 ALL SYSTEMS ONLINE 🎉
   </p>
-
-  <p>Returning to the welcome screen...</p>
 
 </div>
 
@@ -1216,18 +941,17 @@ h1 {
 
 <div id="timeoutScreen">
 
-  <div style="font-size: 75px;">⏰</div>
+  <div style="font-size:75px">⏰</div>
 
   <h1>TIME'S UP!</h1>
 
   <h2>YOU DIDN'T ESCAPE THE ROOM!</h2>
 
-  <p>The 20-minute countdown has ended.</p>
-
-  <button class="retry-button" onclick="restartEscape()">
-
+  <button
+    class="retry-button"
+    onclick="restartEscape()"
+  >
     ↻ TRY AGAIN
-
   </button>
 
 </div>
@@ -1235,293 +959,623 @@ h1 {
 <script>
 "use strict";
 
-// SETTINGS: Shared 20-minute timer.
-const GAME_MINUTES = 20; // Shared timer duration; start a new game to apply changes.
+// ======================================
+// STORAGE
+// ======================================
+
+const $ = id => document.getElementById(id);
+
 const TIMER_KEY = "escapeRoomEndTime";
 const TIMEOUT_KEY = "escapeRoomTimedOut";
 const FINISHED_KEY = "escapeRoomFinished";
-const COMPLETE_KEYS = ["easyComplete", "mediumComplete", "hardComplete"];
+
+const GAME_MINUTES = 20;
+
+// ======================================
+// SECRET WORDS
+// ======================================
 
 const secretWords = [
-
   "ALGORITHMS",
-
   "AUTOMATION",
-
   "BLOCKCHAIN",
-
   "BOOTLOADER",
-
   "CLUSTERING",
-
   "CONTAINERS",
-
   "CONTROLLER",
-
   "DATACENTER",
-
   "DEPLOYMENT",
-
   "DEVELOPERS",
-
   "EXECUTABLE",
-
   "FILESYSTEM",
-
   "HARDDRIVES",
-
   "HYPERVISOR",
-
   "JAVASCRIPT",
-
   "KUBERNETES",
-
   "MAINFRAMES",
-
   "MICROCHIPS",
-
   "MIDDLEWARE",
-
   "MONITORING",
-
   "NETWORKING",
-
   "PARAMETERS",
-
   "POWERSHELL",
-
   "PROCESSING",
-
   "PROCESSORS",
-
   "PROGRAMMER",
-
   "REPOSITORY",
-
   "RESOLUTION",
-
   "SEMAPHORES",
-
   "SERVERLESS",
-
   "SIMULATION",
-
   "SUBROUTINE",
-
   "TECHNOLOGY",
-
   "THROUGHPUT",
-
   "TRANSISTOR",
-
   "TYPESCRIPT",
-
   "VERSIONING",
-
   "WEBMASTERS",
-
   "WORKSPACES"
 ].filter(word => word.length === 10);
 
-const $ = (id) => document.getElementById(id);
 let secretWord = sessionStorage.getItem("secretWord");
+
 if (!secretWord || !/^[A-Z]{10}$/.test(secretWord)) {
-  secretWord = secretWords[Math.floor(Math.random() * secretWords.length)];
+  secretWord = secretWords[
+    Math.floor(Math.random() * secretWords.length)
+  ];
+
   sessionStorage.setItem("secretWord", secretWord);
 }
 
-// The challenges reveal 3 + 3 + 4 letters of the SAME word.
 const easyLetters = secretWord.slice(0, 3);
 const mediumLetters = secretWord.slice(3, 6);
-const hardLetters = secretWord.slice(6, 10);
 
-let escapeCompleted = false;
-let escapeTimedOut = false;
-let timerInterval;
-let scrambledLetters = [];
-let selectedTiles = [];
+// ======================================
+// COMPLETION FLAGS
+// ======================================
 
-function allChallengesComplete() {
-  return COMPLETE_KEYS.every(key => sessionStorage.getItem(key) === "true");
+function easyComplete() {
+  return sessionStorage.getItem("easyComplete") === "true";
 }
 
+function mediumComplete() {
+  return sessionStorage.getItem("mediumComplete") === "true";
+}
+
+function hardComplete() {
+  return sessionStorage.getItem("hardComplete") === "true";
+}
+
+function hardUnlocked() {
+  return easyComplete() && mediumComplete();
+}
+
+function allComplete() {
+  return (
+    easyComplete() &&
+    mediumComplete() &&
+    hardComplete()
+  );
+}
+
+// ======================================
+// LETTER STAMPS
+// ======================================
+
 function shuffleLetters(letters) {
-  const shuffled = [...letters];
-  for (let i = shuffled.length - 1; i > 0; i--) {
+  const result = [...letters];
+
+  for (let i = result.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+
+    [result[i], result[j]] = [
+      result[j],
+      result[i]
+    ];
   }
-  // Avoid displaying the solved password before the player starts.
-  if (shuffled.join("") === secretWord) {
-    [shuffled[0], shuffled[1]] = [shuffled[1], shuffled[0]];
-    if (shuffled.join("") === secretWord) shuffled.reverse();
+
+  return result;
+}
+
+function getRewardLetters(key, original) {
+  let saved = sessionStorage.getItem(key);
+
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+
+      if (Array.isArray(parsed)) {
+        saved = parsed.join("");
+      } else if (typeof parsed === "string") {
+        saved = parsed;
+      }
+    } catch (error) {
+      // Plain strings are supported.
+    }
+
+    saved = String(saved).toUpperCase();
+
+    if (
+      saved.length === 3 &&
+      [...saved].sort().join("") ===
+      [...original].sort().join("")
+    ) {
+      return [...saved];
+    }
   }
+
+  const shuffled = shuffleLetters(original);
+
+  if (
+    shuffled.join("") === original &&
+    new Set(shuffled).size > 1
+  ) {
+    const index = shuffled.findIndex(
+      letter => letter !== shuffled[0]
+    );
+
+    [
+      shuffled[0],
+      shuffled[index]
+    ] = [
+      shuffled[index],
+      shuffled[0]
+    ];
+  }
+
+  sessionStorage.setItem(key, shuffled.join(""));
+
   return shuffled;
 }
 
-function initializeTimer() {
-  // The countdown is created once and shared by every challenge page.
-  if (!sessionStorage.getItem(TIMER_KEY)) {
-    sessionStorage.setItem(TIMER_KEY, String(Date.now() + GAME_MINUTES * 60 * 1000));
+function displayStamps(holderId, letters, completed) {
+  const holder = $(holderId);
+  holder.replaceChildren();
+
+  for (let i = 0; i < 3; i++) {
+    const stamp = document.createElement("div");
+
+    stamp.className = completed
+      ? "stamp earned"
+      : "stamp";
+
+    stamp.textContent = completed
+      ? letters[i]
+      : "?";
+
+    holder.appendChild(stamp);
   }
+}
+
+// ======================================
+// HARD: ? ? ? TO ✓ ✓ ✓
+// ======================================
+
+function displayHardStamps() {
+  const holder = $("hardStamps");
+  holder.replaceChildren();
+
+  const completed = hardComplete();
+
+  for (let i = 0; i < 3; i++) {
+    const stamp = document.createElement("div");
+
+    stamp.className = completed
+      ? "stamp hard-earned"
+      : "stamp";
+
+    stamp.textContent = completed ? "✓" : "?";
+
+    holder.appendChild(stamp);
+  }
+
+  $("hardNote").textContent = completed
+    ? "✓ HARD completed! Three checks earned."
+    : hardUnlocked()
+      ? "🔓 HARD unlocked! Complete the binary puzzle."
+      : "🔒 Complete EASY and MEDIUM to unlock HARD.";
+}
+
+// ======================================
+// HIDE ALL TEN PASSWORD LETTERS
+// ======================================
+function displayPasswordPreview() {
+  const holder = $("passwordPreview");
+  holder.replaceChildren();
+
+  for (let i = 0; i < 10; i++) {
+    const box = document.createElement("div");
+    box.className = "preview-box";
+
+    // ONLY HARD reveals letters in the yellow card
+    if (hardComplete() && i >= 6) {
+      box.textContent = secretWord[i];
+      box.style.color = "#60efa5";
+      box.style.borderColor = "#60efa5";
+    } else {
+      box.textContent = "?";
+    }
+
+    holder.appendChild(box);
+  }
+}
+
+// ======================================
+// HARD VISIBLE FROM START
+// ======================================
+
+function updateHardLock() {
+  const unlocked = hardUnlocked();
+
+  const floor = $("hardFloor");
+  const button = $("hardButton");
+
+  floor.classList.toggle("locked", !unlocked);
+  button.classList.toggle("locked", !unlocked);
+
+  floor.textContent = unlocked ? "3" : "🔒";
+  button.textContent = unlocked ? "HARD" : "🔒 HARD";
+
+  button.setAttribute(
+    "aria-disabled",
+    String(!unlocked)
+  );
+
+  $("hardMessage").textContent =
+    !unlocked
+      ? "🔒 Complete EASY and MEDIUM to unlock HARD."
+      : hardComplete()
+        ? "✓ HARD CHALLENGE COMPLETED!"
+        : "🔓 HARD IS UNLOCKED!";
+
+  // Neither HARD floor nor button is hidden.
+}
+
+// ======================================
+// TEACHER PROGRESSION
+// ======================================
+
+function updateTeacher() {
+  const teacher = $("teacherImage");
+
+  if (allComplete()) {
+    teacher.src = "Watching.png";
+    teacher.alt = "Teacher watching";
+  } else {
+    teacher.src = "Confused.png";
+    teacher.alt = "Confused teacher";
+  }
+
+  // Joyful.png appears on victory screen.
+}
+
+// ======================================
+// UPDATE SCREEN
+// ======================================
+
+function updateScreen() {
+  displayPasswordPreview(); 
+  const easy = easyComplete();
+  const medium = mediumComplete();
+  const hard = hardComplete();
+
+  const easyReward = easy
+    ? getRewardLetters(
+        "easyRewardLetters",
+        easyLetters
+      )
+    : [];
+
+  const mediumReward = medium
+    ? getRewardLetters(
+        "mediumRewardLetters",
+        mediumLetters
+      )
+    : [];
+
+  displayStamps("easyStamps", easyReward, easy);
+  displayStamps("mediumStamps", mediumReward, medium);
+  displayHardStamps();
+
+  $("easyNote").textContent = easy
+    ? "✓ EASY completed! Three stamps collected."
+    : "🔒 Complete EASY to collect these stamps.";
+
+  $("mediumNote").textContent = medium
+    ? "✓ MEDIUM completed! Three stamps collected."
+    : "🔒 Complete MEDIUM to collect these stamps.";
+
+  $("easyFloor").classList.toggle("completed", easy);
+  $("mediumFloor").classList.toggle("completed", medium);
+  $("hardFloor").classList.toggle("completed", hard);
+
+  $("easyButton").classList.toggle("completed", easy);
+  $("mediumButton").classList.toggle("completed", medium);
+  $("hardButton").classList.toggle("completed", hard);
+
+  const count =
+    Number(easy) +
+    Number(medium) +
+    Number(hard);
+
+  const stamps =
+    (easy ? 3 : 0) +
+    (medium ? 3 : 0);
+
+  $("towerProgress").textContent =
+    `${count} / 3 CHALLENGES COMPLETE`;
+
+  if (allComplete()) {
+    $("collectionStatus").textContent =
+      "ALL THREE CHALLENGES COMPLETE! The teacher is watching. Solve the secret 10-letter password!";
+  } else if (hardUnlocked()) {
+    $("collectionStatus").textContent =
+      "6 / 6 STAMPS COLLECTED! HARD IS UNLOCKED!";
+  } else {
+    $("collectionStatus").textContent =
+      `${stamps} / 6 STAMPS COLLECTED. Complete EASY and MEDIUM to unlock HARD.`;
+  }
+
+  updateHardLock();
+  updateTeacher();
+
+  const blocked =
+    !allComplete() ||
+    sessionStorage.getItem(FINISHED_KEY) === "true" ||
+    sessionStorage.getItem(TIMEOUT_KEY) === "true";
+
+  $("answerInput").disabled = blocked;
+
+  updateAnswerCount();
+}
+
+// ======================================
+// PASSWORD INPUT
+// ======================================
+
+function updateAnswerCount() {
+  const input = $("answerInput");
+
+  input.value = input.value
+    .toUpperCase()
+    .replace(/[^A-Z]/g, "")
+    .slice(0, 10);
+
+  $("answerCount").textContent =
+    `${input.value.length} / 10 LETTERS`;
+
+  $("unlockBtn").disabled =
+    !allComplete() ||
+    input.value.length !== 10 ||
+    !hasTime();
+}
+
+$("answerInput").addEventListener("input", () => {
+  updateAnswerCount();
+  $("message").textContent = "";
+});
+
+$("answerInput").addEventListener("keydown", event => {
+  if (event.key === "Enter") {
+    checkAnswer();
+  }
+});
+
+// ======================================
+// SHARED 20-MINUTE TIMER
+// ======================================
+
+function initializeTimer() {
+  const saved = Number(
+    sessionStorage.getItem(TIMER_KEY)
+  );
+
+  if (!Number.isFinite(saved) || saved <= 0) {
+    sessionStorage.setItem(
+      TIMER_KEY,
+      String(Date.now() + GAME_MINUTES * 60 * 1000)
+    );
+  }
+}
+
+let timerInterval = null;
+
+function hasTime() {
+  if (
+    sessionStorage.getItem(FINISHED_KEY) === "true" ||
+    sessionStorage.getItem(TIMEOUT_KEY) === "true"
+  ) {
+    return false;
+  }
+
+  const deadline = Number(
+    sessionStorage.getItem(TIMER_KEY)
+  );
+
+  return Number.isFinite(deadline) &&
+    Date.now() < deadline;
 }
 
 function showTimeout() {
-  if (escapeCompleted || escapeTimedOut) return;
-  escapeTimedOut = true;
-  sessionStorage.setItem(TIMEOUT_KEY, "true");
-  $("countdown").textContent = "00:00";
-  $("timeoutScreen").style.display = "flex";
-  if (timerInterval) clearInterval(timerInterval);
-}
-
-function timeAvailable() {
-  if (escapeTimedOut || sessionStorage.getItem(TIMEOUT_KEY) === "true" ||
-      Date.now() >= Number(sessionStorage.getItem(TIMER_KEY))) {
-    showTimeout();
-    return false;
+  if (sessionStorage.getItem(FINISHED_KEY) === "true") {
+    return;
   }
-  return true;
+
+  sessionStorage.setItem(TIMEOUT_KEY, "true");
+
+  $("timeoutScreen").style.display = "flex";
+  $("countdown").textContent = "00:00";
+  $("answerInput").disabled = true;
+  $("unlockBtn").disabled = true;
+
+  clearInterval(timerInterval);
 }
 
 function updateTimer() {
-  if (escapeCompleted || escapeTimedOut) return;
-  const remaining = Math.max(0, Number(sessionStorage.getItem(TIMER_KEY)) - Date.now());
+  if (sessionStorage.getItem(FINISHED_KEY) === "true") {
+    return;
+  }
+
+  if (
+    sessionStorage.getItem(TIMEOUT_KEY) === "true"
+  ) {
+    showTimeout();
+    return;
+  }
+
+  const deadline = Number(
+    sessionStorage.getItem(TIMER_KEY)
+  );
+
+  const remaining = Math.max(
+    0,
+    deadline - Date.now()
+  );
+
   const seconds = Math.ceil(remaining / 1000);
+
+  const minutes = String(
+    Math.floor(seconds / 60)
+  ).padStart(2, "0");
+
+  const secs = String(
+    seconds % 60
+  ).padStart(2, "0");
+
   $("countdown").textContent =
-    `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
-  $("timerBox").classList.toggle("urgent", seconds <= 60);
-  if (remaining <= 0 || sessionStorage.getItem(TIMEOUT_KEY) === "true") showTimeout();
+    `${minutes}:${secs}`;
+
+  $("timerBox").classList.toggle(
+    "urgent",
+    seconds <= 60
+  );
+
+  if (!hasTime()) {
+    showTimeout();
+  }
 }
 
+// ======================================
+// FINAL PASSWORD
+// ======================================
+
+function checkAnswer() {
+  if (!hasTime()) {
+    showTimeout();
+    return;
+  }
+
+  if (!allComplete()) {
+    $("message").textContent =
+      "COMPLETE ALL THREE CHALLENGES FIRST!";
+    return;
+  }
+
+  const answer = $("answerInput").value
+    .trim()
+    .toUpperCase();
+
+  if (answer.length !== 10) {
+    $("message").textContent =
+      "TYPE ALL TEN LETTERS!";
+    return;
+  }
+
+  if (answer !== secretWord) {
+    $("message").style.color = "#ff5555";
+    $("message").textContent =
+      "ACCESS DENIED! TRY AGAIN.";
+    return;
+  }
+
+  sessionStorage.setItem(FINISHED_KEY, "true");
+
+  clearInterval(timerInterval);
+
+  $("lockIcon").textContent = "🔓";
+  $("answerInput").disabled = true;
+  $("unlockBtn").disabled = true;
+
+ $("winScreen").classList.add("visible");
+
+// Show the victory screen for 3 seconds,
+// then return to the home page.
+setTimeout(() => {
+  window.location.href = "index.html";
+}, 3000);
+}
+
+// ======================================
+// CHALLENGE NAVIGATION
+// ======================================
+
+function goToChallenge(filename) {
+  if (!hasTime()) {
+    showTimeout();
+    return;
+  }
+
+  // HARD IS LOCKED UNTIL EASY + MEDIUM.
+
+  if (
+    filename === "binary.html" &&
+    !hardUnlocked()
+  ) {
+    $("hardMessage").textContent =
+      "🔒 FINISH EASY AND MEDIUM FIRST!";
+
+    return;
+  }
+
+  window.location.href = filename;
+}
+
+// ======================================
+// RESET GAME
+// ======================================
+
 function restartEscape() {
-  [TIMER_KEY, TIMEOUT_KEY, FINISHED_KEY, "secretWord", ...COMPLETE_KEYS,
-   "easyTaskIds", "easyTimerSeconds", "finalScrambledLetters"].forEach(key => sessionStorage.removeItem(key));
+  [
+    TIMER_KEY,
+    TIMEOUT_KEY,
+    FINISHED_KEY,
+    "secretWord",
+    "easyComplete",
+    "mediumComplete",
+    "hardComplete",
+    "easyRewardLetters",
+    "mediumRewardLetters",
+    "hardRewardLetters",
+    "easyMediumUnlocked",
+    "easyTaskIds",
+    "easyTimerSeconds",
+    "finalScrambledLetters"
+  ].forEach(key => {
+    sessionStorage.removeItem(key);
+  });
+
   window.location.href = "screen4.html";
 }
 
-function updateBoxes() {
-  const boxes = $("pinBoxes");
-  boxes.replaceChildren();
-  for (let i = 0; i < 10; i++) {
-    const box = document.createElement("div");
-    box.className = "pin-box";
-    box.textContent = selectedTiles[i] === undefined ? "_" : scrambledLetters[selectedTiles[i]];
-    boxes.appendChild(box);
-  }
-  $("undoBtn").disabled = selectedTiles.length === 0;
-  $("clearBtn").disabled = selectedTiles.length === 0;
-  $("letterTiles").querySelectorAll("button").forEach((button, index) => {
-    button.disabled = selectedTiles.includes(index);
-  });
-  document.querySelector(".unlock").disabled = !allChallengesComplete() || selectedTiles.length !== 10;
-}
-
-function renderTiles() {
-  const holder = $("letterTiles");
-  holder.replaceChildren();
-  scrambledLetters.forEach((letter, index) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "letter-tile";
-    button.textContent = letter;
-    button.setAttribute("aria-label", `Choose letter ${letter}`);
-    button.addEventListener("click", () => {
-      if (escapeCompleted || !timeAvailable() || !allChallengesComplete() || selectedTiles.includes(index)) return;
-      selectedTiles.push(index);
-      $("message").textContent = "";
-      updateBoxes();
-    });
-    holder.appendChild(button);
-  });
-  updateBoxes();
-}
-
-function undoLetter() {
-  if (escapeCompleted || !timeAvailable()) return;
-  selectedTiles.pop();
-  $("message").textContent = "";
-  updateBoxes();
-}
-
-function clearLetters() {
-  if (escapeCompleted || !timeAvailable()) return;
-  selectedTiles = [];
-  $("message").textContent = "";
-  updateBoxes();
-}
-
-function initializeFinalLock() {
-  const completed = COMPLETE_KEYS.filter(key => sessionStorage.getItem(key) === "true").length;
-  if (!allChallengesComplete()) {
-    $("collectionStatus").textContent = `${completed}/3 challenges completed. Finish all three to reveal your 10 letter tiles.`;
-    $("letterTiles").hidden = true;
-    $("undoBtn").disabled = true;
-    $("clearBtn").disabled = true;
-    updateBoxes();
-    return;
-  }
-
-  $("letterTiles").hidden = false;
-  $("collectionStatus").textContent = "ALL 10 LETTERS COLLECTED! Click the tiles to build the secret word.";
-  let saved = null;
-  try { saved = JSON.parse(sessionStorage.getItem("finalScrambledLetters")); } catch (_) {}
-  if (Array.isArray(saved) && saved.length === 10 &&
-      [...saved].sort().join("") === [...secretWord].sort().join("")) {
-    scrambledLetters = saved;
-  } else {
-    scrambledLetters = shuffleLetters([...easyLetters, ...mediumLetters, ...hardLetters]);
-    sessionStorage.setItem("finalScrambledLetters", JSON.stringify(scrambledLetters));
-  }
-  renderTiles();
-}
-
-function checkWord() {
-  if (escapeCompleted || !timeAvailable()) return;
-  const message = $("message");
-  if (!allChallengesComplete()) {
-    message.style.color = "#ff5555";
-    message.textContent = "COMPLETE ALL 3 CHALLENGES FIRST!";
-    return;
-  }
-  if (selectedTiles.length !== 10) {
-    message.style.color = "#ff5555";
-    message.textContent = "ARRANGE ALL 10 LETTERS FIRST!";
-    return;
-  }
-
-  const guess = selectedTiles.map(index => scrambledLetters[index]).join("");
-  if (guess !== secretWord) {
-    message.style.color = "#ff5555";
-    message.textContent = "ACCESS DENIED! REARRANGE THE LETTERS AND TRY AGAIN.";
-    return;
-  }
-
-  escapeCompleted = true;
-  sessionStorage.setItem(FINISHED_KEY, "true");
-  message.style.color = "#45df83";
-  message.textContent = "ACCESS GRANTED!";
-  $("lockIcon").textContent = "🔓";
-  if (timerInterval) clearInterval(timerInterval);
-
-  const winScreen = $("winScreen");
-  winScreen.classList.add("visible");
-  requestAnimationFrame(() => requestAnimationFrame(() => winScreen.classList.add("fade-in")));
-
-  // Return to the welcome screen after celebrating, ready for a fresh game.
-  setTimeout(() => {
-    [TIMER_KEY, TIMEOUT_KEY, FINISHED_KEY, "secretWord", ...COMPLETE_KEYS,
-     "easyTaskIds", "easyTimerSeconds", "finalScrambledLetters"].forEach(key => sessionStorage.removeItem(key));
-    window.location.href = "index.html";
-  }, 8000);
-}
+// ======================================
+// START GAME
+// ======================================
 
 initializeTimer();
-initializeFinalLock();
-timerInterval = setInterval(updateTimer, 250);
-updateTimer();
+displayPasswordPreview();
+updateScreen();
+
+if (sessionStorage.getItem(FINISHED_KEY) === "true") {
+  $("winScreen").classList.add("visible");
+} else if (
+  sessionStorage.getItem(TIMEOUT_KEY) === "true"
+) {
+  showTimeout();
+} else {
+  updateTimer();
+  timerInterval = setInterval(updateTimer, 250);
+}
 </script>
 
 </body>
-
 </html>
