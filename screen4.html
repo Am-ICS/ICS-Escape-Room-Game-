@@ -656,7 +656,7 @@ body::before {
       <div class="timer-label">
         ⏰ ESCAPE ROOM TIME LEFT
       </div>
-      <div id="countdown">20:00</div>
+      <div id="countdown">15:00</div>
     </div>
   </div>
 
@@ -969,7 +969,7 @@ const TIMER_KEY = "escapeRoomEndTime";
 const TIMEOUT_KEY = "escapeRoomTimedOut";
 const FINISHED_KEY = "escapeRoomFinished";
 
-const GAME_MINUTES = 20;
+const GAME_MINUTES = 15;
 
 // ======================================
 // SECRET WORDS
@@ -1362,7 +1362,7 @@ $("answerInput").addEventListener("keydown", event => {
 });
 
 // ======================================
-// SHARED 20-MINUTE TIMER
+// SHARED 15-MINUTE TIMER
 // ======================================
 
 function initializeTimer() {
@@ -1373,7 +1373,7 @@ function initializeTimer() {
   if (!Number.isFinite(saved) || saved <= 0) {
     sessionStorage.setItem(
       TIMER_KEY,
-      String(Date.now() + GAME_MINUTES * 60 * 1000)
+      String(Date.now() + GAME_MINUTES  * 60 * 1000)
     );
   }
 }
