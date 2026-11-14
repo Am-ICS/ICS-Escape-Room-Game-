@@ -14,49 +14,12 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: #000 !important;
+  background:
+    radial-gradient(ellipse at top, #39101b, transparent 60%),
+    #09090c;
   color: white;
   font-family: Arial, sans-serif;
 }
-
-/* ===== RED MATRIX BACKGROUND ===== */
-
-/* Animated falling code */
-#matrix {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  pointer-events: none;
-}
-
-/* Dark overlay for readability */
-.matrix-overlay {
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(
-    circle,
-    rgba(0, 0, 0, 0.2) 0%,
-    rgba(0, 0, 0, 0.8) 100%
-  );
-  z-index: 1;
-  pointer-events: none;
-}
-
-/* Keep game content above Matrix */
-body > *:not(#matrix):not(.matrix-overlay) {
-  position: relative;
-  z-index: 2;
-}
-
-/* Keep popups and victory screens on top */
-#winScreen,
-#timeoutScreen {
-  position: fixed !important;
-  z-index: 200 !important;
-}
-
 
 body::before {
   content: "";
@@ -69,8 +32,24 @@ body::before {
   background-size: 35px 35px;
 }
 
+/* Animated red Matrix code rain behind the game */
+#matrixRain {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.56;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #matrixRain { display: none; }
+}
+
 .container {
   position: relative;
+  z-index: 1;
   max-width: 1120px;
   margin: auto;
   padding: 25px 20px 60px;
@@ -710,10 +689,40 @@ body::before {
     gap: 2px;
   }
 }
+
+/* SECRET WORD HINT BUTTON */
+.word-hint-button {
+  margin-top: 14px;
+  padding: 11px 22px;
+  background: #291a0d;
+  color: #ffda87;
+  border: 2px solid #e3ad4c;
+  border-radius: 8px;
+  font: 900 13px Arial, sans-serif;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background .2s, box-shadow .2s;
+}
+.word-hint-button:hover {
+  background: #513412;
+  box-shadow: 0 0 14px #e3ad4c55;
+}
+.word-hint-text {
+  margin: 12px 0 0;
+  padding: 12px;
+  border: 1px solid #a77d37;
+  border-radius: 8px;
+  background: #160f0b;
+  color: #ffe2a5;
+  font-size: 13px;
+  line-height: 1.6;
+}
 </style>
 </head>
 
 <body>
+
+<canvas id="matrixRain" aria-hidden="true"></canvas>
 
 <div class="container">
 
@@ -731,7 +740,6 @@ body::before {
       <div class="timer-percent" id="timerPercent">100% TIME REMAINING</div>
     </div>
   </div>
-  
 
   <!-- HEADING -->
 
@@ -935,6 +943,13 @@ body::before {
           out the secret password!
         </div>
 
+        <button type="button" class="word-hint-button"
+          id="wordHintButton" onclick="toggleWordHint()"
+          aria-expanded="false" aria-controls="wordHintText">
+          💡 SHOW HINT
+        </button>
+        <p class="word-hint-text" id="wordHintText" hidden></p>
+
       </div>
 
       <!-- PASSWORD INPUT -->
@@ -1029,11 +1044,6 @@ body::before {
 
 </div>
 
-
-<!-- RED MATRIX BACKGROUND -->
-<canvas id="matrix"></canvas>
-<div class="matrix-overlay"></div>
-
 <script>
 "use strict";
 
@@ -1103,6 +1113,63 @@ if (!secretWord || !/^[A-Z]{10}$/.test(secretWord)) {
   ];
 
   sessionStorage.setItem("secretWord", secretWord);
+}
+
+
+// Clues correspond to the existing randomly selected 10-letter secret word.
+const passwordClues = {
+  ALGORITHMS: "Step-by-step instructions a computer follows to solve problems.",
+  AUTOMATION: "Using technology to perform tasks with little human involvement.",
+  BLOCKCHAIN: "A shared digital ledger that links records into a chain.",
+  BOOTLOADER: "A small program that starts an operating system.",
+  CLUSTERING: "Grouping similar data points or computers together.",
+  CONTAINERS: "Lightweight packages that bundle software with what it needs to run.",
+  CONTROLLER: "A device or program that directs how another system operates.",
+  DATACENTER: "A facility filled with servers and networking equipment.",
+  DEPLOYMENT: "The process of releasing software so people can use it.",
+  DEVELOPERS: "People who design and write computer programs.",
+  EXECUTABLE: "A file a computer can run as a program.",
+  FILESYSTEM: "The way an operating system organizes and stores files.",
+  HARDDRIVES: "Storage devices that keep data even when power is off.",
+  HYPERVISOR: "Software that creates and manages virtual machines.",
+  JAVASCRIPT: "A programming language that makes web pages interactive.",
+  KUBERNETES: "A platform that coordinates and manages software containers.",
+  MAINFRAMES: "Large, powerful computers used for massive business workloads.",
+  MICROCHIPS: "Tiny electronic circuits found inside modern devices.",
+  MIDDLEWARE: "Software that helps different applications communicate.",
+  MONITORING: "Continuously checking a system to spot problems or changes.",
+  NETWORKING: "Connecting computers so they can exchange information.",
+  PARAMETERS: "Values passed into a function to control how it works.",
+  POWERSHELL: "A command-line shell and scripting tool used for administration.",
+  PROCESSING: "A computer working on data to produce a result.",
+  PROCESSORS: "Computer components that execute instructions.",
+  PROGRAMMER: "A person who writes and tests code.",
+  REPOSITORY: "A place where project code and its history are stored.",
+  RESOLUTION: "The number of pixels used to display an image.",
+  SEMAPHORES: "Signals used to coordinate access to shared resources in programs.",
+  SERVERLESS: "A cloud model where developers run code without managing servers.",
+  SIMULATION: "A computer-based imitation of a real process or system.",
+  SUBROUTINE: "A reusable set of instructions within a larger program.",
+  TECHNOLOGY: "Tools and knowledge used to solve practical problems.",
+  THROUGHPUT: "How much work or data a system handles in a given time.",
+  TRANSISTOR: "A tiny electronic switch used to build computer circuits.",
+  TYPESCRIPT: "A typed programming language that builds on JavaScript.",
+  VERSIONING: "Tracking different revisions of files or software.",
+  WEBMASTERS: "People responsible for maintaining websites.",
+  WORKSPACES: "Areas where people organize their projects and tools.",
+ };
+
+function toggleWordHint() {
+  const text = $("wordHintText");
+  const button = $("wordHintButton");
+  const show = text.hidden;
+  if (show) {
+    text.textContent = "💡 " + (passwordClues[secretWord] ||
+      "A computing-related word with exactly ten letters.");
+  }
+  text.hidden = !show;
+  button.textContent = show ? "💡 HIDE HINT" : "💡 SHOW HINT";
+  button.setAttribute("aria-expanded", String(show));
 }
 
 const easyLetters = secretWord.slice(0, 3);
@@ -1665,79 +1732,63 @@ if (sessionStorage.getItem(FINISHED_KEY) === "true") {
   updateTimer();
   timerInterval = setInterval(updateTimer, 250);
 }
+</script>
 
-/* ===== ANIMATED RED MATRIX RAIN ===== */
 
-(function () {
-  const canvas = document.getElementById("matrix");
-  const ctx = canvas.getContext("2d");
+<script>
+/* Decorative background only: does not affect the shared timer or gameplay. */
+(() => {
+  const canvas = document.getElementById("matrixRain");
+  const context = canvas.getContext("2d");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  if (!context || reduceMotion.matches) return;
 
-  const characters =
-    "01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&@";
+  const symbols = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&@";
+  const fontSize = 17;
+  const frameDelay = 55;
+  let columns = [];
+  let width = 0;
+  let height = 0;
+  let lastFrame = 0;
 
-  const fontSize = 18;
-  let columns;
-  let drops;
-
-  function resizeMatrix() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    columns = Math.ceil(canvas.width / fontSize);
-
-    drops = Array.from(
-      { length: columns },
-      () => Math.random() * -50
+  function resizeRain() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    context.setTransform(dpr, 0, 0, dpr, 0, 0);
+    context.fillStyle = "#09090c";
+    context.fillRect(0, 0, width, height);
+    columns = Array.from(
+      { length: Math.ceil(width / fontSize) },
+      () => Math.random() * -height / fontSize
     );
   }
 
-  function drawMatrix() {
-    ctx.fillStyle = "rgba(0, 0, 0, 0.06)";
-    ctx.fillRect(
-      0,
-      0,
-      canvas.width,
-      canvas.height
-    );
+  function drawRain(timestamp) {
+    requestAnimationFrame(drawRain);
+    if (document.hidden || timestamp - lastFrame < frameDelay) return;
+    lastFrame = timestamp;
 
-    ctx.fillStyle = "#ff2020";
-    ctx.font = fontSize + "px monospace";
+    context.fillStyle = "rgba(9, 9, 12, 0.095)";
+    context.fillRect(0, 0, width, height);
+    context.font = `bold ${fontSize}px monospace`;
 
-    for (let i = 0; i < drops.length; i++) {
-      const character =
-        characters[
-          Math.floor(
-            Math.random() * characters.length
-          )
-        ];
-
-      ctx.fillText(
-        character,
-        i * fontSize,
-        drops[i] * fontSize
-      );
-
-      if (
-        drops[i] * fontSize > canvas.height &&
-        Math.random() > 0.975
-      ) {
-        drops[i] = 0;
-      }
-
-      drops[i]++;
-    }
+    columns.forEach((y, index) => {
+      const character = symbols[Math.floor(Math.random() * symbols.length)];
+      context.fillStyle = Math.random() > 0.94 ? "#ff9aa1" : "#e52b45";
+      context.fillText(character, index * fontSize, y * fontSize);
+      columns[index] = y * fontSize > height && Math.random() > 0.975
+        ? Math.random() * -35
+        : y + 0.45;
+    });
   }
 
-  resizeMatrix();
-
-  window.addEventListener(
-    "resize",
-    resizeMatrix
-  );
-
-  setInterval(drawMatrix, 45);
+  resizeRain();
+  window.addEventListener("resize", resizeRain);
+  requestAnimationFrame(drawRain);
 })();
-
 </script>
 
 </body>
