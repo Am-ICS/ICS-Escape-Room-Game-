@@ -568,6 +568,7 @@
           ▶ PLAY
         </button>
 
+ 
 
         <button class="next" id="nextBtn" disabled>
           NEXT →
@@ -677,7 +678,7 @@
     const indicator = document.getElementById("letterIndicator");
 
     const playBtn = document.getElementById("playBtn");
-    const slowBtn = document.getElementById("slowBtn");
+   
     const nextBtn = document.getElementById("nextBtn");
     const resetBtn = document.getElementById("resetBtn");
     const unlockBtn = document.getElementById("unlockBtn");
@@ -908,7 +909,6 @@
         `LETTER ${currentLetter + 1} OF 3`;
 
       playBtn.disabled = playing;
-      slowBtn.disabled = playing;
 
       nextBtn.disabled =
         playing ||
@@ -1078,7 +1078,7 @@
     }
 
     // ========================================
-    // SHARED 15-MINUTE TIMER
+    // SHARED 20-MINUTE TIMER
     // ========================================
 
     function initializeTimer() {
@@ -1190,9 +1190,6 @@
       playMorse(500);
     });
 
-    slowBtn.addEventListener("click", () => {
-      playMorse(950);
-    });
 
     nextBtn.addEventListener("click", () => {
       if (!escapeTimeAvailable()) return;
