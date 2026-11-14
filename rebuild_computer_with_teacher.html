@@ -102,6 +102,50 @@ h1 {
   transition: width 0.3s;
 }
 
+.order-panel {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #211319;
+  border: 1px solid #78313c;
+  border-radius: 10px;
+}
+
+.order-title {
+  color: #ff9ba1;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+}
+
+.order-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.order-step {
+  padding: 9px 11px;
+  background: #311b24;
+  border: 1px solid #78313c;
+  border-radius: 7px;
+  color: #cbb6bd;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.order-step.current {
+  border-color: #ff6971;
+  color: white;
+  box-shadow: 0 0 12px #ff454e44;
+}
+
+.order-step.done {
+  border-color: #36d48a;
+  background: #113026;
+  color: #8effc4;
+}
+
 .board {
   position: relative;
   display: grid;
@@ -232,13 +276,8 @@ h1 {
 }
 
 @keyframes shake {
-  25% {
-    transform: translateX(-6px);
-  }
-
-  75% {
-    transform: translateX(6px);
-  }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
 }
 
 .status {
@@ -247,6 +286,7 @@ h1 {
   text-align: center;
   color: #ffb1b7;
   font-weight: bold;
+  line-height: 1.5;
 }
 
 .status.success {
@@ -300,7 +340,7 @@ button:disabled {
   letter-spacing: 2px;
 }
 
-/* TEACHER */
+/* ORIGINAL TEACHER DESIGN */
 
 .teacher-area {
   position: fixed;
@@ -360,7 +400,6 @@ button:disabled {
     opacity: 0;
     transform: translateX(-40px);
   }
-
   to {
     opacity: 1;
     transform: translateX(0);
@@ -435,7 +474,7 @@ button:disabled {
   display: none;
 }
 
-/* SHARED 15-MINUTE TIMER */
+/* SHARED TIMER */
 
 #escapeRoomTimer {
   position: sticky;
@@ -460,12 +499,10 @@ button:disabled {
 }
 
 @keyframes blink {
-  50% {
-    opacity: 0.3;
-  }
+  50% { opacity: 0.3; }
 }
 
-/* OVERALL TIMEOUT SCREEN */
+/* TIMEOUT SCREEN */
 
 #escapeRoomTimeout {
   display: none;
@@ -543,7 +580,6 @@ button:disabled {
 
 <body>
 
-<!-- SHARED ESCAPE ROOM TIMER -->
 <div id="escapeRoomTimer">
   ⏰ ESCAPE ROOM 15:00
 </div>
@@ -557,24 +593,31 @@ button:disabled {
     alt="Teacher thinking"
   >
 
-  <div
-    class="teacher-message"
-    id="teacherMessage"
-  >
+  <div class="teacher-message" id="teacherMessage">
     Hmm... maybe start it!
   </div>
 </div>
 
 <header class="heading">
-  <p class="subtitle">HACKED // EASY CHALLENGE</p>
+  <p class="subtitle">
+    HACKED // EASY CHALLENGE
+  </p>
 
   <h1>🖥️ REBUILD THE COMPUTER</h1>
 
   <p class="instructions">
     Security has disabled the motherboard.
     <br>
-    Press START GAME, install all four components,
-    and boot the computer before the escape room timer ends.
+    Press START GAME and install 8 random components.
+    <br>
+    Match each component to its correct socket
+    <strong>in the assembly order shown below.</strong>
+    <br>
+    A wrong connection or wrong order resets
+    your installation progress to 0/8!
+    <br>
+    Boot the computer before the shared
+    escape-room timer ends.
   </p>
 </header>
 
@@ -582,11 +625,12 @@ button:disabled {
 
   <div class="top">
     <span class="tag">
-      SYSTEM: <span id="system">STANDBY</span>
+      SYSTEM:
+      <span id="system">STANDBY</span>
     </span>
 
     <span class="tag" id="count">
-      0 / 4 INSTALLED
+      0 / 8 INSTALLED
     </span>
   </div>
 
@@ -594,7 +638,17 @@ button:disabled {
     <div class="fill" id="fill"></div>
   </div>
 
+  <!-- ASSEMBLY ORDER -->
+  <div class="order-panel">
+    <div class="order-title">
+      ◈ REQUIRED ASSEMBLY ORDER ◈
+    </div>
+
+    <div class="order-list" id="orderList"></div>
+  </div>
+
   <div class="board" id="board">
+
     <svg id="wireLayer" aria-hidden="true"></svg>
 
     <section class="section">
@@ -606,13 +660,10 @@ button:disabled {
       <h2>02 // MOTHERBOARD SOCKETS</h2>
       <div class="slots" id="slots"></div>
     </section>
+
   </div>
 
-  <div
-    class="status"
-    id="status"
-    role="status"
-  >
+  <div class="status" id="status" role="status">
     Press START GAME to begin.
   </div>
 
@@ -640,8 +691,7 @@ button:disabled {
   HACKED // ESCAPE ROOM
 </p>
 
-<!-- RESULT SCREEN -->
-
+<!-- SUCCESS SCREEN -->
 <div class="overlay" id="overlay">
   <div class="result" id="result">
 
@@ -661,10 +711,7 @@ button:disabled {
       YAY! WE GOT THE ANSWER!
     </p>
 
-    <div
-      style="font-size:50px"
-      id="resultIcon"
-    >
+    <div style="font-size:50px" id="resultIcon">
       🔓
     </div>
 
@@ -696,7 +743,6 @@ button:disabled {
 </div>
 
 <!-- OVERALL TIMEOUT -->
-
 <div id="escapeRoomTimeout">
   <div style="font-size:75px">⏰</div>
 
@@ -715,8 +761,10 @@ button:disabled {
 "use strict";
 
 // ========================================
-// SHARED 15-MINUTE ESCAPE TIMER
+// SETTINGS
 // ========================================
+
+const COMPONENT_COUNT = 8;
 
 const ESCAPE_END_KEY = "escapeRoomEndTime";
 const ESCAPE_TIMEOUT_KEY = "escapeRoomTimedOut";
@@ -724,7 +772,16 @@ const ESCAPE_FINISHED_KEY = "escapeRoomFinished";
 
 const ESCAPE_DURATION = 15 * 60 * 1000;
 
+const TASKS_KEY = "easyRandomTasks";
+const GAME_KEY = "easyRandomGameWord";
+
 let overallEscapeExpired = false;
+
+const get = id => document.getElementById(id);
+
+// ========================================
+// SHARED ESCAPE TIMER
+// ========================================
 
 const savedDeadline = Number(
   sessionStorage.getItem(ESCAPE_END_KEY)
@@ -772,24 +829,25 @@ function updateOverallEscapeTimer() {
     sessionStorage.getItem(ESCAPE_END_KEY)
   );
 
+  if (
+    !Number.isFinite(deadline) ||
+    sessionStorage.getItem(ESCAPE_TIMEOUT_KEY) === "true"
+  ) {
+    showOverallTimeout();
+    return;
+  }
+
   const remaining = Math.max(
     0,
     deadline - Date.now()
   );
 
-  const secondsLeft = Math.ceil(
-    remaining / 1000
-  );
+  const secondsLeft = Math.ceil(remaining / 1000);
 
-  const minutes = Math.floor(
-    secondsLeft / 60
-  );
-
+  const minutes = Math.floor(secondsLeft / 60);
   const seconds = secondsLeft % 60;
 
-  const display = document.getElementById(
-    "escapeRoomTimer"
-  );
+  const display = get("escapeRoomTimer");
 
   display.textContent =
     "⏰ ESCAPE ROOM " +
@@ -802,10 +860,7 @@ function updateOverallEscapeTimer() {
     secondsLeft <= 60
   );
 
-  if (
-    remaining <= 0 ||
-    sessionStorage.getItem(ESCAPE_TIMEOUT_KEY) === "true"
-  ) {
+  if (remaining <= 0) {
     showOverallTimeout();
   }
 }
@@ -822,13 +877,10 @@ function showOverallTimeout() {
 
   cancelWireDrag();
 
-  document.getElementById(
-    "escapeRoomTimer"
-  ).textContent = "⏰ ESCAPE ROOM 00:00";
+  get("escapeRoomTimer").textContent =
+    "⏰ ESCAPE ROOM 00:00";
 
-  document.getElementById(
-    "escapeRoomTimeout"
-  ).style.display = "flex";
+  get("escapeRoomTimeout").style.display = "flex";
 }
 
 // ========================================
@@ -892,10 +944,12 @@ function getSharedSecretWord() {
 }
 
 const secretWord = getSharedSecretWord();
+
+// EASY owns only the first 3 letters.
 const easyLetters = secretWord.slice(0, 3);
 
 // ========================================
-// SCRAMBLED REWARD
+// SCRAMBLED EASY REWARD
 // ========================================
 
 function scrambleReward(letters) {
@@ -945,7 +999,7 @@ function scrambleReward(letters) {
 }
 
 // ========================================
-// COMPUTER COMPONENTS
+// ALL 30 ORIGINAL COMPONENTS
 // ========================================
 
 const allComponents = [
@@ -1192,18 +1246,8 @@ const allComponents = [
 ];
 
 // ========================================
-// RANDOM COMPONENTS PER ESCAPE ROOM
+// RANDOMIZE COMPONENTS
 // ========================================
-
-const TASKS_KEY = "easyRandomTasks";
-const GAME_KEY = "easyRandomGameWord";
-
-if (
-  sessionStorage.getItem(GAME_KEY) !== secretWord
-) {
-  sessionStorage.removeItem(TASKS_KEY);
-  sessionStorage.setItem(GAME_KEY, secretWord);
-}
 
 function shuffle(array) {
   const copy = [...array];
@@ -1222,6 +1266,16 @@ function shuffle(array) {
   return copy;
 }
 
+// Keep the same random set during one
+// escape-room session.
+
+if (
+  sessionStorage.getItem(GAME_KEY) !== secretWord
+) {
+  sessionStorage.removeItem(TASKS_KEY);
+  sessionStorage.setItem(GAME_KEY, secretWord);
+}
+
 let chosenIds;
 
 try {
@@ -1232,9 +1286,12 @@ try {
   chosenIds = null;
 }
 
+// IMPORTANT: exactly 8 unique components.
+
 if (
   !Array.isArray(chosenIds) ||
-  chosenIds.length !== 4 ||
+  chosenIds.length !== COMPONENT_COUNT ||
+  new Set(chosenIds).size !== COMPONENT_COUNT ||
   chosenIds.some(
     id => !allComponents.some(
       part => part.id === id
@@ -1242,7 +1299,7 @@ if (
   )
 ) {
   chosenIds = shuffle(allComponents)
-    .slice(0, 4)
+    .slice(0, COMPONENT_COUNT)
     .map(part => part.id);
 
   sessionStorage.setItem(
@@ -1257,6 +1314,11 @@ const components = chosenIds.map(
   )
 );
 
+// The saved random sequence is the
+// required installation order.
+
+const assemblyOrder = [...chosenIds];
+
 // ========================================
 // GAME STATE
 // ========================================
@@ -1266,9 +1328,6 @@ let selected = null;
 let started = false;
 let won = false;
 let draggingWire = null;
-
-const get = id =>
-  document.getElementById(id);
 
 // ========================================
 // STATUS
@@ -1283,31 +1342,117 @@ function showStatus(message, success = false) {
   );
 }
 
+function nextRequiredComponent() {
+  const nextId = assemblyOrder[installed.size];
+
+  return components.find(
+    component => component.id === nextId
+  ) || null;
+}
+
+// ========================================
+// ASSEMBLY ORDER DISPLAY
+// ========================================
+
+function updateAssemblyOrder() {
+  const holder = get("orderList");
+  holder.replaceChildren();
+
+  assemblyOrder.forEach((id, index) => {
+    const component = components.find(
+      part => part.id === id
+    );
+
+    const step = document.createElement("div");
+    step.className = "order-step";
+
+    if (index < installed.size) {
+      step.classList.add("done");
+    } else if (index === installed.size) {
+      step.classList.add("current");
+    }
+
+    const prefix = index < installed.size
+      ? "✓"
+      : `${index + 1}.`;
+
+    step.textContent = `${prefix} ${component.name}`;
+
+    holder.appendChild(step);
+  });
+}
+
+// ========================================
+// PROGRESS
+// ========================================
+
 function updateProgress() {
   const count = installed.size;
 
   get("count").textContent =
-    `${count} / 4 INSTALLED`;
+    `${count} / ${COMPONENT_COUNT} INSTALLED`;
 
   get("fill").style.width =
-    `${count * 25}%`;
+    `${(count / COMPONENT_COUNT) * 100}%`;
 
   get("bootBtn").disabled =
-    !started || won || count !== 4;
+    !started || won || count !== COMPONENT_COUNT;
+
+  updateAssemblyOrder();
 
   if (
-    count === 4 &&
+    count === COMPONENT_COUNT &&
     started &&
     !won
   ) {
-    get("system").textContent =
-      "READY TO BOOT";
+    get("system").textContent = "READY TO BOOT";
 
     showStatus(
-      "✓ All components installed! Press BOOT COMPUTER.",
+      "✓ All 8 components installed! Press BOOT COMPUTER.",
       true
     );
   }
+}
+
+// ========================================
+// RESET INSTALLATION PROGRESS ONLY
+// ========================================
+
+function resetInstallationProgress(message) {
+  cancelWireDrag();
+
+  installed.clear();
+  selected = null;
+
+  document.querySelectorAll(".part").forEach(
+    part => {
+      part.classList.remove(
+        "installed",
+        "selected"
+      );
+    }
+  );
+
+  document.querySelectorAll(".slot").forEach(
+    slot => {
+      slot.classList.remove(
+        "good",
+        "bad",
+        "over"
+      );
+
+      slot.querySelector(".hint").textContent =
+        "EMPTY";
+    }
+  );
+
+  get("wireLayer").replaceChildren();
+
+  get("system").textContent = "OFFLINE";
+
+  updateProgress();
+
+  showStatus(message);
 }
 
 // ========================================
@@ -1317,7 +1462,10 @@ function updateProgress() {
 function installComponent(componentId, slotId) {
   if (!escapeTimeAvailable()) return;
   if (!started || won) return;
-  if (!componentId || installed.has(componentId)) return;
+
+  if (!componentId || installed.has(componentId)) {
+    return;
+  }
 
   const slot = document.querySelector(
     `.slot[data-id="${slotId}"]`
@@ -1327,49 +1475,61 @@ function installComponent(componentId, slotId) {
     return;
   }
 
-  if (componentId === slotId) {
-    installed.add(componentId);
+  const required = nextRequiredComponent();
 
-    slot.classList.add("good");
+  // BOTH the socket AND assembly order
+  // must be correct.
 
-    slot.querySelector(".hint").textContent =
-      "✓ INSTALLED";
+  const correctSocket = componentId === slotId;
 
-    const part = document.querySelector(
-      `.part[data-id="${componentId}"]`
-    );
+  const correctOrder =
+    required &&
+    componentId === required.id;
 
-    if (part) {
-      part.classList.add("installed");
-    }
-
-    selected = null;
-
-    document.querySelectorAll(".part").forEach(
-      item => item.classList.remove("selected")
-    );
-
-    showStatus(
-      "✓ Component installed correctly!",
-      true
-    );
-
-    updateProgress();
-    drawWires();
-
-  } else {
+  if (!correctSocket || !correctOrder) {
     slot.classList.remove("bad");
     void slot.offsetWidth;
     slot.classList.add("bad");
 
-    setTimeout(() => {
-      slot.classList.remove("bad");
-    }, 400);
+    const message = !correctSocket
+      ? "✕ WRONG SOCKET! Progress reset to 0/8."
+      : `✕ WRONG ORDER! Install ${required.name} next. Progress reset to 0/8.`;
 
-    showStatus(
-      "✕ WRONG SOCKET! Try again."
-    );
+    resetInstallationProgress(message);
+
+    return;
   }
+
+  // Correct component and correct order.
+
+  installed.add(componentId);
+
+  slot.classList.add("good");
+
+  slot.querySelector(".hint").textContent =
+    "✓ INSTALLED";
+
+  const part = document.querySelector(
+    `.part[data-id="${componentId}"]`
+  );
+
+  if (part) {
+    part.classList.add("installed");
+  }
+
+  selected = null;
+
+  document.querySelectorAll(".part").forEach(
+    item => item.classList.remove("selected")
+  );
+
+  showStatus(
+    `✓ ${required.name} installed correctly!`,
+    true
+  );
+
+  updateProgress();
+  drawWires();
 }
 
 // ========================================
@@ -1379,6 +1539,8 @@ function installComponent(componentId, slotId) {
 function createBoard() {
   get("parts").replaceChildren();
   get("slots").replaceChildren();
+
+  // Parts are visually shuffled.
 
   for (const component of shuffle(components)) {
     const part = document.createElement("div");
@@ -1443,6 +1605,8 @@ function createBoard() {
     get("parts").appendChild(part);
   }
 
+  // Sockets are shuffled independently.
+
   for (const component of shuffle(components)) {
     const slot = document.createElement("div");
 
@@ -1477,7 +1641,7 @@ function createBoard() {
 }
 
 // ========================================
-// WIRE POSITIONS
+// ORIGINAL WIRE POSITIONS
 // ========================================
 
 function wirePoint(element, fromStart) {
@@ -1632,16 +1796,14 @@ function finishWireDrag(event) {
     return;
   }
 
-  const componentId =
-    draggingWire.component.id;
+  const componentId = draggingWire.component.id;
 
   const target = document.elementFromPoint(
     event.clientX,
     event.clientY
   );
 
-  const slot = target &&
-    target.closest(".slot");
+  const slot = target && target.closest(".slot");
 
   cancelWireDrag();
 
@@ -1660,7 +1822,6 @@ function finishWireDrag(event) {
 function drawWires() {
   if (draggingWire) return;
 
-  const board = get("board");
   const svg = get("wireLayer");
 
   svg.replaceChildren();
@@ -1708,7 +1869,7 @@ window.addEventListener(
 );
 
 // ========================================
-// TEACHER REACTIONS
+// ORIGINAL TEACHER REACTIONS
 // ========================================
 
 function setTeacher(state) {
@@ -1762,15 +1923,17 @@ function startGame() {
     part => part.classList.remove("disabled")
   );
 
+  const required = nextRequiredComponent();
+
   showStatus(
-    "Game started! Install all four components."
+    `Game started! Install ${required.name} first.`
   );
 
   updateProgress();
 }
 
 // ========================================
-// RESULT SCREEN
+// SUCCESS RESULT
 // ========================================
 
 function showResult() {
@@ -1811,7 +1974,9 @@ function bootComputer() {
   if (!escapeTimeAvailable()) return;
   if (!started || won) return;
 
-  if (installed.size !== 4) return;
+  if (installed.size !== COMPONENT_COUNT) {
+    return;
+  }
 
   won = true;
   started = false;
@@ -1830,7 +1995,7 @@ function bootComputer() {
 }
 
 // ========================================
-// RESET GAME
+// RESET EASY GAME
 // ========================================
 
 function resetGame() {
@@ -1882,6 +2047,8 @@ get("resetBtn").addEventListener(
 get("backBtn").addEventListener(
   "click",
   () => {
+    if (!escapeTimeAvailable()) return;
+
     window.location.href = "screen4.html";
   }
 );
@@ -1891,12 +2058,13 @@ get("continueBtn").addEventListener(
   () => {
     if (!escapeTimeAvailable()) return;
 
-    get("overlay").classList.remove("show");
+    window.location.href = "screen4.html";
   }
 );
 
 // ========================================
-// RESTART ESCAPE ROOM
+// FULL ESCAPE ROOM RESTART
+// ONLY AFTER TIMEOUT
 // ========================================
 
 get("restartEscapeBtn").addEventListener(
@@ -1906,16 +2074,26 @@ get("restartEscapeBtn").addEventListener(
       ESCAPE_END_KEY,
       ESCAPE_TIMEOUT_KEY,
       ESCAPE_FINISHED_KEY,
+
       "easyComplete",
       "mediumComplete",
       "hardComplete",
+
       "secretWord",
+
       "easyRewardLetters",
       "mediumRewardLetters",
       "hardRewardLetters",
+
       TASKS_KEY,
       GAME_KEY,
-      "easyRandomSeconds"
+
+      "easyRandomSeconds",
+      "easyTaskIds",
+      "easyTimerSeconds",
+
+      "hardAttemptsUsed",
+      "hardAttemptsWord"
     ];
 
     for (const key of keysToClear) {
@@ -1940,7 +2118,7 @@ setInterval(
 if (!overallEscapeExpired) {
   resetGame();
 }
-</script>
 
+</script>
 </body>
 </html>

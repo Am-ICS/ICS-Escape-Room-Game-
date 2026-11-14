@@ -24,6 +24,7 @@
       min-height: 100vh;
       padding: 65px 14px 180px;
       display: flex;
+
       justify-content: center;
       align-items: center;
       font-family: Arial, Helvetica, sans-serif;
@@ -267,10 +268,6 @@
       border-color: #35bb7a;
     }
 
-    .slow {
-      background: #836019;
-      border-color: #d2a33b;
-    }
 
     .next {
       background: #244b89;
@@ -507,7 +504,7 @@
     role="timer"
     aria-label="Escape room time remaining"
   >
-    ⏰ ESCAPE ROOM 20:00
+    ⏰ ESCAPE ROOM 15:00
   </div>
 
   <!-- TIMEOUT -->
@@ -524,7 +521,7 @@
 
     <h3>YOU DIDN'T ESCAPE THE ROOM!</h3>
 
-    <p>The 20-minute countdown has ended.</p>
+    <p>The 15-minute countdown has ended.</p>
 
     <button id="restartEscapeBtn">
       ↻ TRY AGAIN
@@ -571,9 +568,6 @@
           ▶ PLAY
         </button>
 
-        <button class="slow" id="slowBtn">
-          🐢 SLOW
-        </button>
 
         <button class="next" id="nextBtn" disabled>
           NEXT →
@@ -672,7 +666,7 @@
     const ESCAPE_TIMEOUT_KEY = "escapeRoomTimedOut";
     const ESCAPE_FINISHED_KEY = "escapeRoomFinished";
 
-    const GAME_DURATION = 20 * 60 * 1000;
+    const GAME_DURATION = 15 * 60 * 1000;
 
     // ========================================
     // HTML ELEMENTS
@@ -1084,7 +1078,7 @@
     }
 
     // ========================================
-    // SHARED 20-MINUTE TIMER
+    // SHARED 15-MINUTE TIMER
     // ========================================
 
     function initializeTimer() {
