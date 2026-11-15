@@ -379,16 +379,16 @@ h1 {
   }
 }
 
-/* TIMEOUT OVERLAY */
+/* TIMEOUT OVERLAY — MATCHES WEBSITE, FILES, APPLICATIONS */
 .timeout-overlay {
   display: none;
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: rgba(0, 0, 0, 0.96);
   padding: 20px;
-  align-items: center;
+  background: rgba(0, 0, 0, 0.94);
   justify-content: center;
+  align-items: center;
 }
 .timeout-overlay.show { display: flex; }
 .timeout-panel {
@@ -398,11 +398,11 @@ h1 {
   background: #190a0e;
   border: 2px solid #ff454e;
   border-radius: 15px;
-  box-shadow: 0 0 40px #ff000055;
   text-align: center;
+  box-shadow: 0 0 40px #ff000055;
 }
-.timeout-panel h2 { color: #ff454e; font-size: clamp(26px, 5vw, 38px); }
-.timeout-panel p { color: #ffbbbb; line-height: 1.6; }
+.timeout-panel h2 { color: #ff454e; font-size: 32px; }
+.timeout-panel p { color: #c6e7d5; line-height: 1.6; }
 
 </style>
 </head>
@@ -539,8 +539,8 @@ h1 {
 <div class="timeout-overlay" id="timeoutScreen" role="alertdialog" aria-modal="true" aria-labelledby="timeoutTitle">
   <div class="timeout-panel">
     <h2 id="timeoutTitle">⏰ TIME'S UP! YOU FAILED!</h2>
-    <p>The 5-minute security timer has expired.</p>
-    <p>Returning to the beginning in 5 seconds...</p>
+    <p>The 5-minute security timer has expired.<br><br>The system remains locked!</p>
+    <p>Returning to the start in 5 seconds...</p>
   </div>
 </div>
 
@@ -670,14 +670,15 @@ function updateLockStatus() {
 ========================== */
 
 function updatePuzzleTimer() {
+  if (timeoutStarted) return;
+
   const endTime = Number(
     sessionStorage.getItem(PUZZLE_TIMER_KEY)
   );
 
-  const remaining = Math.max(
-    0,
-    endTime - Date.now()
-  );
+  const remaining = Number.isFinite(endTime) && endTime > 0
+    ? Math.max(0, endTime - Date.now())
+    : 0;
 
   const seconds = Math.ceil(remaining / 1000);
 
@@ -721,8 +722,7 @@ function updatePuzzleTimer() {
 
 function openPuzzle(filename) {
   if (timeoutStarted || !puzzleHasTime()) {
-    $("accessMessage").textContent =
-      "⏰ TIME'S UP! ACCESS DENIED!";
+    showTimeout();
     return;
   }
 
@@ -735,8 +735,7 @@ function openPuzzle(filename) {
 
 function startEscape() {
   if (timeoutStarted || !puzzleHasTime()) {
-    $("accessMessage").textContent =
-      "⏰ TIME'S UP! ACCESS DENIED!";
+    showTimeout();
     return;
   }
 
@@ -749,7 +748,8 @@ function startEscape() {
   // Start the separate 15-minute timer
   // when the main escape room begins.
 
-  if (!sessionStorage.getItem("escapeRoomEndTime")) {
+  const stage2End = Number(sessionStorage.getItem("escapeRoomEndTime"));
+  if (!Number.isFinite(stage2End) || stage2End <= 0) {
     sessionStorage.setItem(
       "escapeRoomEndTime",
       String(Date.now() + 15 * 60 * 1000)
@@ -866,6 +866,8 @@ function showTimeout() {
   $("puzzleTimer").textContent = "00:00";
   $("timerBar").style.width = "0%";
   $("timeoutScreen").classList.add("show");
+  document.querySelectorAll(".puzzle-btn").forEach(button => button.disabled = true);
+  $("beginButton").disabled = true;
   setTimeout(restartEntireGame, 5000);
 }
 
@@ -883,6 +885,8 @@ function restartEntireGame() {
   sessionStorage.removeItem("mediumComplete");
   sessionStorage.removeItem("hardComplete");
   sessionStorage.removeItem("secretWord");
+  sessionStorage.removeItem("escapeRoomTimedOut");
+  sessionStorage.removeItem("escapeRoomFinished");
 
   // Return to the beginning.
   window.location.replace("index.html");

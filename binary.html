@@ -533,7 +533,50 @@
         margin: 0 auto;
       }
     }
-  </style>
+  
+/* FILE RECOVERY MATCH: identical timeout popup on every Stage 2 page */
+#timeoutScreen.file-timeout-overlay,
+#escapeRoomTimeout.file-timeout-overlay {
+  display: none;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 999999 !important;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.94) !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-direction: row !important;
+  text-align: center;
+}
+#timeoutScreen.file-timeout-overlay.show,
+#escapeRoomTimeout.file-timeout-overlay.show { display: flex; }
+.file-timeout-overlay .file-timeout-result {
+  width: 100%;
+  max-width: 520px;
+  padding: 35px 25px;
+  background: #190a0e;
+  border: 2px solid #ff454e;
+  border-radius: 15px;
+  box-shadow: 0 0 40px #ff000055;
+  text-align: center;
+  color: white;
+}
+.file-timeout-overlay .file-timeout-result h2 {
+  color: #ff454e;
+  font-size: clamp(26px, 5vw, 38px);
+  margin: 0 0 20px;
+  text-shadow: none;
+}
+.file-timeout-overlay .file-timeout-result p {
+  color: #ffbbbb;
+  line-height: 1.6;
+  margin: 14px 0;
+  font-size: 16px;
+}
+
+</style>
 </head>
 
 <body>
@@ -545,7 +588,6 @@
   <div class="timer" id="escapeRoomTimer">
     ⏰ ESCAPE ROOM 15:00
   </div>
-
 
   <!-- ==============================
        HEADER
@@ -585,7 +627,6 @@
 
   </header>
 
-
   <!-- ==============================
        MAIN GAME
   ============================== -->
@@ -596,11 +637,9 @@
       ◈ ENCRYPTED SYSTEM SIGNALS ◈
     </div>
 
-
     <!-- FOUR BINARY SIGNALS -->
 
     <div class="codes" id="codes"></div>
-
 
     <!-- FINAL ANSWER -->
 
@@ -630,7 +669,6 @@
 
     </div>
 
-
     <!-- ACTION BUTTONS -->
 
     <div class="actions">
@@ -656,7 +694,6 @@
       </button>
 
     </div>
-
 
     <!-- HINT PANEL -->
 
@@ -693,7 +730,6 @@
 
   </main>
 
-
   <!-- ==============================
        FOOTER
   ============================== -->
@@ -701,7 +737,6 @@
   <p class="footer">
     HACKED // ESCAPE ROOM
   </p>
-
 
   <!-- ==============================
        BALD TEACHER
@@ -717,7 +752,6 @@
     >
 
   </div>
-
 
   <!-- ==============================
        SUCCESS SCREEN
@@ -753,18 +787,22 @@
 
   </div>
 
-
   <!-- ==============================
        SHARED TIMER TIMEOUT
   ============================== -->
 
-  <div class="timeout" id="timeoutScreen">
-
-    <div style="font-size: 75px;">⏰</div>
+  <div id="timeoutScreen" class="file-timeout-overlay" role="alertdialog" aria-modal="true" aria-labelledby="stage2TimeoutTitle">
+  <div class="file-timeout-result">
+    <h2 id="stage2TimeoutTitle">⏰ TIME'S UP! YOU FAILED!</h2>
+    <p>The 15-minute security timer has expired.<br><br>The system remains locked!</p>
+    <p>Returning to the start in 5 seconds...</p>
+    <button type="button" id="restartBtn" hidden tabindex="-1" aria-hidden="true"></button>
+  </div>
+</div>
 
     <h2>TIME'S UP!</h2>
 
-    <h3>YOU DIDN'T ESCAPE THE ROOM!</h3>
+    <h3>YOU FAILED!</h3>
 
     <p>
       The shared 15-minute countdown has ended.
@@ -776,7 +814,6 @@
 
   </div>
 
-
   <!-- ==============================
        RED MATRIX BACKGROUND
   ============================== -->
@@ -785,10 +822,8 @@
 
   <div class="matrix-overlay"></div>
 
-
   <script>
     "use strict";
-
 
     /* ==============================
        SHARED ESCAPE ROOM SETTINGS
@@ -801,7 +836,6 @@
     const FINISHED_KEY = "escapeRoomFinished";
 
     const $ = id => document.getElementById(id);
-
 
     /* ==============================
        SHARED SECRET PASSWORD
@@ -849,7 +883,6 @@
       "WORKSPACES"
     ].filter(word => word.length === 10);
 
-
     let secretWord = sessionStorage.getItem(
       "secretWord"
     );
@@ -868,13 +901,11 @@
       );
     }
 
-
     /* ==============================
        HARD USES THE LAST 4 LETTERS
     ============================== */
 
     const hardLetters = secretWord.slice(6, 10);
-
 
     function toBinary(letter) {
       return letter
@@ -883,14 +914,12 @@
         .padStart(8, "0");
     }
 
-
     /* ==============================
        GAME STATE
     ============================== */
 
     let expired = false;
     let challengeCompleted = false;
-
 
     /* ==============================
        BUILD BINARY SIGNALS
@@ -925,7 +954,6 @@
         `
       ).join("");
 
-
       document.querySelectorAll(
         ".math-work"
       ).forEach(input => {
@@ -944,7 +972,6 @@
 
       });
     }
-
 
     /* ==============================
        BUILD ASCII HINT CHART
@@ -969,7 +996,6 @@
       ).join("");
     }
 
-
     /* ==============================
        STATUS MESSAGE
     ============================== */
@@ -982,7 +1008,6 @@
         success
       );
     }
-
 
     /* ==============================
        HINT BUTTON
@@ -1006,7 +1031,6 @@
       }
     );
 
-
     /* ==============================
        ANSWER INPUT
     ============================== */
@@ -1023,7 +1047,6 @@
       }
     );
 
-
     /* ==============================
        SHARED 15-MINUTE TIMER
     ============================== */
@@ -1037,8 +1060,48 @@
       );
     }
 
+    // Clear all progress so a new escape starts from EASY again.
+function clearAllEscapeProgress() {
+  const progressKeys = [
+    "puzzleEndTime",
+    "websitesSolved",
+    "filesSolved",
+    "applicationsSolved",
+    "escapeRoomEndTime",
+    "escapeRoomTimedOut",
+    "escapeRoomFinished",
+    "secretWord",
+    "easyComplete",
+    "mediumComplete",
+    "hardComplete",
+    "easyRewardLetters",
+    "mediumRewardLetters",
+    "hardRewardLetters",
+    "easyMediumUnlocked",
+    "easyTaskIds",
+    "easyTimerSeconds",
+    "easyRandomTasks",
+    "easyRandomGameWord",
+    "easyRandomSeconds",
+    "hardAttemptsUsed",
+    "hardAttemptsWord",
+    "finalScrambledLetters"
+  ];
+  progressKeys.forEach(key => sessionStorage.removeItem(key));
+  // Remove any other game-only keys used by older versions of the pages.
+  Object.keys(sessionStorage).forEach(key => {
+    if (/^(easy|medium|hard|escapeRoom|puzzle|websitesSolved|filesSolved|applicationsSolved|secretWord|finalScrambledLetters)/i.test(key)) {
+      sessionStorage.removeItem(key);
+    }
+  });
+}
 
-    function showTimeout() {
+function returnHomeAfterTimeout() {
+  clearAllEscapeProgress();
+  window.location.replace("index.html");
+}
+
+function showTimeout() {
       if (expired) {
         return;
       }
@@ -1063,8 +1126,10 @@
       ).forEach(input => {
         input.disabled = true;
       });
-    }
-
+    
+  // Keep the failure screen visible for five seconds.
+  setTimeout(returnHomeAfterTimeout, 5000);
+}
 
     function timeAvailable() {
       const timedOut =
@@ -1089,7 +1154,6 @@
 
       return true;
     }
-
 
     function updateTimer() {
       if (expired) {
@@ -1138,7 +1202,6 @@
       }
     }
 
-
     /* ==============================
        CHECK BINARY DECIMAL TOTALS
        AND FOUR-LETTER PASSWORD
@@ -1169,7 +1232,6 @@
         input => input.value.trim()
       );
 
-
       // Require all fields before checking.
 
       if (
@@ -1182,7 +1244,6 @@
 
         return;
       }
-
 
       // Check all four decimal totals.
 
@@ -1210,12 +1271,10 @@
         }
       });
 
-
       // Check the final four letters.
 
       const lettersCorrect =
         guess === hardLetters;
-
 
       // Wrong answer = unlimited retry.
 
@@ -1228,7 +1287,6 @@
 
         return;
       }
-
 
       /* ==============================
          HARD COMPLETED
@@ -1255,7 +1313,6 @@
       $("winOverlay").classList.add("show");
     }
 
-
     /* ==============================
        BUTTON EVENTS
     ============================== */
@@ -1264,7 +1321,6 @@
       "click",
       checkAnswer
     );
-
 
     $("answer").addEventListener(
       "keydown",
@@ -1277,7 +1333,6 @@
       }
     );
 
-
     $("backBtn").addEventListener(
       "click",
       () => {
@@ -1288,7 +1343,6 @@
 
       }
     );
-
 
     $("continueBtn").addEventListener(
       "click",
@@ -1301,46 +1355,13 @@
       }
     );
 
-
     /* ==============================
        FULL ESCAPE ROOM RESTART
        ONLY WHEN TIMER EXPIRES
     ============================== */
 
-    $("restartBtn").addEventListener(
-      "click",
-      () => {
-
-        [
-          END_KEY,
-          TIMEOUT_KEY,
-          FINISHED_KEY,
-
-          "easyComplete",
-          "mediumComplete",
-          "hardComplete",
-
-          "secretWord",
-
-          "easyTaskIds",
-          "easyTimerSeconds",
-          "easyRandomTasks",
-          "easyRandomGameWord",
-          "easyRewardLetters",
-
-          "mediumRewardLetters",
-
-          "hardAttemptsUsed",
-          "hardAttemptsWord"
-
-        ].forEach(key => {
-          sessionStorage.removeItem(key);
-        });
-
-        location.href = "screen4.html";
-      }
-    );
-
+    // Manual restart uses the exact same full reset as automatic timeout.
+    $("restartBtn").addEventListener("click", returnHomeAfterTimeout);
 
     /* ==============================
        ANIMATED RED MATRIX RAIN
@@ -1357,7 +1378,6 @@
 
       let drops = [];
 
-
       function resizeMatrix() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
@@ -1371,7 +1391,6 @@
           () => Math.random() * -50
         );
       }
-
 
       function drawMatrix() {
         ctx.fillStyle = "rgba(0, 0, 0, 0.06)";
@@ -1410,7 +1429,6 @@
         }
       }
 
-
       resizeMatrix();
 
       window.addEventListener(
@@ -1421,7 +1439,6 @@
       setInterval(drawMatrix, 45);
     })();
 
-
     /* ==============================
        INITIALIZE HARD CHALLENGE
     ============================== */
@@ -1429,7 +1446,6 @@
     buildSignals();
 
     buildAlphabet();
-
 
     if (
       sessionStorage.getItem("hardComplete") === "true"
@@ -1443,12 +1459,13 @@
       $("winOverlay").classList.add("show");
     }
 
-
     updateTimer();
 
     setInterval(updateTimer, 250);
 
-  </script>
+  window.addEventListener("pageshow", () => { updateTimer(); });
+window.addEventListener("focus", () => { updateTimer(); });
+</script>
 
 </body>
 </html>

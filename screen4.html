@@ -1,17 +1,27 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>HACKED - Escape Room</title>
+
 <style>
+
 * {
 
   box-sizing: border-box;
 
 }
+
 body {
+
   margin: 0;
+
   min-height: 100vh;
 
   background:
@@ -1220,6 +1230,49 @@ body::before {
 
 }
 
+
+/* FILE RECOVERY MATCH: identical timeout popup on every Stage 2 page */
+#timeoutScreen.file-timeout-overlay,
+#escapeRoomTimeout.file-timeout-overlay {
+  display: none;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 999999 !important;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.94) !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-direction: row !important;
+  text-align: center;
+}
+#timeoutScreen.file-timeout-overlay.show,
+#escapeRoomTimeout.file-timeout-overlay.show { display: flex; }
+.file-timeout-overlay .file-timeout-result {
+  width: 100%;
+  max-width: 520px;
+  padding: 35px 25px;
+  background: #190a0e;
+  border: 2px solid #ff454e;
+  border-radius: 15px;
+  box-shadow: 0 0 40px #ff000055;
+  text-align: center;
+  color: white;
+}
+.file-timeout-overlay .file-timeout-result h2 {
+  color: #ff454e;
+  font-size: clamp(26px, 5vw, 38px);
+  margin: 0 0 20px;
+  text-shadow: none;
+}
+.file-timeout-overlay .file-timeout-result p {
+  color: #ffbbbb;
+  line-height: 1.6;
+  margin: 14px 0;
+  font-size: 16px;
+}
+
 </style>
 
 </head>
@@ -1680,13 +1733,18 @@ body::before {
 
 <!-- TIMEOUT SCREEN -->
 
-<div id="timeoutScreen">
-
-  <div style="font-size:75px">⏰</div>
+<div id="timeoutScreen" class="file-timeout-overlay" role="alertdialog" aria-modal="true" aria-labelledby="stage2TimeoutTitle">
+  <div class="file-timeout-result">
+    <h2 id="stage2TimeoutTitle">⏰ TIME'S UP! YOU FAILED!</h2>
+    <p>The 15-minute security timer has expired.<br><br>The system remains locked!</p>
+    <p>Returning to the start in 5 seconds...</p>
+  </div>
+</div>
 
   <h1>TIME'S UP! YOU FAILED!</h1>
 
   <h2>YOU DIDN'T ESCAPE THE ROOM!</h2>
+
   <p>Returning to the start in 5 seconds...</p>
 
 </div>
@@ -2468,6 +2526,7 @@ function initializeTimer() {
 }
 
 let timerInterval = null;
+
 let timeoutRedirecting = false;
 
 function hasTime() {
@@ -2496,22 +2555,69 @@ function hasTime() {
 
 }
 
+// Clear all progress so a new escape starts from EASY again.
+function clearAllEscapeProgress() {
+  const progressKeys = [
+    "puzzleEndTime",
+    "websitesSolved",
+    "filesSolved",
+    "applicationsSolved",
+    "escapeRoomEndTime",
+    "escapeRoomTimedOut",
+    "escapeRoomFinished",
+    "secretWord",
+    "easyComplete",
+    "mediumComplete",
+    "hardComplete",
+    "easyRewardLetters",
+    "mediumRewardLetters",
+    "hardRewardLetters",
+    "easyMediumUnlocked",
+    "easyTaskIds",
+    "easyTimerSeconds",
+    "easyRandomTasks",
+    "easyRandomGameWord",
+    "easyRandomSeconds",
+    "hardAttemptsUsed",
+    "hardAttemptsWord",
+    "finalScrambledLetters"
+  ];
+  progressKeys.forEach(key => sessionStorage.removeItem(key));
+}
+
+function returnHomeAfterTimeout() {
+  clearAllEscapeProgress();
+  window.location.replace("index.html");
+}
+
 function showTimeout() {
+
   if (timeoutRedirecting || sessionStorage.getItem(FINISHED_KEY) === "true") return;
 
   timeoutRedirecting = true;
+
   sessionStorage.setItem(TIMEOUT_KEY, "true");
+
   $("winScreen").classList.remove("visible");
+
   $("timeoutScreen").style.display = "flex";
+
   $("countdown").textContent = "00:00";
+
   $("timerFill").style.width = "0%";
+
   $("timerPercent").textContent = "0% TIME REMAINING";
+
   $("timerTrack").setAttribute("aria-valuenow", "0");
+
   $("answerInput").disabled = true;
+
   $("unlockBtn").disabled = true;
+
   clearInterval(timerInterval);
 
-  setTimeout(restartEscape, 5000);
+  // Keep the failure screen visible for five seconds, then reset everything.
+  setTimeout(returnHomeAfterTimeout, 5000);
 }
 
 function updateTimer() {
@@ -2670,7 +2776,8 @@ function checkAnswer() {
 
 setTimeout(() => {
 
-  window.location.href = "screen2.html";
+  clearAllEscapeProgress();
+  window.location.replace("screen2.html");
 
 }, 3000);
 
@@ -2721,28 +2828,49 @@ function goToChallenge(filename) {
 // ======================================
 
 function restartEscape() {
+
   [
+
     "puzzleEndTime",
+
     "websitesSolved",
+
     "filesSolved",
+
     "applicationsSolved",
+
     TIMER_KEY,
+
     TIMEOUT_KEY,
+
     FINISHED_KEY,
+
     "secretWord",
+
     "easyComplete",
+
     "mediumComplete",
+
     "hardComplete",
+
     "easyRewardLetters",
+
     "mediumRewardLetters",
+
     "hardRewardLetters",
+
     "easyMediumUnlocked",
+
     "easyTaskIds",
+
     "easyTimerSeconds",
+
     "finalScrambledLetters"
+
   ].forEach(key => sessionStorage.removeItem(key));
 
   window.location.replace("index.html");
+
 }
 
 // ======================================
@@ -2777,6 +2905,8 @@ if (sessionStorage.getItem(FINISHED_KEY) === "true") {
 
 }
 
+window.addEventListener("pageshow", () => { updateTimer(); });
+window.addEventListener("focus", () => { updateTimer(); });
 </script>
 
 <script>

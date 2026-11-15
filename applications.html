@@ -2,8 +2,6 @@
 
 <html lang="en">
 
-
-
 <head>
 
   <meta charset="UTF-8">
@@ -11,8 +9,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>HACKED // Applications Security</title>
-
-
 
   <style>
 
@@ -28,15 +24,11 @@
 
     }
 
-
-
     * {
 
       box-sizing: border-box;
 
     }
-
-
 
     body {
 
@@ -54,15 +46,11 @@
 
     }
 
-
-
     /* ==============================
 
        RED MATRIX BACKGROUND
 
     ============================== */
-
-
 
     #matrix {
 
@@ -80,8 +68,6 @@
 
     }
 
-
-
     .matrix-overlay {
 
       position: fixed;
@@ -96,8 +82,6 @@
 
     }
 
-
-
     .container {
 
       position: relative;
@@ -110,15 +94,11 @@
 
     }
 
-
-
     /* ==============================
 
        HEADER
 
     ============================== */
-
-
 
     header {
 
@@ -127,8 +107,6 @@
       margin-bottom: 25px;
 
     }
-
-
 
     .warning {
 
@@ -142,8 +120,6 @@
 
     }
 
-
-
     h1 {
 
       color: var(--red);
@@ -156,8 +132,6 @@
 
     }
 
-
-
     .instructions {
 
       color: #d7afb6;
@@ -168,15 +142,11 @@
 
     }
 
-
-
     /* ==============================
 
        GAME INFORMATION
 
     ============================== */
-
-
 
     .game-info {
 
@@ -189,8 +159,6 @@
       margin: 22px 0;
 
     }
-
-
 
     .info-box {
 
@@ -210,8 +178,6 @@
 
     }
 
-
-
     .info-label {
 
       color: #ffaaaa;
@@ -224,8 +190,6 @@
 
     }
 
-
-
     .info-value {
 
       margin-top: 8px;
@@ -236,8 +200,6 @@
 
     }
 
-
-
     #timer {
 
       color: #ff6565;
@@ -245,8 +207,6 @@
       font-family: monospace;
 
     }
-
-
 
     .timer-track {
 
@@ -264,8 +224,6 @@
 
     }
 
-
-
     #timerBar {
 
       height: 100%;
@@ -278,15 +236,11 @@
 
     }
 
-
-
     /* ==============================
 
        TASK MANAGER WINDOW
 
     ============================== */
-
-
 
     .task-manager {
 
@@ -301,8 +255,6 @@
       box-shadow: 0 0 40px #8a101066;
 
     }
-
-
 
     .window-title {
 
@@ -326,8 +278,6 @@
 
     }
 
-
-
     .window-controls {
 
       display: flex;
@@ -335,8 +285,6 @@
       gap: 7px;
 
     }
-
-
 
     .window-controls span {
 
@@ -350,23 +298,17 @@
 
     }
 
-
-
     .window-controls span:nth-child(2) {
 
       background: #ffcc55;
 
     }
 
-
-
     .window-controls span:nth-child(3) {
 
       background: #4bdb87;
 
     }
-
-
 
     .window-tabs {
 
@@ -386,8 +328,6 @@
 
     }
 
-
-
     .window-tabs .active {
 
       color: white;
@@ -399,8 +339,6 @@
       padding-bottom: 6px;
 
     }
-
-
 
     .system-warning {
 
@@ -418,23 +356,17 @@
 
     }
 
-
-
     /* ==============================
 
        PROCESS TABLE
 
     ============================== */
 
-
-
     .table-wrapper {
 
       overflow-x: auto;
 
     }
-
-
 
     table {
 
@@ -447,8 +379,6 @@
       font-size: 13px;
 
     }
-
-
 
     th {
 
@@ -466,8 +396,6 @@
 
     }
 
-
-
     td {
 
       padding: 15px 12px;
@@ -480,8 +408,6 @@
 
     }
 
-
-
     tbody tr {
 
       cursor: pointer;
@@ -490,15 +416,11 @@
 
     }
 
-
-
     tbody tr:hover {
 
       background: #2d252e;
 
     }
-
-
 
     tbody tr.selected {
 
@@ -508,8 +430,6 @@
 
     }
 
-
-
     tbody tr.completed {
 
       opacity: 0.55;
@@ -517,8 +437,6 @@
       cursor: default;
 
     }
-
-
 
     .process-name {
 
@@ -528,8 +446,6 @@
 
     }
 
-
-
     .process-icon {
 
       font-size: 20px;
@@ -537,8 +453,6 @@
       margin-right: 8px;
 
     }
-
-
 
     .cpu-high {
 
@@ -548,23 +462,17 @@
 
     }
 
-
-
     .cpu-normal {
 
       color: #8ce5b4;
 
     }
 
-
-
     .status-running {
 
       color: #ffb1b7;
 
     }
-
-
 
     .status-checked {
 
@@ -574,15 +482,11 @@
 
     }
 
-
-
     /* ==============================
 
        PROCESS INSPECTOR
 
     ============================== */
-
-
 
     .inspector {
 
@@ -600,8 +504,6 @@
 
     }
 
-
-
     .inspector h2 {
 
       margin-top: 0;
@@ -611,8 +513,6 @@
       font-size: 17px;
 
     }
-
-
 
     .inspector-name {
 
@@ -628,8 +528,6 @@
 
     }
 
-
-
     .details {
 
       display: grid;
@@ -639,8 +537,6 @@
       gap: 12px;
 
     }
-
-
 
     .detail {
 
@@ -655,8 +551,6 @@
       overflow-wrap: anywhere;
 
     }
-
-
 
     .detail-label {
 
@@ -674,8 +568,6 @@
 
     }
 
-
-
     .detail-value {
 
       color: #fff;
@@ -686,15 +578,11 @@
 
     }
 
-
-
     /* ==============================
 
        BUTTONS
 
     ============================== */
-
-
 
     .actions {
 
@@ -709,8 +597,6 @@
       margin-top: 20px;
 
     }
-
-
 
     button {
 
@@ -728,15 +614,11 @@
 
     }
 
-
-
     button:hover {
 
       filter: brightness(1.2);
 
     }
-
-
 
     button:disabled {
 
@@ -746,23 +628,17 @@
 
     }
 
-
-
     .keep-btn {
 
       background: #177a4d;
 
     }
 
-
-
     .quarantine-btn {
 
       background: #c62828;
 
     }
-
-
 
     .secondary-btn {
 
@@ -772,15 +648,11 @@
 
     }
 
-
-
     /* ==============================
 
        FEEDBACK
 
     ============================== */
-
-
 
     #feedback {
 
@@ -798,15 +670,11 @@
 
     }
 
-
-
     /* ==============================
 
        TEACHER
 
     ============================== */
-
-
 
     .teacher-area {
 
@@ -822,8 +690,6 @@
 
     }
 
-
-
     .teacher-image {
 
       width: clamp(100px, 15vw, 165px);
@@ -835,8 +701,6 @@
       filter: drop-shadow(0 8px 15px black);
 
     }
-
-
 
     .speech-bubble {
 
@@ -868,15 +732,11 @@
 
     }
 
-
-
     /* ==============================
 
        END SCREENS
 
     ============================== */
-
-
 
     .overlay {
 
@@ -898,15 +758,11 @@
 
     }
 
-
-
     .overlay.show {
 
       display: flex;
 
     }
-
-
 
     .result {
 
@@ -928,8 +784,6 @@
 
     }
 
-
-
     .result h2 {
 
       color: #75ffb3;
@@ -937,8 +791,6 @@
       font-size: 32px;
 
     }
-
-
 
     .result p {
 
@@ -948,8 +800,6 @@
 
     }
 
-
-
     .timeout-result {
 
       border-color: var(--red);
@@ -958,23 +808,17 @@
 
     }
 
-
-
     .timeout-result h2 {
 
       color: var(--red);
 
     }
 
-
-
     /* ==============================
 
        MOBILE
 
     ============================== */
-
-
 
     @media (max-width: 600px) {
 
@@ -984,15 +828,11 @@
 
       }
 
-
-
       .inspector {
 
         padding: 15px;
 
       }
-
-
 
       .speech-bubble {
 
@@ -1006,23 +846,17 @@
 
       }
 
-
-
       .teacher-image {
 
         width: 105px;
 
       }
 
-
-
       .game-info {
 
         gap: 8px;
 
       }
-
-
 
       .info-box {
 
@@ -1036,11 +870,7 @@
 
 </head>
 
-
-
 <body>
-
-
 
   <!-- RED MATRIX BACKGROUND -->
 
@@ -1048,11 +878,7 @@
 
   <div class="matrix-overlay"></div>
 
-
-
   <div class="container">
-
-
 
     <!-- HEADER -->
 
@@ -1082,8 +908,6 @@
 
     </header>
 
-
-
     <!-- TIMER AND PROGRESS -->
 
     <div class="game-info">
@@ -1106,15 +930,11 @@
 
     </div>
 
-
-
     <div class="timer-track">
 
       <div id="timerBar"></div>
 
     </div>
-
-
 
     <!-- TASK MANAGER -->
 
@@ -1136,8 +956,6 @@
 
       </div>
 
-
-
       <div class="window-tabs">
 
         <span class="active">Processes</span>
@@ -1148,15 +966,11 @@
 
       </div>
 
-
-
       <div class="system-warning">
 
         ⚠ UNKNOWN PROCESSES DETECTED. Inspect each application before allowing it to continue running.
 
       </div>
-
-
 
       <div class="table-wrapper">
 
@@ -1188,8 +1002,6 @@
 
     </main>
 
-
-
     <!-- PROCESS INSPECTOR -->
 
     <section class="inspector">
@@ -1197,8 +1009,6 @@
       <h2>🔍 PROCESS INSPECTOR</h2>
 
       <div class="inspector-name" id="selectedName">Select a running process...</div>
-
-
 
       <div class="details">
 
@@ -1210,8 +1020,6 @@
 
         </div>
 
-
-
         <div class="detail">
 
           <span class="detail-label">INSTALL SOURCE</span>
@@ -1220,8 +1028,6 @@
 
         </div>
 
-
-
         <div class="detail">
 
           <span class="detail-label">PERMISSIONS</span>
@@ -1229,8 +1035,6 @@
           <span class="detail-value" id="permissions">—</span>
 
         </div>
-
-
 
         <div class="detail">
 
@@ -1241,8 +1045,6 @@
         </div>
 
       </div>
-
-
 
       <!-- ACTIONS -->
 
@@ -1258,17 +1060,11 @@
 
       </div>
 
-
-
       <div id="feedback" aria-live="polite">Select a process to begin.</div>
 
     </section>
 
-
-
   </div>
-
-
 
   <!-- BALD TEACHER -->
 
@@ -1283,8 +1079,6 @@
     <img src="Watching.png" alt="Bald teacher" class="teacher-image">
 
   </div>
-
-
 
   <!-- WIN SCREEN -->
 
@@ -1314,8 +1108,6 @@
 
   </div>
 
-
-
   <!-- TIMEOUT SCREEN -->
 
   <div class="overlay" id="timeoutScreen">
@@ -1330,31 +1122,23 @@
 
         <br><br>
 
-        The hacker still controls the system!
+        The hacker still controls the system!<br><br>Returning to the start in 5 seconds...
 
       </p>
-
-      <button class="quarantine-btn" id="timeoutBackBtn">← BACK TO SYSTEM</button>
 
     </div>
 
   </div>
 
-
-
   <script>
 
     "use strict";
-
-
 
     /* ==============================
 
        SETTINGS
 
     ============================== */
-
-
 
     const HUB_PAGE = "screen3.html";
 
@@ -1364,19 +1148,13 @@
 
     const TOTAL_PROCESSES = 10;
 
-
-
     const $ = id => document.getElementById(id);
-
-
 
     /* ==============================
 
        PROCESS BANK
 
     ============================== */
-
-
 
     // Fictional examples for this game.
 
@@ -1746,15 +1524,11 @@
 
     ];
 
-
-
     /* ==============================
 
        TEACHER REACTIONS
 
     ============================== */
-
-
 
     const correctReactions = [
 
@@ -1770,8 +1544,6 @@
 
     ];
 
-
-
     const wrongReactions = [
 
       "AHHH! Check the publisher!",
@@ -1785,8 +1557,6 @@
       "Read the behavior carefully!"
 
     ];
-
-
 
     const startReactions = [
 
@@ -1802,15 +1572,11 @@
 
     ];
 
-
-
     /* ==============================
 
        GAME STATE
 
     ============================== */
-
-
 
     let processes = [];
 
@@ -1822,15 +1588,11 @@
 
     let timeoutRedirecting = false;
 
-
-
     /* ==============================
 
        HELPERS
 
     ============================== */
-
-
 
     function shuffle(array) {
 
@@ -1848,15 +1610,11 @@
 
     }
 
-
-
     function randomItem(array) {
 
       return array[Math.floor(Math.random() * array.length)];
 
     }
-
-
 
     function teacherSay(message) {
 
@@ -1864,15 +1622,11 @@
 
     }
 
-
-
     /* ==============================
 
        SHARED TIMER
 
     ============================== */
-
-
 
     function initializeTimer() {
 
@@ -1886,8 +1640,6 @@
 
     }
 
-
-
     function hasTime() {
 
       const endTime = Number(sessionStorage.getItem(TIMER_KEY));
@@ -1895,8 +1647,6 @@
       return Number.isFinite(endTime) && endTime > 0 && Date.now() < endTime;
 
     }
-
-
 
     function updateTimer() {
 
@@ -1910,15 +1660,11 @@
 
       const secs = String(seconds % 60).padStart(2, "0");
 
-
-
       $("timer").textContent = `${minutes}:${secs}`;
 
       $("timerBar").style.width =
 
         Math.max(0, Math.min(100, (remaining / GAME_DURATION) * 100)) + "%";
-
-
 
       if (remaining <= 0) {
 
@@ -1928,15 +1674,11 @@
 
     }
 
-
-
     /* ==============================
 
        START RANDOM CHALLENGE
 
     ============================== */
-
-
 
     function startGame() {
 
@@ -1948,23 +1690,17 @@
 
       }
 
-
-
       const safeProcesses = shuffle(
 
         processBank.filter(process => process.type === "safe")
 
       ).slice(0, 5);
 
-
-
       const dangerousProcesses = shuffle(
 
         processBank.filter(process => process.type === "danger")
 
       ).slice(0, 5);
-
-
 
       processes = shuffle([...safeProcesses, ...dangerousProcesses]).map(
 
@@ -1988,15 +1724,11 @@
 
       );
 
-
-
       selectedProcessId = null;
 
       completedCount = 0;
 
       gameEnded = false;
-
-
 
       updateProgress();
 
@@ -2008,23 +1740,17 @@
 
     }
 
-
-
     /* ==============================
 
        DISPLAY TASK MANAGER
 
     ============================== */
 
-
-
     function renderProcesses() {
 
       const tbody = $("processTable");
 
       tbody.innerHTML = "";
-
-
 
       processes.forEach(process => {
 
@@ -2036,23 +1762,17 @@
 
         row.setAttribute("aria-label", `Inspect ${process.name}`);
 
-
-
         if (process.completed) {
 
           row.classList.add("completed");
 
         }
 
-
-
         if (process.id === selectedProcessId) {
 
           row.classList.add("selected");
 
         }
-
-
 
         const cpuClass = process.cpu >= 40 ? "cpu-high" : "cpu-normal";
 
@@ -2067,8 +1787,6 @@
           : "Running";
 
         const statusClass = process.completed ? "status-checked" : "status-running";
-
-
 
         row.innerHTML = `
 
@@ -2090,15 +1808,11 @@
 
         `;
 
-
-
         row.addEventListener("click", () => {
 
           selectProcess(process.id);
 
         });
-
-
 
         row.addEventListener("keydown", event => {
 
@@ -2112,23 +1826,17 @@
 
         });
 
-
-
         tbody.appendChild(row);
 
       });
 
     }
 
-
-
     /* ==============================
 
        SELECT PROCESS
 
     ============================== */
-
-
 
     function selectProcess(processId) {
 
@@ -2138,8 +1846,6 @@
 
       }
 
-
-
       const process = processes.find(item => item.id === processId);
 
       if (!process || process.completed) {
@@ -2147,8 +1853,6 @@
         return;
 
       }
-
-
 
       selectedProcessId = processId;
 
@@ -2166,21 +1870,15 @@
 
       $("feedback").style.color = "#ffaaaa";
 
-
-
       renderProcesses();
 
     }
-
-
 
     /* ==============================
 
        CLEAR INSPECTOR
 
     ============================== */
-
-
 
     function clearInspector() {
 
@@ -2196,15 +1894,11 @@
 
     }
 
-
-
     /* ==============================
 
        CHECK PLAYER DECISION
 
     ============================== */
-
-
 
     function checkDecision(decision) {
 
@@ -2213,8 +1907,6 @@
         return;
 
       }
-
-
 
       if (selectedProcessId === null) {
 
@@ -2226,8 +1918,6 @@
 
       }
 
-
-
       const process = processes.find(item => item.id === selectedProcessId);
 
       if (!process || process.completed) {
@@ -2235,8 +1925,6 @@
         return;
 
       }
-
-
 
       if (decision === process.type) {
 
@@ -2246,15 +1934,11 @@
 
         completedCount++;
 
-
-
         $("feedback").textContent = `✓ CORRECT! ${process.reason}`;
 
         $("feedback").style.color = "#75ffb3";
 
         teacherSay(randomItem(correctReactions));
-
-
 
         selectedProcessId = null;
 
@@ -2263,8 +1947,6 @@
         updateProgress();
 
         renderProcesses();
-
-
 
         if (completedCount === TOTAL_PROCESSES) {
 
@@ -2284,15 +1966,11 @@
 
     }
 
-
-
     /* ==============================
 
        UPDATE PROGRESS
 
     ============================== */
-
-
 
     function updateProgress() {
 
@@ -2300,15 +1978,11 @@
 
     }
 
-
-
     /* ==============================
 
        HINT & END SCREENS
 
     ============================== */
-
-
 
     function giveHint() {
 
@@ -2340,52 +2014,65 @@
 
     }
 
-
-
     function winGame() {
 
       if (gameEnded || !hasTime()) return;
 
       gameEnded = true;
+
       sessionStorage.setItem("applicationsSolved", "true");
+
       $("winScreen").classList.add("show");
 
     }
 
-
-
     function showTimeout() {
+
       if (timeoutRedirecting) return;
 
       timeoutRedirecting = true;
+
       gameEnded = true;
+
       $("winScreen").classList.remove("show");
+
       $("timeoutScreen").classList.add("show");
-      $("timeoutBackBtn").disabled = true;
 
       setTimeout(() => {
+
         sessionStorage.removeItem("puzzleEndTime");
+
         sessionStorage.removeItem("websitesSolved");
+
         sessionStorage.removeItem("filesSolved");
+
         sessionStorage.removeItem("applicationsSolved");
+
         sessionStorage.removeItem("escapeRoomEndTime");
+
+        sessionStorage.removeItem("escapeRoomTimedOut");
+
+        sessionStorage.removeItem("escapeRoomFinished");
+
         sessionStorage.removeItem("easyComplete");
+
         sessionStorage.removeItem("mediumComplete");
+
         sessionStorage.removeItem("hardComplete");
+
         sessionStorage.removeItem("secretWord");
+
         window.location.replace("index.html");
-      }, 10000);
+
+      }, 5000);
+
     }
-
-
 
     /* ==============================
 
        EVENT LISTENERS
 
     ============================== */
-
-
 
     $("keepBtn").addEventListener("click", () => checkDecision("safe"));
 
@@ -2405,27 +2092,15 @@
 
     });
 
-    $("timeoutBackBtn").addEventListener("click", () => {
-
-      window.location.href = HUB_PAGE;
-
-    });
-
-
-
     /* ==============================
 
        MATRIX CANVAS ANIMATION
 
     ============================== */
 
-
-
     const canvas = $("matrix");
 
     const ctx = canvas.getContext("2d");
-
-
 
     function resizeCanvas() {
 
@@ -2435,21 +2110,15 @@
 
     }
 
-
-
     resizeCanvas();
 
     window.addEventListener("resize", resizeCanvas);
-
-
 
     const chars = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&*";
 
     const fontSize = 14;
 
     let drops = Array(Math.floor(canvas.width / fontSize)).fill(1);
-
-
 
     setInterval(() => {
 
@@ -2460,8 +2129,6 @@
       ctx.fillStyle = "#ff2a36";
 
       ctx.font = fontSize + "px monospace";
-
-
 
       for (let i = 0; i < drops.length; i++) {
 
@@ -2481,15 +2148,11 @@
 
     }, 50);
 
-
-
     /* ==============================
 
        INIT
 
     ============================== */
-
-
 
     initializeTimer();
 
@@ -2506,7 +2169,5 @@
   </script>
 
 </body>
-
-
 
 </html>
