@@ -1,2963 +1,1555 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>HACKED - Escape Room</title>
-
 <style>
-
 * {
-
   box-sizing: border-box;
-
 }
-
 body {
-
   margin: 0;
-
   min-height: 100vh;
-
   background:
-
     radial-gradient(ellipse at top, #39101b, transparent 60%),
-
     #09090c;
-
   color: white;
-
   font-family: Arial, sans-serif;
-
 }
-
 body::before {
-
   content: "";
-
   position: fixed;
-
   inset: 0;
-
   pointer-events: none;
-
   background-image:
-
     linear-gradient(#ff33330a 1px, transparent 1px),
-
     linear-gradient(90deg, #ff33330a 1px, transparent 1px);
-
   background-size: 35px 35px;
-
 }
-
 /* Animated red Matrix code rain behind the game */
-
 #matrixRain {
-
   position: fixed;
-
   inset: 0;
-
   width: 100%;
-
   height: 100%;
-
   z-index: 0;
-
   pointer-events: none;
-
   opacity: 0.56;
-
 }
-
 @media (prefers-reduced-motion: reduce) {
-
   #matrixRain { display: none; }
-
 }
-
 .container {
-
   position: relative;
-
   z-index: 1;
-
   max-width: 1120px;
-
   margin: auto;
-
   padding: 25px 20px 60px;
-
 }
-
 /* TIMER */
-
 .timer-area {
-
   display: flex;
-
   justify-content: center;
-
   margin-bottom: 20px;
-
 }
-
 .timer-box {
-
   text-align: center;
-
   background: #220d15;
-
   border: 2px solid #ff4545;
-
   border-radius: 12px;
-
   padding: 12px 35px;
-
   box-shadow: 0 0 25px #ff000044;
-
 }
-
 .timer-label {
-
   color: #ffaaaa;
-
   font-size: 12px;
-
   font-weight: bold;
-
   letter-spacing: 3px;
-
   margin-bottom: 8px;
-
 }
-
 #countdown {
-
   font-size: 44px;
-
   font-weight: 900;
-
   color: #ff5555;
-
   font-variant-numeric: tabular-nums;
-
 }
-
 .timer-box.urgent {
-
   animation: blink 0.7s infinite;
-
 }
-
 @keyframes blink {
-
   50% {
-
     background: #850000;
-
   }
-
 }
-
 /* SHARED TIMER PROGRESS BAR */
-
 .timer-box { width: min(100%, 370px); }
-
 .timer-track {
-
   height: 13px;
-
   width: 100%;
-
   margin-top: 12px;
-
   background: #110a0f;
-
   border: 1px solid #82303e;
-
   border-radius: 999px;
-
   overflow: hidden;
-
 }
-
 .timer-fill {
-
   height: 100%;
-
   width: 100%;
-
   border-radius: inherit;
-
   background: linear-gradient(90deg, #b81935, #ff4656, #ff858c);
-
   box-shadow: 0 0 12px #ff465699;
-
   transition: width 0.25s linear, background 0.25s;
-
 }
-
 .timer-box.urgent .timer-fill {
-
   background: #ff2222;
-
   box-shadow: 0 0 15px #ff2222;
-
 }
-
 .timer-percent {
-
   margin-top: 7px;
-
   font-size: 11px;
-
   font-weight: bold;
-
   color: #e7a1aa;
-
   letter-spacing: 1px;
-
 }
-
 /* HEADING */
-
 .heading {
-
   text-align: center;
-
   margin-bottom: 30px;
-
 }
-
 .topline {
-
   color: #ff7777;
-
   font-size: 12px;
-
   font-weight: bold;
-
   letter-spacing: 4px;
-
 }
-
 .heading h1 {
-
   color: #ff4545;
-
   font-size: clamp(30px, 5vw, 52px);
-
   text-shadow: 0 0 25px #b40000;
-
   margin: 12px 0;
-
 }
-
 .description {
-
   color: #c9a7ad;
-
   font-size: 14px;
-
   line-height: 1.6;
-
 }
-
 /* ORIGINAL TWO-COLUMN DESIGN */
-
 .layout {
-
   display: grid;
-
   grid-template-columns: minmax(0, 1fr) 390px;
-
   gap: 25px;
-
   align-items: start;
-
 }
-
 .tower-section,
-
 .panel {
-
   background: linear-gradient(145deg, #251019, #100b10);
-
   border: 1px solid #a43b47;
-
   border-radius: 16px;
-
   padding: 25px 18px;
-
   box-shadow: 0 0 25px #ff000018;
-
 }
-
 .section-title {
-
   color: #ff8888;
-
   text-align: center;
-
   font-size: 12px;
-
   font-weight: bold;
-
   letter-spacing: 2px;
-
   margin-bottom: 25px;
-
 }
-
 /* ORIGINAL THREE-FLOOR TOWER */
-
 .tower {
-
   position: relative;
-
   max-width: 500px;
-
   height: 370px;
-
   margin: auto;
-
 }
-
 .floor {
-
   position: absolute;
-
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
   background: linear-gradient(135deg, #421a26, #211019);
-
   border: 2px solid #e34b54;
-
   color: #ff7777;
-
   font-size: 42px;
-
   font-weight: 900;
-
   cursor: pointer;
-
   transition: 0.2s;
-
 }
-
 .floor:hover:not(.locked) {
-
   background: #922737;
-
   color: white;
-
 }
-
 .floor.completed {
-
   background: linear-gradient(135deg, #214c35, #12291d);
-
   border-color: #60efa5;
-
   color: #60efa5;
-
 }
-
 .one {
-
   top: 0;
-
   left: 35%;
-
   width: 30%;
-
   height: 120px;
-
   clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%);
-
 }
-
 .two {
-
   top: 120px;
-
   left: 29%;
-
   width: 42%;
-
   height: 120px;
-
   clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%);
-
 }
-
 .three {
-
   top: 240px;
-
   left: 22%;
-
   width: 56%;
-
   height: 120px;
-
   clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%);
-
 }
-
 .challenge-btn {
-
   position: absolute;
-
   background: #210f17;
-
   color: #ffaaaa;
-
   border: 1px solid #e03c46;
-
   border-radius: 8px;
-
   padding: 13px;
-
   font-weight: 900;
-
   cursor: pointer;
-
   box-shadow: 0 0 12px #ff333322;
-
   transition: 0.2s;
-
 }
-
 .challenge-btn:hover:not(.locked) {
-
   background: #a52a38;
-
   color: white;
-
   transform: scale(1.05);
-
 }
-
 .challenge-btn.completed {
-
   background: #173726;
-
   color: #60efa5;
-
   border-color: #60efa5;
-
 }
-
 .easy {
-
   top: 40px;
-
   left: 0;
-
 }
-
 .medium {
-
   top: 155px;
-
   right: 0;
-
 }
-
 .hard {
-
   top: 275px;
-
   left: 0;
-
 }
-
 /* HARD IS VISIBLE BUT LOCKED */
-
 .floor.locked {
-
   background: linear-gradient(135deg, #281923, #160f17);
-
   border-color: #76515b;
-
   color: #84616b;
-
   cursor: not-allowed;
-
 }
-
 .challenge-btn.locked {
-
   background: #181016;
-
   border-color: #76515b;
-
   color: #a3848d;
-
   cursor: not-allowed;
-
 }
-
 .tower-progress {
-
   text-align: center;
-
   margin-top: 15px;
-
   color: #ffb2b2;
-
   font-size: 13px;
-
 }
-
 #hardMessage {
-
   text-align: center;
-
   color: #ff929a;
-
   font-size: 13px;
-
   font-weight: bold;
-
   min-height: 20px;
-
 }
-
 /* TEACHER FIX */
-
 /* TEACHER STAYS AT BOTTOM-LEFT */
-
 .teacher-area {
-
   position: fixed;
-
   bottom: 0;
-
   left: 20px;
-
   z-index: 10;
-
   display: block;
-
   margin: 0;
-
   padding: 0;
-
   min-height: 0;
-
   border: none;
-
   pointer-events: none;
-
 }
-
 .teacher-image {
-
   display: block;
-
   width: 200px;
-
   max-width: 35vw;
-
   max-height: 45vh;
-
   height: auto;
-
   object-fit: contain;
-
   object-position: bottom left;
-
 }
-
 /* FINAL SYSTEM PANEL */
-
 .panel {
-
   text-align: center;
-
 }
-
 .panel h2 {
-
   color: #ff5555;
-
   font-size: 30px;
-
   margin: 0 0 8px;
-
   text-shadow: 0 0 15px #ff000055;
-
 }
-
 .panel-subtitle {
-
   color: #ffaaaa;
-
   font-size: 12px;
-
   letter-spacing: 2px;
-
   font-weight: bold;
-
 }
-
 .lock-icon {
-
   font-size: 52px;
-
   margin: 12px 0;
-
 }
-
 .instructions {
-
   color: #d8b4bd;
-
   font-size: 13px;
-
   line-height: 1.5;
-
 }
-
 /* EASY, MEDIUM, HARD BOXES */
-
 .stamp-group {
-
   margin-top: 14px;
-
   padding: 13px 10px;
-
   background: #160d12;
-
   border: 1px solid #6c303b;
-
   border-radius: 10px;
-
 }
-
 .stamp-title {
-
   font-size: 12px;
-
   font-weight: 900;
-
   letter-spacing: 1px;
-
   margin-bottom: 12px;
-
 }
-
 .easy-title {
-
   color: #60efa5;
-
 }
-
 .medium-title {
-
   color: #ffd36b;
-
 }
-
 .hard-title {
-
   color: #ff737d;
-
 }
-
 .stamps {
-
   display: flex;
-
   justify-content: center;
-
   gap: 10px;
-
 }
-
 .stamp {
-
   width: 58px;
-
   height: 58px;
-
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
   background: #30141e;
-
   border: 2px dashed #7a3846;
-
   border-radius: 10px;
-
   color: #9c6d79;
-
   font-size: 26px;
-
   font-weight: 900;
-
 }
-
 .stamp.earned {
-
   color: white;
-
   border: 2px solid #ff737d;
-
   box-shadow: 0 0 14px #ff454533;
-
 }
-
 .stamp.hard-earned {
-
   background: #173726;
-
   color: #60efa5;
-
   border: 2px solid #60efa5;
-
   box-shadow: 0 0 14px #60efa533;
-
 }
-
 .stamp-note {
-
   margin-top: 10px;
-
   color: #aa8c96;
-
   font-size: 11px;
-
 }
-
 /* PASSWORD PREVIEW - NO ANSWERS SHOWN */
-
 .hint-section {
-
   margin-top: 18px;
-
   padding: 15px 10px;
-
   background: #281c10;
-
   border: 1px solid #d6a34a;
-
   border-radius: 10px;
-
 }
-
 .hint-title {
-
   color: #ffd783;
-
   font-size: 12px;
-
   font-weight: 900;
-
   letter-spacing: 1px;
-
   margin-bottom: 12px;
-
 }
-
 .password-preview {
-
   display: grid;
-
   grid-template-columns: repeat(10, minmax(0, 1fr));
-
   gap: 4px;
-
 }
-
 .preview-box {
-
   height: 37px;
-
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
   background: #190e13;
-
   border: 1px solid #6c303b;
-
   border-radius: 5px;
-
   color: #b28e97;
-
   font-family: monospace;
-
   font-size: 19px;
-
   font-weight: 900;
-
 }
-
 .hint-note {
-
   color: #e4bd7e;
-
   font-size: 11px;
-
   margin-top: 10px;
-
   line-height: 1.5;
-
 }
-
 /* PASSWORD INPUT */
-
 .answer-label {
-
   display: block;
-
   margin: 20px 0 10px;
-
   color: #ffb4b9;
-
   font-size: 12px;
-
   font-weight: 900;
-
   letter-spacing: 1px;
-
 }
-
 #answerInput {
-
   width: 100%;
-
   padding: 15px 8px;
-
   background: #120a0f;
-
   border: 2px solid #b43a42;
-
   border-radius: 9px;
-
   outline: none;
-
   color: white;
-
   font-family: monospace;
-
   font-size: 22px;
-
   font-weight: 900;
-
   text-align: center;
-
   text-transform: uppercase;
-
   letter-spacing: 3px;
-
 }
-
 #answerInput:focus {
-
   border-color: #ff7d85;
-
   box-shadow: 0 0 18px #ff454544;
-
 }
-
 #answerInput:disabled {
-
   opacity: 0.45;
-
 }
-
 .answer-count {
-
   margin-top: 7px;
-
   color: #ad8992;
-
   font-size: 12px;
-
 }
-
 .unlock {
-
   width: 100%;
-
   margin-top: 15px;
-
   padding: 15px;
-
   border: 1px solid #ff6969;
-
   border-radius: 8px;
-
   background: linear-gradient(135deg, #e53535, #a80000);
-
   color: white;
-
   font-size: 16px;
-
   font-weight: 900;
-
   cursor: pointer;
-
 }
-
 .unlock:disabled {
-
   opacity: 0.45;
-
   cursor: not-allowed;
-
 }
-
 #message {
-
   min-height: 30px;
-
   margin-top: 15px;
-
   font-weight: bold;
-
   font-size: 13px;
-
   line-height: 1.5;
-
 }
-
 .footer {
-
   text-align: center;
-
   color: #aaa;
-
   margin-top: 25px;
-
   font-size: 13px;
-
 }
-
 .back {
-
   display: block;
-
   margin: 20px auto;
-
   padding: 12px 30px;
-
   background: #1a0d12;
-
   color: white;
-
   border: 1px solid #e34b54;
-
   border-radius: 8px;
-
   cursor: pointer;
-
   font-weight: bold;
-
 }
-
 /* VICTORY */
-
 #winScreen {
-
   display: none;
-
   position: fixed;
-
   inset: 0;
-
   z-index: 100;
-
   background: radial-gradient(ellipse at center, #123523, #09090c 75%);
-
   flex-direction: column;
-
   align-items: center;
-
   justify-content: center;
-
   text-align: center;
-
   padding: 20px;
-
 }
-
 #winScreen.visible {
-
   display: flex;
-
 }
-
 #winScreen h1 {
-
   color: #45df83;
-
   font-size: clamp(30px, 6vw, 48px);
-
   text-shadow: 0 0 25px #168a45;
-
 }
-
 .win-teacher {
-
   width: auto;
-
   max-width: 80vw;
-
   height: min(280px, 35vh);
-
   object-fit: contain;
-
   margin: 12px auto;
-
 }
-
 .win-message {
-
   padding: 20px 26px;
-
   max-width: 550px;
-
   background: white;
-
   color: #171717;
-
   border: 4px solid #111;
-
   border-radius: 20px;
-
   font-size: clamp(19px, 4vw, 30px);
-
   font-weight: 900;
-
   line-height: 1.4;
-
 }
-
 .win-message strong {
-
   color: #d71920;
-
 }
-
-/* TIMEOUT */
-
+/* TIMEOUT — matches Binary and Morse */
 #timeoutScreen {
-
   display: none;
-
   position: fixed;
-
   inset: 0;
-
   z-index: 200;
-
-  background: radial-gradient(ellipse at center, #3c101b, #09090c 75%);
-
+  background: radial-gradient(ellipse at center, #270d16 0%, #160b11 60%, #0c090d 100%);
   flex-direction: column;
-
   align-items: center;
-
-  justify-content: center;
-
+  justify-content: flex-start;
   text-align: center;
-
-  padding: 25px;
-
+  padding: clamp(35px, 7vh, 80px) 15px 30px;
+  overflow-y: auto;
+  font-family: Arial, sans-serif;
 }
-
+#timeoutScreen .timeout-clock {
+  font-size: clamp(85px, 10vw, 135px);
+  line-height: 1.15;
+  margin: 0 0 clamp(45px, 7vh, 85px);
+}
 #timeoutScreen h1 {
-
-  color: #ff4545;
-
-  font-size: clamp(32px, 7vw, 58px);
-
-}
-
-.retry-button {
-
-  padding: 16px 35px;
-
-  margin-top: 20px;
-
-  background: #c71d25;
-
-  border: 2px solid #ff6969;
-
-  border-radius: 10px;
-
-  color: white;
-
-  font-size: 18px;
-
+  color: #e75b60;
+  font-size: clamp(35px, 6.7vw, 110px);
   font-weight: 900;
-
+  line-height: 1.08;
+  margin: 0;
+  white-space: nowrap;
+  text-shadow: 0 0 34px #f03c4b66;
+}
+#timeoutScreen .timeout-description {
+  color: #e0b8c1;
+  font-size: clamp(18px, 2vw, 32px);
+  margin: clamp(80px, 15vh, 180px) 0 0;
+}
+#timeoutScreen .retry-button {
+  padding: 18px 35px;
+  margin-top: 28px;
+  background: linear-gradient(180deg, #ae4148, #8e3039);
+  border: 1px solid #e85b64;
+  border-radius: 12px;
+  color: white;
+  font-size: clamp(17px, 1.5vw, 24px);
+  font-weight: 900;
   cursor: pointer;
-
+}
+@media (max-width: 700px) {
+  #timeoutScreen h1 { white-space: normal; }
+  #timeoutScreen .timeout-description { margin-top: 12vh; }
 }
 
 /* MOBILE */
-
 @media (max-width: 800px) {
-
   .layout {
-
     grid-template-columns: 1fr;
-
   }
-
   .panel {
-
     max-width: 440px;
-
     width: 100%;
-
     margin: auto;
-
   }
-
   .container {
-
     padding: 20px 12px 50px;
-
   }
-
   .challenge-btn {
-
     font-size: 11px;
-
     padding: 10px;
-
   }
-
   .teacher-image {
-
     height: 180px;
-
   }
-
 }
-
 @media (max-width: 390px) {
-
   .preview-box {
-
     font-size: 15px;
-
     height: 32px;
-
   }
-
   .password-preview {
-
     gap: 2px;
-
   }
-
 }
-
 /* SECRET WORD HINT BUTTON */
-
 .word-hint-button {
-
   margin-top: 14px;
-
   padding: 11px 22px;
-
   background: #291a0d;
-
   color: #ffda87;
-
   border: 2px solid #e3ad4c;
-
   border-radius: 8px;
-
   font: 900 13px Arial, sans-serif;
-
   letter-spacing: 1px;
-
   cursor: pointer;
-
   transition: background .2s, box-shadow .2s;
-
 }
-
 .word-hint-button:hover {
-
   background: #513412;
-
   box-shadow: 0 0 14px #e3ad4c55;
-
 }
-
 .word-hint-text {
-
   margin: 12px 0 0;
-
   padding: 12px;
-
   border: 1px solid #a77d37;
-
   border-radius: 8px;
-
   background: #160f0b;
-
   color: #ffe2a5;
-
   font-size: 13px;
-
   line-height: 1.6;
-
 }
-
 </style>
-
 </head>
-
 <body>
-
 <canvas id="matrixRain" aria-hidden="true"></canvas>
-
 <div class="container">
-
   <!-- TIMER -->
-
   <div class="timer-area">
-
     <div class="timer-box" id="timerBox">
-
       <div class="timer-label">
-
         ⏰ ESCAPE ROOM TIME LEFT
-
       </div>
-
       <div id="countdown">15:00</div>
-
       <div class="timer-track" id="timerTrack" role="progressbar" aria-label="Escape room time remaining" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100">
-
         <div class="timer-fill" id="timerFill"></div>
-
       </div>
-
       <div class="timer-percent" id="timerPercent">100% TIME REMAINING</div>
-
     </div>
-
   </div>
-
   <!-- HEADING -->
-
   <div class="heading">
-
     <p class="topline">
-
       ⚠ HACKED // ESCAPE ROOM ⚠
-
     </p>
-
     <h1>SELECT A CHALLENGE</h1>
-
     <p class="description">
-
       Complete EASY and MEDIUM to unlock HARD.
-
       Collect your stamps and solve the secret
-
       ten-letter password!
-
     </p>
-
   </div>
-
   <div class="layout">
-
     <!-- ORIGINAL TOWER -->
-
     <div class="tower-section">
-
       <div class="section-title">
-
         ◈ SECURITY CHALLENGE TOWER ◈
-
       </div>
-
       <div class="tower">
-
         <!-- EASY -->
-
         <div
-
           class="floor one"
-
           id="easyFloor"
-
           onclick="goToChallenge('rebuild_computer_with_teacher.html')"
-
         >
-
           1
-
         </div>
-
         <button
-
           class="challenge-btn easy"
-
           id="easyButton"
-
           onclick="goToChallenge('rebuild_computer_with_teacher.html')"
-
         >
-
           EASY
-
         </button>
-
         <!-- MEDIUM -->
-
         <div
-
           class="floor two"
-
           id="mediumFloor"
-
           onclick="goToChallenge('morsecodelight.html')"
-
         >
-
           2
-
         </div>
-
         <button
-
           class="challenge-btn medium"
-
           id="mediumButton"
-
           onclick="goToChallenge('morsecodelight.html')"
-
         >
-
           MEDIUM
-
         </button>
-
         <!-- HARD VISIBLE FROM START -->
-
         <div
-
           class="floor three locked"
-
           id="hardFloor"
-
           onclick="goToChallenge('binary.html')"
-
         >
-
           🔒
-
         </div>
-
         <button
-
           class="challenge-btn hard locked"
-
           id="hardButton"
-
           onclick="goToChallenge('binary.html')"
-
         >
-
           🔒 HARD
-
         </button>
-
       </div>
-
       <p class="tower-progress" id="towerProgress">
-
         0 / 3 CHALLENGES COMPLETE
-
       </p>
-
       <p id="hardMessage">
-
         🔒 Complete EASY and MEDIUM to unlock HARD.
-
       </p>
-
       <!-- TEACHER FULLY VISIBLE -->
-
       <div class="teacher-area">
-
         <img
-
           id="teacherImage"
-
           src="Confused.png"
-
           alt="Confused teacher"
-
           class="teacher-image"
-
         >
-
       </div>
-
     </div>
-
     <!-- FINAL LOCK PANEL -->
-
     <div class="panel">
-
       <h2>🔐 SOLVE</h2>
-
       <p class="panel-subtitle">
-
         FINAL SYSTEM LOCK
-
       </p>
-
       <div class="lock-icon" id="lockIcon">
-
         🔒
-
       </div>
-
       <p class="instructions" id="collectionStatus">
-
         Complete EASY and MEDIUM to collect stamps.
-
       </p>
-
       <!-- EASY -->
-
       <div class="stamp-group">
-
         <div class="stamp-title easy-title">
-
           🟢 EASY — 3 LETTER STAMPS
-
         </div>
-
         <div class="stamps" id="easyStamps">
-
           <div class="stamp">?</div>
-
           <div class="stamp">?</div>
-
           <div class="stamp">?</div>
-
         </div>
-
         <div class="stamp-note" id="easyNote">
-
           Complete EASY to collect stamps.
-
         </div>
-
       </div>
-
       <!-- MEDIUM -->
-
       <div class="stamp-group">
-
         <div class="stamp-title medium-title">
-
           🟡 MEDIUM — 3 LETTER STAMPS
-
         </div>
-
         <div class="stamps" id="mediumStamps">
-
           <div class="stamp">?</div>
-
           <div class="stamp">?</div>
-
           <div class="stamp">?</div>
-
         </div>
-
         <div class="stamp-note" id="mediumNote">
-
           Complete MEDIUM to collect stamps.
-
         </div>
-
       </div>
-
       <!-- HARD CHECKMARKS -->
-
       <div class="stamp-group">
-
         <div class="stamp-title hard-title">
-
           🔴 HARD — 3 COMPLETION CHECKS
-
         </div>
-
         <div class="stamps" id="hardStamps">
-
           <div class="stamp">?</div>
-
           <div class="stamp">?</div>
-
           <div class="stamp">?</div>
-
         </div>
-
         <div class="stamp-note" id="hardNote">
-
           🔒 HARD is locked.
-
         </div>
-
       </div>
-
       <!-- SECRET PASSWORD -->
-
       <div class="hint-section">
-
         <div class="hint-title">
-
           🔐 SECRET 10-LETTER PASSWORD
-
         </div>
-
         <div
-
           class="password-preview"
-
           id="passwordPreview"
-
         ></div>
-
         <div class="hint-note">
-
           All ten positions are hidden.
-
           Complete the challenges and figure
-
           out the secret password!
-
         </div>
-
         <button type="button" class="word-hint-button"
-
           id="wordHintButton" onclick="toggleWordHint()"
-
           aria-expanded="false" aria-controls="wordHintText">
-
           💡 SHOW HINT
-
         </button>
-
         <p class="word-hint-text" id="wordHintText" hidden></p>
-
       </div>
-
       <!-- PASSWORD INPUT -->
-
       <label class="answer-label" for="answerInput">
-
         ⌨️ TYPE YOUR 10-LETTER PASSWORD
-
       </label>
-
       <input
-
         id="answerInput"
-
         type="text"
-
         maxlength="10"
-
         placeholder="??????????"
-
         autocomplete="off"
-
         autocapitalize="characters"
-
         spellcheck="false"
-
         disabled
-
       >
-
       <div class="answer-count" id="answerCount">
-
         0 / 10 LETTERS
-
       </div>
-
       <button
-
         class="unlock"
-
         id="unlockBtn"
-
         onclick="checkAnswer()"
-
         disabled
-
       >
-
         🔓 UNLOCK SYSTEM
-
       </button>
-
       <p id="message" aria-live="polite"></p>
-
     </div>
-
   </div>
-
   <p class="footer">
-
     COMPLETE ALL THREE CHALLENGES TO UNLOCK THE SYSTEM.
-
   </p>
-
   <button
-
     class="back"
-
     onclick="location.href='screen3.html'"
-
   >
-
     ← BACK
-
   </button>
-
 </div>
-
 <!-- VICTORY SCREEN -->
-
 <div id="winScreen">
-
   <h1>🔓 SYSTEM RESTORED!</h1>
-
   <img
-
     src="Joyful.png"
-
     alt="Happy teacher"
-
     class="win-teacher"
-
   >
-
   <div class="win-message">
-
     CONGRATS!!
-
     <br>
-
     <strong>YOU ESCAPED THE ROOM!!</strong>
-
   </div>
-
   <p style="color:#8fffc0">
-
     🎉 ALL SYSTEMS ONLINE 🎉
-
   </p>
-
 </div>
-
 <!-- TIMEOUT SCREEN -->
-
-<div id="timeoutScreen">
-
-  <div style="font-size:75px">⏰</div>
-
-  <h1>TIME'S UP! YOU FAILED!</h1>
-
-  <h2>YOU DIDN'T ESCAPE THE ROOM!</h2>
-
-  <p>Returning to the start in 5 seconds...</p>
-
+<div id="timeoutScreen" role="alertdialog" aria-modal="true" aria-labelledby="timeoutHeading">
+  <div class="timeout-clock" aria-hidden="true">⏰</div>
+  <h1 id="timeoutHeading">TIME'S UP! YOU FAILED!</h1>
+  <p class="timeout-description">The 15-minute countdown has ended.</p>
+  <button class="retry-button" type="button" onclick="restartEscape()">↻ TRY AGAIN</button>
 </div>
-
 <script>
-
 "use strict";
-
 // ======================================
-
 // STORAGE
-
 // ======================================
-
 const $ = id => document.getElementById(id);
-
 const TIMER_KEY = "escapeRoomEndTime";
-
 const TIMEOUT_KEY = "escapeRoomTimedOut";
-
 const FINISHED_KEY = "escapeRoomFinished";
-
 const GAME_MINUTES = 15;
-
 // ======================================
-
 // SECRET WORDS
-
 // ======================================
-
 const secretWords = [
-
   "ALGORITHMS",
-
   "AUTOMATION",
-
   "BLOCKCHAIN",
-
   "BOOTLOADER",
-
   "CLUSTERING",
-
   "CONTAINERS",
-
   "CONTROLLER",
-
   "DATACENTER",
-
   "DEPLOYMENT",
-
   "DEVELOPERS",
-
   "EXECUTABLE",
-
   "FILESYSTEM",
-
   "HARDDRIVES",
-
   "HYPERVISOR",
-
   "JAVASCRIPT",
-
   "KUBERNETES",
-
   "MAINFRAMES",
-
   "MICROCHIPS",
-
   "MIDDLEWARE",
-
   "MONITORING",
-
   "NETWORKING",
-
   "PARAMETERS",
-
   "POWERSHELL",
-
   "PROCESSING",
-
   "PROCESSORS",
-
   "PROGRAMMER",
-
   "REPOSITORY",
-
   "RESOLUTION",
-
   "SEMAPHORES",
-
   "SERVERLESS",
-
   "SIMULATION",
-
   "SUBROUTINE",
-
   "TECHNOLOGY",
-
   "THROUGHPUT",
-
   "TRANSISTOR",
-
   "TYPESCRIPT",
-
   "VERSIONING",
-
   "WEBMASTERS",
-
   "WORKSPACES"
-
 ].filter(word => word.length === 10);
-
 let secretWord = sessionStorage.getItem("secretWord");
-
 if (!secretWord || !/^[A-Z]{10}$/.test(secretWord)) {
-
   secretWord = secretWords[
-
     Math.floor(Math.random() * secretWords.length)
-
   ];
-
   sessionStorage.setItem("secretWord", secretWord);
-
 }
-
 // Clues correspond to the existing randomly selected 10-letter secret word.
-
 const passwordClues = {
-
   ALGORITHMS: "Step-by-step instructions a computer follows to solve problems.",
-
   AUTOMATION: "Using technology to perform tasks with little human involvement.",
-
   BLOCKCHAIN: "A shared digital ledger that links records into a chain.",
-
   BOOTLOADER: "A small program that starts an operating system.",
-
   CLUSTERING: "Grouping similar data points or computers together.",
-
   CONTAINERS: "Lightweight packages that bundle software with what it needs to run.",
-
   CONTROLLER: "A device or program that directs how another system operates.",
-
   DATACENTER: "A facility filled with servers and networking equipment.",
-
   DEPLOYMENT: "The process of releasing software so people can use it.",
-
   DEVELOPERS: "People who design and write computer programs.",
-
   EXECUTABLE: "A file a computer can run as a program.",
-
   FILESYSTEM: "The way an operating system organizes and stores files.",
-
   HARDDRIVES: "Storage devices that keep data even when power is off.",
-
   HYPERVISOR: "Software that creates and manages virtual machines.",
-
   JAVASCRIPT: "A programming language that makes web pages interactive.",
-
   KUBERNETES: "A platform that coordinates and manages software containers.",
-
   MAINFRAMES: "Large, powerful computers used for massive business workloads.",
-
   MICROCHIPS: "Tiny electronic circuits found inside modern devices.",
-
   MIDDLEWARE: "Software that helps different applications communicate.",
-
   MONITORING: "Continuously checking a system to spot problems or changes.",
-
   NETWORKING: "Connecting computers so they can exchange information.",
-
   PARAMETERS: "Values passed into a function to control how it works.",
-
   POWERSHELL: "A command-line shell and scripting tool used for administration.",
-
   PROCESSING: "A computer working on data to produce a result.",
-
   PROCESSORS: "Computer components that execute instructions.",
-
   PROGRAMMER: "A person who writes and tests code.",
-
   REPOSITORY: "A place where project code and its history are stored.",
-
   RESOLUTION: "The number of pixels used to display an image.",
-
   SEMAPHORES: "Signals used to coordinate access to shared resources in programs.",
-
   SERVERLESS: "A cloud model where developers run code without managing servers.",
-
   SIMULATION: "A computer-based imitation of a real process or system.",
-
   SUBROUTINE: "A reusable set of instructions within a larger program.",
-
   TECHNOLOGY: "Tools and knowledge used to solve practical problems.",
-
   THROUGHPUT: "How much work or data a system handles in a given time.",
-
   TRANSISTOR: "A tiny electronic switch used to build computer circuits.",
-
   TYPESCRIPT: "A typed programming language that builds on JavaScript.",
-
   VERSIONING: "Tracking different revisions of files or software.",
-
   WEBMASTERS: "People responsible for maintaining websites.",
-
   WORKSPACES: "Areas where people organize their projects and tools.",
-
  };
-
 function toggleWordHint() {
-
   const text = $("wordHintText");
-
   const button = $("wordHintButton");
-
   const show = text.hidden;
-
   if (show) {
-
     text.textContent = "💡 " + (passwordClues[secretWord] ||
-
       "A computing-related word with exactly ten letters.");
-
   }
-
   text.hidden = !show;
-
   button.textContent = show ? "💡 HIDE HINT" : "💡 SHOW HINT";
-
   button.setAttribute("aria-expanded", String(show));
-
 }
-
 const easyLetters = secretWord.slice(0, 3);
-
 const mediumLetters = secretWord.slice(3, 6);
-
 // ======================================
-
 // COMPLETION FLAGS
-
 // ======================================
-
 function easyComplete() {
-
   return sessionStorage.getItem("easyComplete") === "true";
-
 }
-
 function mediumComplete() {
-
   return sessionStorage.getItem("mediumComplete") === "true";
-
 }
-
 function hardComplete() {
-
   return sessionStorage.getItem("hardComplete") === "true";
-
 }
-
 function hardUnlocked() {
-
   return easyComplete() && mediumComplete();
-
 }
-
 function allComplete() {
-
   return (
-
     easyComplete() &&
-
     mediumComplete() &&
-
     hardComplete()
-
   );
-
 }
-
 // ======================================
-
 // LETTER STAMPS
-
 // ======================================
-
 function shuffleLetters(letters) {
-
   const result = [...letters];
-
   for (let i = result.length - 1; i > 0; i--) {
-
     const j = Math.floor(Math.random() * (i + 1));
-
     [result[i], result[j]] = [
-
       result[j],
-
       result[i]
-
     ];
-
   }
-
   return result;
-
 }
-
 function getRewardLetters(key, original) {
-
   let saved = sessionStorage.getItem(key);
-
   if (saved) {
-
     try {
-
       const parsed = JSON.parse(saved);
-
       if (Array.isArray(parsed)) {
-
         saved = parsed.join("");
-
       } else if (typeof parsed === "string") {
-
         saved = parsed;
-
       }
-
     } catch (error) {
-
       // Plain strings are supported.
-
     }
-
     saved = String(saved).toUpperCase();
-
     if (
-
       saved.length === 3 &&
-
       [...saved].sort().join("") ===
-
       [...original].sort().join("")
-
     ) {
-
       return [...saved];
-
     }
-
   }
-
   const shuffled = shuffleLetters(original);
-
   if (
-
     shuffled.join("") === original &&
-
     new Set(shuffled).size > 1
-
   ) {
-
     const index = shuffled.findIndex(
-
       letter => letter !== shuffled[0]
-
     );
-
     [
-
       shuffled[0],
-
       shuffled[index]
-
     ] = [
-
       shuffled[index],
-
       shuffled[0]
-
     ];
-
   }
-
   sessionStorage.setItem(key, shuffled.join(""));
-
   return shuffled;
-
 }
-
 function displayStamps(holderId, letters, completed) {
-
   const holder = $(holderId);
-
   holder.replaceChildren();
-
   for (let i = 0; i < 3; i++) {
-
     const stamp = document.createElement("div");
-
     stamp.className = completed
-
       ? "stamp earned"
-
       : "stamp";
-
     stamp.textContent = completed
-
       ? letters[i]
-
       : "?";
-
     holder.appendChild(stamp);
-
   }
-
 }
-
 // ======================================
-
 // HARD: ? ? ? TO ✓ ✓ ✓
-
 // ======================================
-
 function displayHardStamps() {
-
   const holder = $("hardStamps");
-
   holder.replaceChildren();
-
   const completed = hardComplete();
-
   for (let i = 0; i < 3; i++) {
-
     const stamp = document.createElement("div");
-
     stamp.className = completed
-
       ? "stamp hard-earned"
-
       : "stamp";
-
     stamp.textContent = completed ? "✓" : "?";
-
     holder.appendChild(stamp);
-
   }
-
   $("hardNote").textContent = completed
-
     ? "✓ HARD completed! Three checks earned."
-
     : hardUnlocked()
-
       ? "🔓 HARD unlocked! Complete the binary puzzle."
-
       : "🔒 Complete EASY and MEDIUM to unlock HARD.";
-
 }
-
 // ======================================
-
 // HIDE ALL TEN PASSWORD LETTERS
-
 // ======================================
-
 function displayPasswordPreview() {
-
   const holder = $("passwordPreview");
-
   holder.replaceChildren();
-
   for (let i = 0; i < 10; i++) {
-
     const box = document.createElement("div");
-
     box.className = "preview-box";
-
     // ONLY HARD reveals letters in the yellow card
-
     if (hardComplete() && i >= 6) {
-
       box.textContent = secretWord[i];
-
       box.style.color = "#60efa5";
-
       box.style.borderColor = "#60efa5";
-
     } else {
-
       box.textContent = "?";
-
     }
-
     holder.appendChild(box);
-
   }
-
 }
-
 // ======================================
-
 // HARD VISIBLE FROM START
-
 // ======================================
-
 function updateHardLock() {
-
   const unlocked = hardUnlocked();
-
   const floor = $("hardFloor");
-
   const button = $("hardButton");
-
   floor.classList.toggle("locked", !unlocked);
-
   button.classList.toggle("locked", !unlocked);
-
   floor.textContent = unlocked ? "3" : "🔒";
-
   button.textContent = unlocked ? "HARD" : "🔒 HARD";
-
   button.setAttribute(
-
     "aria-disabled",
-
     String(!unlocked)
-
   );
-
   $("hardMessage").textContent =
-
     !unlocked
-
       ? "🔒 Complete EASY and MEDIUM to unlock HARD."
-
       : hardComplete()
-
         ? "✓ HARD CHALLENGE COMPLETED!"
-
         : "🔓 HARD IS UNLOCKED!";
-
   // Neither HARD floor nor button is hidden.
-
 }
-
 // ======================================
-
 // TEACHER PROGRESSION
-
 // ======================================
-
 function updateTeacher() {
-
   const teacher = $("teacherImage");
-
   if (allComplete()) {
-
     teacher.src = "Watching.png";
-
     teacher.alt = "Teacher watching";
-
   } else {
-
     teacher.src = "Confused.png";
-
     teacher.alt = "Confused teacher";
-
   }
-
   // Joyful.png appears on victory screen.
-
 }
-
 // ======================================
-
 // UPDATE SCREEN
-
 // ======================================
-
 function updateScreen() {
-
   displayPasswordPreview(); 
-
   const easy = easyComplete();
-
   const medium = mediumComplete();
-
   const hard = hardComplete();
-
   const easyReward = easy
-
     ? getRewardLetters(
-
         "easyRewardLetters",
-
         easyLetters
-
       )
-
     : [];
-
   const mediumReward = medium
-
     ? getRewardLetters(
-
         "mediumRewardLetters",
-
         mediumLetters
-
       )
-
     : [];
-
   displayStamps("easyStamps", easyReward, easy);
-
   displayStamps("mediumStamps", mediumReward, medium);
-
   displayHardStamps();
-
   $("easyNote").textContent = easy
-
     ? "✓ EASY completed! Three stamps collected."
-
     : "🔒 Complete EASY to collect these stamps.";
-
   $("mediumNote").textContent = medium
-
     ? "✓ MEDIUM completed! Three stamps collected."
-
     : "🔒 Complete MEDIUM to collect these stamps.";
-
   $("easyFloor").classList.toggle("completed", easy);
-
   $("mediumFloor").classList.toggle("completed", medium);
-
   $("hardFloor").classList.toggle("completed", hard);
-
   $("easyButton").classList.toggle("completed", easy);
-
   $("mediumButton").classList.toggle("completed", medium);
-
   $("hardButton").classList.toggle("completed", hard);
-
   const count =
-
     Number(easy) +
-
     Number(medium) +
-
     Number(hard);
-
   const stamps =
-
     (easy ? 3 : 0) +
-
     (medium ? 3 : 0);
-
   $("towerProgress").textContent =
-
     `${count} / 3 CHALLENGES COMPLETE`;
-
   if (allComplete()) {
-
     $("collectionStatus").textContent =
-
       "ALL THREE CHALLENGES COMPLETE! The teacher is watching. Solve the secret 10-letter password!";
-
   } else if (hardUnlocked()) {
-
     $("collectionStatus").textContent =
-
       "6 / 6 STAMPS COLLECTED! HARD IS UNLOCKED!";
-
   } else {
-
     $("collectionStatus").textContent =
-
       `${stamps} / 6 STAMPS COLLECTED. Complete EASY and MEDIUM to unlock HARD.`;
-
   }
-
   updateHardLock();
-
   updateTeacher();
-
   const blocked =
-
     !allComplete() ||
-
     sessionStorage.getItem(FINISHED_KEY) === "true" ||
-
     sessionStorage.getItem(TIMEOUT_KEY) === "true";
-
   $("answerInput").disabled = blocked;
-
   updateAnswerCount();
-
 }
-
 // ======================================
-
 // PASSWORD INPUT
-
 // ======================================
-
 function updateAnswerCount() {
-
   const input = $("answerInput");
-
   input.value = input.value
-
     .toUpperCase()
-
     .replace(/[^A-Z]/g, "")
-
     .slice(0, 10);
-
   $("answerCount").textContent =
-
     `${input.value.length} / 10 LETTERS`;
-
   $("unlockBtn").disabled =
-
     !allComplete() ||
-
     input.value.length !== 10 ||
-
     !hasTime();
-
 }
-
 $("answerInput").addEventListener("input", () => {
-
   updateAnswerCount();
-
   $("message").textContent = "";
-
 });
-
 $("answerInput").addEventListener("keydown", event => {
-
   if (event.key === "Enter") {
-
     checkAnswer();
-
   }
-
 });
-
 // ======================================
-
 // SHARED 15-MINUTE TIMER
-
 // ======================================
-
 function initializeTimer() {
-
   const saved = Number(
-
     sessionStorage.getItem(TIMER_KEY)
-
   );
-
   if (!Number.isFinite(saved) || saved <= 0) {
-
     sessionStorage.setItem(
-
       TIMER_KEY,
-
       String(Date.now() + GAME_MINUTES  * 60 * 1000)
-
     );
-
   }
-
 }
-
 let timerInterval = null;
-
 let timeoutRedirecting = false;
-
 function hasTime() {
-
   if (
-
     sessionStorage.getItem(FINISHED_KEY) === "true" ||
-
     sessionStorage.getItem(TIMEOUT_KEY) === "true"
-
   ) {
-
     return false;
-
   }
-
   const deadline = Number(
-
     sessionStorage.getItem(TIMER_KEY)
-
   );
-
   return Number.isFinite(deadline) &&
-
     Date.now() < deadline;
-
 }
-
 // Clear all progress so a new escape starts from EASY again.
+
 function clearAllEscapeProgress() {
+
   const progressKeys = [
+
     "puzzleEndTime",
+
     "websitesSolved",
+
     "filesSolved",
+
     "applicationsSolved",
+
     "escapeRoomEndTime",
+
     "escapeRoomTimedOut",
+
     "escapeRoomFinished",
+
     "secretWord",
+
     "easyComplete",
+
     "mediumComplete",
+
     "hardComplete",
+
     "easyRewardLetters",
+
     "mediumRewardLetters",
+
     "hardRewardLetters",
+
     "easyMediumUnlocked",
+
     "easyTaskIds",
+
     "easyTimerSeconds",
+
     "easyRandomTasks",
+
     "easyRandomGameWord",
+
     "easyRandomSeconds",
+
     "hardAttemptsUsed",
+
     "hardAttemptsWord",
+
     "finalScrambledLetters"
+
   ];
+
   progressKeys.forEach(key => sessionStorage.removeItem(key));
-}
 
+}
 function returnHomeAfterTimeout() {
-  clearAllEscapeProgress();
-  window.location.replace("index.html");
-}
 
+  clearAllEscapeProgress();
+
+  window.location.replace("index.html");
+
+}
 function showTimeout() {
-
   if (timeoutRedirecting || sessionStorage.getItem(FINISHED_KEY) === "true") return;
-
   timeoutRedirecting = true;
-
   sessionStorage.setItem(TIMEOUT_KEY, "true");
-
   $("winScreen").classList.remove("visible");
-
   $("timeoutScreen").style.display = "flex";
-
   $("countdown").textContent = "00:00";
-
   $("timerFill").style.width = "0%";
-
   $("timerPercent").textContent = "0% TIME REMAINING";
-
   $("timerTrack").setAttribute("aria-valuenow", "0");
-
   $("answerInput").disabled = true;
-
   $("unlockBtn").disabled = true;
-
   clearInterval(timerInterval);
-
   // Keep the failure screen visible for five seconds, then reset everything.
+
   setTimeout(returnHomeAfterTimeout, 5000);
-}
 
+}
 function updateTimer() {
-
   if (sessionStorage.getItem(FINISHED_KEY) === "true") {
-
     return;
-
   }
-
   if (
-
     sessionStorage.getItem(TIMEOUT_KEY) === "true"
-
   ) {
-
     showTimeout();
-
     return;
-
   }
-
   const deadline = Number(
-
     sessionStorage.getItem(TIMER_KEY)
-
   );
-
   const remaining = Math.max(
-
     0,
-
     deadline - Date.now()
-
   );
-
   const seconds = Math.ceil(remaining / 1000);
-
   const minutes = String(
-
     Math.floor(seconds / 60)
-
   ).padStart(2, "0");
-
   const secs = String(
-
     seconds % 60
-
   ).padStart(2, "0");
-
   $("countdown").textContent =
-
     `${minutes}:${secs}`;
-
   const totalDuration = GAME_MINUTES * 60 * 1000;
-
   const percent = Math.max(0, Math.min(100,
-
     (remaining / totalDuration) * 100
-
   ));
-
   $("timerFill").style.width = `${percent}%`;
-
   $("timerPercent").textContent =
-
     `${Math.ceil(percent)}% TIME REMAINING`;
-
   $("timerTrack").setAttribute("aria-valuenow", String(Math.round(percent)));
-
   $("timerBox").classList.toggle(
-
     "urgent",
-
     seconds <= 60
-
   );
-
   if (!hasTime()) {
-
     showTimeout();
-
   }
-
 }
-
 // ======================================
-
 // FINAL PASSWORD
-
 // ======================================
-
 function checkAnswer() {
-
   if (!hasTime()) {
-
     showTimeout();
-
     return;
-
   }
-
   if (!allComplete()) {
-
     $("message").textContent =
-
       "COMPLETE ALL THREE CHALLENGES FIRST!";
-
     return;
-
   }
-
   const answer = $("answerInput").value
-
     .trim()
-
     .toUpperCase();
-
   if (answer.length !== 10) {
-
     $("message").textContent =
-
       "TYPE ALL TEN LETTERS!";
-
     return;
-
   }
-
   if (answer !== secretWord) {
-
     $("message").style.color = "#ff5555";
-
     $("message").textContent =
-
       "ACCESS DENIED! TRY AGAIN.";
-
     return;
-
   }
-
   sessionStorage.setItem(FINISHED_KEY, "true");
-
   clearInterval(timerInterval);
-
   $("lockIcon").textContent = "🔓";
-
   $("answerInput").disabled = true;
-
   $("unlockBtn").disabled = true;
-
  $("winScreen").classList.add("visible");
-
 // Show the victory screen for 3 seconds,
-
 // then return to the home page.
-
 setTimeout(() => {
-
   clearAllEscapeProgress();
+
   window.location.replace("screen2.html");
-
 }, 3000);
-
 }
-
 // ======================================
-
 // CHALLENGE NAVIGATION
-
 // ======================================
-
 function goToChallenge(filename) {
-
   if (!hasTime()) {
-
     showTimeout();
-
     return;
-
   }
-
   // HARD IS LOCKED UNTIL EASY + MEDIUM.
-
   if (
-
     filename === "binary.html" &&
-
     !hardUnlocked()
-
   ) {
-
     $("hardMessage").textContent =
-
       "🔒 FINISH EASY AND MEDIUM FIRST!";
-
     return;
-
   }
-
   window.location.href = filename;
-
 }
-
 // ======================================
-
 // RESET GAME
-
 // ======================================
-
 function restartEscape() {
-
   [
-
     "puzzleEndTime",
-
     "websitesSolved",
-
     "filesSolved",
-
     "applicationsSolved",
-
     TIMER_KEY,
-
     TIMEOUT_KEY,
-
     FINISHED_KEY,
-
     "secretWord",
-
     "easyComplete",
-
     "mediumComplete",
-
     "hardComplete",
-
     "easyRewardLetters",
-
     "mediumRewardLetters",
-
     "hardRewardLetters",
-
     "easyMediumUnlocked",
-
     "easyTaskIds",
-
     "easyTimerSeconds",
-
     "finalScrambledLetters"
-
   ].forEach(key => sessionStorage.removeItem(key));
-
   window.location.replace("index.html");
-
 }
-
 // ======================================
-
 // START GAME
-
 // ======================================
-
 initializeTimer();
-
 displayPasswordPreview();
-
 updateScreen();
-
 if (sessionStorage.getItem(FINISHED_KEY) === "true") {
-
   $("winScreen").classList.add("visible");
-
 } else if (
-
   sessionStorage.getItem(TIMEOUT_KEY) === "true"
-
 ) {
-
   showTimeout();
-
 } else {
-
   updateTimer();
-
   timerInterval = setInterval(updateTimer, 250);
-
 }
-
 </script>
-
 <script>
-
 /* Decorative background only: does not affect the shared timer or gameplay. */
-
 (() => {
-
   const canvas = document.getElementById("matrixRain");
-
   const context = canvas.getContext("2d");
-
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-
   if (!context || reduceMotion.matches) return;
-
   const symbols = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&@";
-
   const fontSize = 17;
-
   const frameDelay = 55;
-
   let columns = [];
-
   let width = 0;
-
   let height = 0;
-
   let lastFrame = 0;
-
   function resizeRain() {
-
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-
     width = window.innerWidth;
-
     height = window.innerHeight;
-
     canvas.width = Math.round(width * dpr);
-
     canvas.height = Math.round(height * dpr);
-
     context.setTransform(dpr, 0, 0, dpr, 0, 0);
-
     context.fillStyle = "#09090c";
-
     context.fillRect(0, 0, width, height);
-
     columns = Array.from(
-
       { length: Math.ceil(width / fontSize) },
-
       () => Math.random() * -height / fontSize
-
     );
-
   }
-
   function drawRain(timestamp) {
-
     requestAnimationFrame(drawRain);
-
     if (document.hidden || timestamp - lastFrame < frameDelay) return;
-
     lastFrame = timestamp;
-
     context.fillStyle = "rgba(9, 9, 12, 0.095)";
-
     context.fillRect(0, 0, width, height);
-
     context.font = `bold ${fontSize}px monospace`;
-
     columns.forEach((y, index) => {
-
       const character = symbols[Math.floor(Math.random() * symbols.length)];
-
       context.fillStyle = Math.random() > 0.94 ? "#ff9aa1" : "#e52b45";
-
       context.fillText(character, index * fontSize, y * fontSize);
-
       columns[index] = y * fontSize > height && Math.random() > 0.975
-
         ? Math.random() * -35
-
         : y + 0.45;
-
     });
-
   }
-
   resizeRain();
-
   window.addEventListener("resize", resizeRain);
-
   requestAnimationFrame(drawRain);
-
 })();
-
 </script>
-
 </body>
-
 </html>

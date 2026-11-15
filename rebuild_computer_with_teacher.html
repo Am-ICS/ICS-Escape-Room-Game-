@@ -655,6 +655,46 @@ body > .teacher-area {
   body > .teacher-area { left: 5px; bottom: 5px; }
 }
 
+/* FULL-SCREEN TIMEOUT — SAME LOOK AS BINARY / MORSE */
+#escapeRoomTimeout {
+  display: none;
+  position: fixed !important;
+  inset: 0;
+  z-index: 9999 !important;
+  width: 100%;
+  min-height: 100vh;
+  padding: 35px 20px;
+  background: radial-gradient(ellipse at center, #2b1019 0%, #190b12 55%, #09090c 100%);
+  color: white;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+#escapeRoomTimeout .timeout-clock { font-size: 100px; line-height: 1; margin-bottom: 55px; }
+#escapeRoomTimeout h2 {
+  margin: 0 0 120px;
+  font-size: clamp(38px, 7vw, 88px);
+  font-weight: 900;
+  color: #ef5059;
+  text-shadow: 0 0 35px #ff333355;
+}
+#escapeRoomTimeout p { margin: 0 0 24px; font-size: clamp(17px, 2vw, 24px); color: #e3b1ba; }
+#escapeRoomTimeout #restartEscapeBtn {
+  padding: 18px 28px;
+  border: 1px solid #f06570;
+  border-radius: 11px;
+  background: linear-gradient(#bd3744, #932630);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 900;
+  cursor: pointer;
+}
+@media (max-height: 620px) {
+  #escapeRoomTimeout .timeout-clock { font-size: 65px; margin-bottom: 20px; }
+  #escapeRoomTimeout h2 { margin-bottom: 35px; }
+}
+
 </style>
 </head>
 
@@ -823,18 +863,11 @@ body > .teacher-area {
 </div>
 
 <!-- OVERALL TIMEOUT -->
-<div id="escapeRoomTimeout">
-  <div style="font-size:75px">⏰</div>
-
-  <h2>TIME'S UP!</h2>
-
-  <h3>YOU DIDN'T ESCAPE THE ROOM!</h3>
-
+<div id="escapeRoomTimeout" role="alertdialog" aria-modal="true">
+  <div class="timeout-clock">⏰</div>
+  <h2>TIME'S UP! YOU FAILED!</h2>
   <p>The 15-minute countdown has ended.</p>
-
-  <button id="restartEscapeBtn">
-    ↻ TRY AGAIN
-  </button>
+  <button id="restartEscapeBtn">↻ TRY AGAIN</button>
 </div>
 
 <!-- RED MATRIX BACKGROUND -->
