@@ -655,49 +655,6 @@ body > .teacher-area {
   body > .teacher-area { left: 5px; bottom: 5px; }
 }
 
-
-/* FILE RECOVERY MATCH: identical timeout popup on every Stage 2 page */
-#timeoutScreen.file-timeout-overlay,
-#escapeRoomTimeout.file-timeout-overlay {
-  display: none;
-  position: fixed !important;
-  inset: 0 !important;
-  z-index: 999999 !important;
-  width: 100%;
-  height: 100%;
-  padding: 20px;
-  background: rgba(0, 0, 0, 0.94) !important;
-  align-items: center !important;
-  justify-content: center !important;
-  flex-direction: row !important;
-  text-align: center;
-}
-#timeoutScreen.file-timeout-overlay.show,
-#escapeRoomTimeout.file-timeout-overlay.show { display: flex; }
-.file-timeout-overlay .file-timeout-result {
-  width: 100%;
-  max-width: 520px;
-  padding: 35px 25px;
-  background: #190a0e;
-  border: 2px solid #ff454e;
-  border-radius: 15px;
-  box-shadow: 0 0 40px #ff000055;
-  text-align: center;
-  color: white;
-}
-.file-timeout-overlay .file-timeout-result h2 {
-  color: #ff454e;
-  font-size: clamp(26px, 5vw, 38px);
-  margin: 0 0 20px;
-  text-shadow: none;
-}
-.file-timeout-overlay .file-timeout-result p {
-  color: #ffbbbb;
-  line-height: 1.6;
-  margin: 14px 0;
-  font-size: 16px;
-}
-
 </style>
 </head>
 
@@ -866,14 +823,8 @@ body > .teacher-area {
 </div>
 
 <!-- OVERALL TIMEOUT -->
-<div id="escapeRoomTimeout" class="file-timeout-overlay" role="alertdialog" aria-modal="true" aria-labelledby="stage2TimeoutTitle">
-  <div class="file-timeout-result">
-    <h2 id="stage2TimeoutTitle">⏰ TIME'S UP! YOU FAILED!</h2>
-    <p>The 15-minute security timer has expired.<br><br>The system remains locked!</p>
-    <p>Returning to the start in 5 seconds...</p>
-    <button type="button" id="restartEscapeBtn" hidden tabindex="-1" aria-hidden="true"></button>
-  </div>
-</div>
+<div id="escapeRoomTimeout">
+  <div style="font-size:75px">⏰</div>
 
   <h2>TIME'S UP!</h2>
 
@@ -2438,8 +2389,6 @@ if (!overallEscapeExpired) {
   resetGame();
 }
 
-window.addEventListener("pageshow", () => { updateOverallEscapeTimer(); });
-window.addEventListener("focus", () => { updateOverallEscapeTimer(); });
 </script>
 </body>
 </html>

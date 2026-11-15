@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ICS Escape Room | Welcome</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;background:#151923;color:white}
+main{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;gap:20px}
+.welcome{display:block;width:min(1100px,100%);max-height:75vh;object-fit:contain;border-radius:15px;box-shadow:0 15px 50px #0008}
+.buttons{display:flex;justify-content:center;flex-wrap:wrap;gap:14px;width:100%}
+.buttons button{background:#292e39;color:#fff;border:2px solid #f76902;border-radius:13px;padding:16px 24px;font-size:17px;font-weight:bold;cursor:pointer;transition:background .2s,transform .2s;box-shadow:0 0 12px #f7690233}
+.buttons button:hover,.buttons button:focus-visible{background:#f76902;transform:translateY(-3px)}
+#response{text-align:center;min-height:24px;font-weight:bold}
+@media(max-width:650px){main{gap:12px;padding:10px}.welcome{max-height:57vh}.buttons{gap:9px}.buttons button{padding:12px 14px;font-size:13px}}
+</style>
+</head>
+<body>
+<main>
+<img class="welcome" src="ics_welcome_original_animated.gif" alt="RIT Information Computer Studies welcome guide" />
+<div class="buttons">
+<button type="button" onclick="location.href='lab.html'">💻 Computer Lab Access</button>
+<button type="button" onclick="document.getElementById('response').textContent='Course information is coming soon!'">📚 Course Information</button>
+<button type="button" onclick="location.href='test3.html'">🔐 Security System Demo</button>
+</div>
+<div id="response" role="status" aria-live="polite"></div>
+</main>
+</body>
+</html>
