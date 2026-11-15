@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RIT ICS Escape Room — The Final Escape</title>
+
+  <style>
+    /* ===== Base ===== */
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #030509;
+      color: white;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    canvas { display: block; }
+
+    /* ===== Cinematic overlays ===== */
+    #vignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(ellipse at center, transparent 35%, rgba(0, 0, 0, .76) 100%);
+      z-index: 2;
+    }
+
+    #hud {
+      position: fixed;
+      top: 23px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 4;
+      text-align: center;
+      pointer-events: none;
+      width: 94%;
+    }
+
+    #brand {
+      font-size: 13px;
+      letter-spacing: 3px;
+      color: #f76902;
+      font-weight: 900;
+      text-shadow: 0 2px 12px black;
+    }
+
+    #status {
+      margin-top: 12px;
+      display: inline-block;
+      padding: 12px 19px;
+      background: rgba(8, 10, 17, .78);
+      border: 1px solid #fa3939;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: clamp(13px, 2vw, 19px);
+      letter-spacing: 1px;
+      text-shadow: 0 0 12px #f44;
+      box-shadow: 0 0 25px #f2222233;
+    }
+
+    #subtitle {
+      position: fixed;
+      bottom: 8%;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 4;
+      text-align: center;
+      background: #05070bba;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: clamp(13px, 2vw, 19px);
+      font-weight: bold;
+      max-width: 92%;
+      text-shadow: 0 2px 7px black;
+    }
+
+    #flash {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      pointer-events: none;
+      background: #000;
+      opacity: 1;
+      /* Begin in darkness, then slowly reveal the hallway. */
+      transition: opacity 2.5s ease-in-out;
+    }
+
+    #hint {
+      position: fixed;
+      bottom: 12px;
+      right: 12px;
+      z-index: 4;
+      font-size: 11px;
+      color: #c3c8d0a0;
+    }
+
+    /* ===== Victory screen ===== */
+    #finish {
+      position: fixed;
+      inset: 0;
+      z-index: 8;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 24px;
+      background: radial-gradient(ellipse at 50% 35%, #143c35 0%, #07151c 48%, #020509 100%);
+      overflow: hidden;
+    }
+
+    #finish.visible {
+      display: flex;
+      animation: appear 1s ease both;
+    }
+
+    #finish h1 {
+      font-size: clamp(40px, 8vw, 100px);
+      margin: 12px 0;
+      color: #fff;
+      text-shadow: 0 0 25px #59ffae, 0 0 65px #17d68d;
+      letter-spacing: 3px;
+    }
+
+    #finish h2 {
+      color: #75ffb2;
+      letter-spacing: 5px;
+      font-size: clamp(17px, 3vw, 30px);
+      margin: 0 0 14px;
+    }
+
+    #finish p {
+      max-width: 640px;
+      line-height: 1.6;
+      font-size: clamp(15px, 2vw, 21px);
+      color: #d8f5e8;
+    }
+
+    #finish .medal {
+      font-size: 64px;
+      animation: bob 2.7s ease-in-out infinite;
+    }
+
+    #actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 22px;
+    }
+
+    #actions a {
+      display: inline-block;
+      text-decoration: none;
+      color: #fff;
+      background: #f76902;
+      border-radius: 12px;
+      padding: 17px 23px;
+      font-size: 17px;
+      font-weight: 900;
+      transition: transform .2s, filter .2s;
+    }
+
+    #actions a:nth-child(2) {
+      background: #263a46;
+      border: 1px solid #80c8bb;
+    }
+
+    #actions a:hover {
+      transform: translateY(-3px);
+      filter: brightness(1.2);
+    }
+
+    .particle {
+      position: absolute;
+      width: 7px;
+      height: 15px;
+      top: -30px;
+      animation: fall linear infinite;
+      opacity: .9;
+    }
+
+    /* ===== Fallback if Three.js fails to load ===== */
+    #fallback {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 7;
+      background: #060b10;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 25px;
+    }
+
+    #fallback button {
+      background: #f76902;
+      color: white;
+      border: 0;
+      border-radius: 10px;
+      padding: 15px 22px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    /* ===== Animations ===== */
+    @keyframes appear {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes bob {
+      50% { transform: translateY(-9px); }
+    }
+
+    @keyframes fall {
+      to { transform: translateY(110vh) rotate(540deg); }
+    }
+
+    @media (max-width: 600px) {
+      #brand { letter-spacing: 1px; }
+      #subtitle { bottom: 12%; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Cinematic HUD -->
+  <div id="vignette"></div>
+
+  <div id="hud">
+    <div id="brand">🐯 RIT | ICS ESCAPE ROOM</div>
+    <div id="status">⚠ HACKER CONNECTION ACTIVE</div>
+  </div>
+
+  <div id="subtitle">FINAL CODE ACCEPTED... WHAT'S HAPPENING?!</div>
+  <div id="flash"></div>
+  <div id="hint">AUTOMATIC CINEMATIC</div>
+
+  <!-- Victory screen -->
+  <div id="finish">
+    <div style="font-size:13px;color:#f76902;letter-spacing:3px;font-weight:900">
+      RIT | ICS ESCAPE ROOM
+    </div>
+    <div class="medal">🏆</div>
+    <h1>YOU ESCAPED!</h1>
+    <h2>✓ SYSTEM RESTORED</h2>
+    <p>
+      “YOU ACTUALLY DID IT?! YOU SAVED ICS!”<br>
+      The hacker has been stopped. The doors are unlocked. You're free!
+    </p>
+    <div id="actions">
+      <!-- <a href="index.html">↻ PLAY AGAIN OR</a> -->
+      <a href="index.html">⌂ MAIN MENU</a>
+    </div>
+  </div>
+
+  <!-- Fallback screen -->
+  <div id="fallback">
+    <h1>THE FINAL ESCAPE</h1>
+    <p>3D could not load. You can still watch the ending.</p>
+    <button onclick="startFallback()">PLAY ENDING</button>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+    // ===== UI elements =====
+    const statusEl = document.getElementById('status');
+    const subtitle = document.getElementById('subtitle');
+    const flash = document.getElementById('flash');
+    const finish = document.getElementById('finish');
+
+    // ===== Opening cinematic: fade from black to the 3D hallway =====
+    // Wait for the first frame so the browser can paint the black overlay.
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        flash.style.opacity = '0';
+      });
+    });
+
+    // ===== Victory screen and confetti =====
+    function showFinish() {
+      document.getElementById('hud').style.display = 'none';
+      subtitle.style.display = 'none';
+      document.getElementById('hint').style.display = 'none';
+      finish.classList.add('visible');
+      finish.style.display = 'flex';
+
+      // Hold the screen completely dark, then reveal the ending slowly.
+      setTimeout(() => {
+        flash.style.opacity = '0';
+      }, 700);
+
+      for (let i = 0; i < 85; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.background = ['#f76902', '#6bffae', '#fff', '#ffd36e'][i % 4];
+        p.style.animationDuration = (3 + Math.random() * 4) + 's';
+        p.style.animationDelay = (-Math.random() * 7) + 's';
+        finish.appendChild(p);
+      }
+    }
+
+    // ===== Backup ending when 3D is unavailable =====
+    function startFallback() {
+      document.getElementById('fallback').style.display = 'none';
+      statusEl.textContent = '⚠ EMERGENCY SHUTDOWN';
+      subtitle.textContent = 'THE EXIT IS OPENING...';
+
+      setTimeout(() => {
+        flash.style.opacity = '1';
+        setTimeout(showFinish, 2500);
+      }, 2700);
+    }
+
+    if (typeof THREE === 'undefined') {
+      document.getElementById('fallback').style.display = 'flex';
+    } else {
+      // ===== Three.js setup =====
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x050609);
+      scene.fog = new THREE.FogExp2(0x050609, .022);
+
+      const camera = new THREE.PerspectiveCamera(76, innerWidth / innerHeight, .1, 150);
+      const renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        powerPreference: 'high-performance'
+      });
+      renderer.setSize(innerWidth, innerHeight);
+      renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
+      document.body.appendChild(renderer.domElement);
+
+      // ===== Materials and mesh helper =====
+      const mat = (color, emissive = 0, ei = 0) =>
+        new THREE.MeshStandardMaterial({
+          color,
+          roughness: .68,
+          metalness: .28,
+          emissive,
+          emissiveIntensity: ei
+        });
+
+      const wall = mat(0x252a31);
+      const floor = mat(0x161d23);
+      const metal = mat(0x46505a);
+      const red = mat(0x4a080c, 0xff1010, 1.6);
+      const screenRed = mat(0x270707, 0xff2929, 1.8);
+      const green = mat(0x103728, 0x25ff96, 1.2);
+      const glass = new THREE.MeshStandardMaterial({
+        color: 0x4a8099,
+        transparent: true,
+        opacity: .25,
+        metalness: .35,
+        roughness: .15
+      });
+
+      function cube(w, h, d, m, x, y, z) {
+        const o = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
+        o.position.set(x, y, z);
+        scene.add(o);
+        return o;
+      }
+
+      // ===== Hallway walls, windows, floor, and emergency lights =====
+      scene.add(new THREE.AmbientLight(0x7b8aa5, .27));
+      const lamps = [];
+
+      for (let z = 8; z >= -78; z -= 8) {
+        cube(9, .3, 8, floor, 0, -.25, z - 3);
+        cube(9, .22, 8, wall, 0, 5.2, z - 3);
+        cube(.3, 5.4, 8, wall, -4.5, 2.5, z - 3);
+        cube(.3, 5.4, 8, wall, 4.5, 2.5, z - 3);
+        cube(8, .05, .1, metal, 0, .02, z);
+        cube(8, .08, .18, metal, 0, 5.05, z);
+
+        for (const side of [-1, 1]) {
+          cube(.08, 3.4, 2, metal, side * 4.28, 2, z - 1);
+          cube(.11, 1.8, 1.3, glass, side * 4.21, 2.2, z - 1);
+          cube(.09, .15, 1.3, red, side * 4.17, 3.25, z - 1);
+        }
+
+        cube(1.5, .1, 1.7, red, 0, 5.0, z - 1);
+        const l = new THREE.PointLight(0xff2424, 1.1, 15);
+        l.position.set(0, 4.7, z - 1);
+        scene.add(l);
+        lamps.push(l);
+      }
+
+      // ===== Hacker monitors at the start =====
+      for (let x = -3; x <= 3; x += 3) {
+        cube(2.1, 1.3, .18, screenRed, x, 2, -3.5);
+        cube(2.4, .12, .45, metal, x, 1.2, -3.2);
+      }
+
+      // ===== Glowing exit =====
+      cube(1.2, 5.1, .7, metal, -3.1, 2.5, -81);
+      cube(1.2, 5.1, .7, metal, 3.1, 2.5, -81);
+      cube(7, .7, .8, metal, 0, 5.1, -81);
+
+      const exitGlow = mat(0x8affc6, 0x99ffdd, 2.5);
+      const portal = cube(5, 4.5, .12, exitGlow, 0, 2.25, -82);
+      portal.visible = false;
+
+      const exitLight = new THREE.PointLight(0x9affd1, 0, 45);
+      exitLight.position.set(0, 2, -80);
+      scene.add(exitLight);
+
+      // ===== Floating debris =====
+      const debris = [];
+      for (let i = 0; i < 45; i++) {
+        const d = cube(
+          .07 + Math.random() * .14,
+          .07 + Math.random() * .13,
+          .07 + Math.random() * .14,
+          i % 3 ? red : metal,
+          (Math.random() - .5) * 8,
+          Math.random() * 5,
+          -Math.random() * 77
+        );
+        d.userData = {
+          baseX: d.position.x,
+          baseY: d.position.y,
+          phase: Math.random() * 6.28
+        };
+        debris.push(d);
+      }
+
+      // ===== Timeline and easing =====
+      const clock = new THREE.Clock();
+      let ended = false;
+
+      function smooth(a, b, t) {
+        const x = Math.max(0, Math.min(1, (t - a) / (b - a)));
+        return x * x * (3 - 2 * x);
+      }
+
+      // ===== Main animation loop =====
+      function animate() {
+        requestAnimationFrame(animate);
+        if (ended) return;
+
+        const t = clock.getElapsedTime();
+
+        // 0–2.8 seconds: hacker system begins shutting down
+        if (t < 2.8) {
+          camera.position.set(Math.sin(t * 1.2) * .16, 1.7 + Math.sin(t * 4) * .025, 5);
+          camera.lookAt(Math.sin(t * 1.6) * 1.2, 1.9, -25);
+          statusEl.textContent = t < 1.4
+            ? '⚠ HACKER CONNECTION ACTIVE'
+            : '⚠ EMERGENCY SHUTDOWN';
+          subtitle.textContent = t < 1.4
+            ? "FINAL CODE ACCEPTED... WHAT'S HAPPENING?!"
+            : 'THE HACKER IS LOSING CONTROL!';
+        }
+
+        // 2.8–4.8 seconds: escape route opens
+        else if (t < 4.8) {
+          const p = smooth(2.8, 4.8, t);
+          camera.position.set(0, 1.7, 5 - p * 4);
+          camera.lookAt(0, 1.8, -35);
+          statusEl.textContent = '🚨 SECURITY LOCKDOWN OVERRIDDEN';
+          subtitle.textContent = 'THE EXIT IS OPEN — RUN!';
+          portal.visible = true;
+          exitLight.intensity = p * 3;
+        }
+
+        // 4.8–14.3 seconds: sprint through the hallway
+        else if (t < 14.3) {
+          const p = smooth(4.8, 14.3, t);
+          camera.position.z = 1 - p * 76;
+          camera.position.x = Math.sin(t * 2.4) * .17;
+          camera.position.y = 1.72 + Math.sin(t * 13) * .09;
+          camera.lookAt(Math.sin(t * 1.4) * .3, 1.8, camera.position.z - 14);
+          statusEl.textContent = p < .65
+            ? '⚠ SYSTEM COLLAPSE — ESCAPE NOW'
+            : '✓ HACKER CONNECTION TERMINATED';
+          subtitle.textContent = p < .65
+            ? 'KEEP MOVING! THE HALLWAY IS COLLAPSING!'
+            : 'THE EXIT! WE MADE IT!';
+          portal.visible = true;
+          exitLight.intensity = 3 + p * 5;
+        }
+
+        // 14.3–17.2 seconds: escape, slowly fade to black, then reveal victory
+        else {
+          const p = smooth(14.3, 16.3, t);
+          camera.position.set(0, 1.7, -75 - p * 10);
+          camera.lookAt(0, 2, -90);
+          portal.visible = true;
+          exitLight.intensity = 8 + p * 16;
+          // Fade to black while passing through the exit.
+          // Disable CSS transitions during the camera-controlled fade.
+          flash.style.transition = 'none';
+          flash.style.opacity = String(smooth(14.9, 16.2, t));
+
+          if (t >= 17.2) {
+            ended = true;
+            // Restore the slow transition for the fade back in.
+            flash.style.transition = 'opacity 2.5s ease-in-out';
+            showFinish();
+            return;
+          }
+        }
+
+        // Emergency lights switch from red to green
+        const emergency = t < 11.5;
+        for (let i = 0; i < lamps.length; i++) {
+          lamps[i].color.setHex(emergency ? 0xff2424 : 0x39ff9a);
+          lamps[i].intensity = emergency
+            ? (.4 + Math.abs(Math.sin(t * 8 + i * 2.3)) * .9)
+            : 1.1;
+        }
+        red.emissive.setHex(emergency ? 0xff1010 : 0x15ff83);
+        screenRed.emissive.setHex(emergency ? 0xff2929 : 0x15ff83);
+
+        // Animate debris
+        for (const d of debris) {
+          d.position.x = d.userData.baseX + Math.sin(t * 2 + d.userData.phase) * .2;
+          d.position.y = d.userData.baseY + Math.sin(t * 3 + d.userData.phase) * .13;
+          d.rotation.x += .018;
+          d.rotation.y += .023;
+        }
+
+        // Subtle camera shake
+        camera.rotation.z = (t > 4.8 && t < 14.3)
+          ? Math.sin(t * 14) * .012
+          : Math.sin(t * 6) * .003;
+
+        renderer.render(scene, camera);
+      }
+
+      animate();
+
+      // ===== Window resize =====
+      addEventListener('resize', () => {
+        camera.aspect = innerWidth / innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(innerWidth, innerHeight);
+      });
+    }
+  </script>
+</body>
+</html>

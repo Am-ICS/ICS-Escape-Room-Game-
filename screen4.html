@@ -1330,7 +1330,7 @@ function returnHomeAfterTimeout() {
 
   clearAllEscapeProgress();
 
-  window.location.replace("index.html");
+  window.location.replace("ending.html");
 
 }
 function showTimeout() {
@@ -1425,15 +1425,10 @@ function checkAnswer() {
   $("lockIcon").textContent = "🔓";
   $("answerInput").disabled = true;
   $("unlockBtn").disabled = true;
- $("winScreen").classList.add("visible");
-// Show the victory screen for 3 seconds,
-// then return to the home page.
-setTimeout(() => {
-  clearAllEscapeProgress();
 
-  window.location.replace("index.html");
-}, 3000);
-}
+  clearAllEscapeProgress();
+  window.location.replace("ending.html");
+  }
 // ======================================
 // CHALLENGE NAVIGATION
 // ======================================
