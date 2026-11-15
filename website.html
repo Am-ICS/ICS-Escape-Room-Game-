@@ -425,8 +425,8 @@
       to restore system access.
       <br><br>
       <strong>
-        No hearts. Unlimited retries.
-        The timer is your only enemy!
+        5 shared hearts across all challenges.
+        Wrong answers cost one heart!
       </strong>
     </p>
 
@@ -440,6 +440,7 @@
         <div class="info-label">ROUND</div>
         <div class="info-value" id="round">1 / 5</div>
       </div>
+      <div class="info-box"><div class="info-label">SHARED LIVES</div><div class="info-value" id="sharedHearts" aria-live="polite">❤️❤️❤️❤️❤️</div></div>
     </div>
 
     <div class="timer-track">
@@ -552,6 +553,40 @@
   </div>
 
   <script>
+
+    /* SHARED STAGE 1 HEARTS — across all three challenges */
+    const HEARTS_KEY = "stage1SharedHearts";
+    function heartsLeft() {
+      const value = sessionStorage.getItem(HEARTS_KEY);
+      return value === null ? 5 : Math.max(0, Math.min(5, Number(value)));
+    }
+    function refreshHearts() {
+      const display = document.getElementById("sharedHearts");
+      if (display) display.textContent =
+        "❤️".repeat(heartsLeft()) + "🖤".repeat(5 - heartsLeft());
+    }
+    function loseSharedHeart() {
+      if (heartsLeft() === 0) return true;
+      sessionStorage.setItem(HEARTS_KEY, String(heartsLeft() - 1));
+      refreshHearts();
+      if (heartsLeft() === 0) {
+        const timeout = document.getElementById("timeoutScreen");
+        if (timeout) {
+          const heading = timeout.querySelector("h2");
+          const paragraphs = timeout.querySelectorAll("p");
+          if (heading) heading.textContent = "💔 GAME OVER! YOU FAILED!";
+          if (paragraphs[0]) paragraphs[0].textContent =
+            "You lost all 5 shared hearts across Website, Files, and Applications.";
+          if (paragraphs[1]) paragraphs[1].textContent =
+            "Returning to the start in 5 seconds...";
+        }
+        showTimeout();
+        return true;
+      }
+      return false;
+    }
+    refreshHearts();
+
     "use strict";
 
     /* SETTINGS */
@@ -905,6 +940,7 @@
         }
 
       } else {
+        if (loseSharedHeart()) return;
         selectedButton.classList.add("wrong");
         selectedButton.disabled = true;
 
@@ -974,7 +1010,8 @@
         "easyComplete",
         "mediumComplete",
         "hardComplete",
-        "secretWord"
+        "secretWord",
+        "stage1SharedHearts"
       ];
 
       keys.forEach(key => {
