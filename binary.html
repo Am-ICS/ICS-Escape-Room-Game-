@@ -563,7 +563,7 @@
 
       <br><br>
 
-      Decode all four binary signals IN ORDER.
+      Decode all four binary signals in SIGNAL NUMBER order (1–4).
 
       <br>
 
@@ -878,28 +878,52 @@
     ============================== */
 
     function buildSignals() {
-      const signals = [...hardLetters];
+      // Shuffle the visible signal cards once per escape-room run.
+      // Keep each signal's original number so the 4-letter reward
+      // and the final 10-letter password remain unchanged.
+      const orderKey = "hardSignalOrder";
+      let order;
+      try {
+        order = JSON.parse(sessionStorage.getItem(orderKey));
+      } catch (_) {
+        order = null;
+      }
+      if (!Array.isArray(order) ||
+          order.length !== 4 ||
+          [...order].sort().join(",") !== "0,1,2,3") {
+        order = [0, 1, 2, 3];
+        for (let i = order.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [order[i], order[j]] = [order[j], order[i]];
+        }
+        sessionStorage.setItem(orderKey, JSON.stringify(order));
+      }
+      const signals = order.map(index => ({
+        letter: hardLetters[index],
+        originalIndex: index
+      }));
 
       $("codes").innerHTML = signals.map(
-        (letter, index) => `
+        (signal) => `
           <div class="code-card">
 
             <small>
-              SIGNAL ${index + 1}
+              SIGNAL ${signal.originalIndex + 1}
             </small>
 
             <div class="bits">
-              ${toBinary(letter)}
+              ${toBinary(signal.letter)}
             </div>
 
             <input
               class="math-work"
+              data-signal-index="${signal.originalIndex}"
               type="text"
               inputmode="numeric"
               maxlength="3"
               autocomplete="off"
               placeholder="Your decimal total"
-              aria-label="Decimal total for signal ${index + 1}"
+              aria-label="Decimal total for signal ${signal.originalIndex + 1}"
             >
 
           </div>
@@ -1037,6 +1061,7 @@ function clearAllEscapeProgress() {
     "easyRandomSeconds",
     "hardAttemptsUsed",
     "hardAttemptsWord",
+    "hardSignalOrder",
     "finalScrambledLetters"
   ];
   progressKeys.forEach(key => sessionStorage.removeItem(key));
@@ -1174,7 +1199,9 @@ function showTimeout() {
 
       const inputs = [
         ...document.querySelectorAll(".math-work")
-      ];
+      ].sort((a, b) =>
+        Number(a.dataset.signalIndex) - Number(b.dataset.signalIndex)
+      );
 
       const expectedTotals = [
         ...hardLetters
