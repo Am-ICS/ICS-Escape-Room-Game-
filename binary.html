@@ -354,6 +354,27 @@
       font-size: 13px;
     }
 
+    /* Visible letter reference (not locked behind the hint) */
+    .ascii-reference {
+      margin-top: 24px;
+      padding: 18px;
+      background: #211319;
+      border: 1px solid #b34a57;
+      border-radius: 10px;
+    }
+    .ascii-reference h2 {
+      color: #ff9ba1;
+      font-size: 18px;
+      text-align: center;
+      margin: 0 0 10px;
+    }
+    .ascii-reference p {
+      color: #c9a7ad;
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
     .alphabet {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -533,6 +554,30 @@
         margin: 0 auto;
       }
     }
+
+    /* VISIBLE BINARY PLACE VALUES */
+    .binary-place-reference {
+      background: #211319;
+      border: 1px solid #b34a57;
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin: 0 0 20px;
+      text-align: center;
+    }
+    .binary-place-reference h2 {
+      color: #ff9ba1;
+      font-size: 16px;
+      margin: 3px 0 12px;
+    }
+    .binary-place-reference p {
+      color: #c9a7ad;
+      font-size: 13px;
+      line-height: 1.5;
+      margin: 8px 0 0;
+    }
+    .binary-place-reference .math-guide {
+      margin: 0;
+    }
   </style>
 </head>
 
@@ -594,6 +639,16 @@
       ◈ ENCRYPTED SYSTEM SIGNALS ◈
     </div>
 
+    <!-- ALWAYS-VISIBLE BINARY PLACE VALUES -->
+    <section class="binary-place-reference" aria-label="Binary place values">
+      <h2>🔢 BINARY PLACE VALUES</h2>
+      <div class="math-guide" aria-label="128 64 32 16 8 4 2 1">
+        <div>128</div><div>64</div><div>32</div><div>16</div>
+        <div>8</div><div>4</div><div>2</div><div>1</div>
+      </div>
+      <p>Read left to right. A 1 means add that position's value; a 0 means skip it.</p>
+    </section>
+
     <!-- FOUR BINARY SIGNALS -->
 
     <div class="codes" id="codes"></div>
@@ -640,7 +695,7 @@
         aria-controls="hintPanel"
         aria-expanded="false"
       >
-        💡 SHOW HINT
+        🔒 HINT LOCKED — 05:00
       </button>
 
       <button
@@ -654,35 +709,67 @@
 
     <!-- HINT PANEL -->
 
-    <section class="hint-panel" id="hintPanel">
 
-      <h2>📖 BINARY MATH HINT</h2>
+<section class="hint-panel" id="hintPanel">
 
-      <p>
-        Each 1 means ADD the value above it;
-        each 0 means skip it.
+  <h2>💡 HOW TO DECODE BINARY</h2>
 
-        <br><br>
+  <p>
+    Each binary digit is either 0 or 1.<br>
+    <strong>1 = ADD the value</strong><br>
+    <strong>0 = SKIP the value</strong>
+  </p>
 
-        Example:
-        01000011 = 64 + 2 + 1 = 67 = C.
-      </p>
+  <h3 style="text-align:center;color:#ff9ba1;">
+    EXAMPLE: DECODE THE LETTER C
+  </h3>
 
-      <div class="math-guide">
-        <div>128</div>
-        <div>64</div>
-        <div>32</div>
-        <div>16</div>
-        <div>8</div>
-        <div>4</div>
-        <div>2</div>
-        <div>1</div>
-      </div>
+  <div class="math-guide">
+    <div>128</div>
+    <div>64</div>
+    <div>32</div>
+    <div>16</div>
+    <div>8</div>
+    <div>4</div>
+    <div>2</div>
+    <div>1</div>
+  </div>
 
-      <p>ASCII decimal values for A–Z:</p>
+  <div class="math-guide">
+    <div>0</div>
+    <div>1</div>
+    <div>0</div>
+    <div>0</div>
+    <div>0</div>
+    <div>0</div>
+    <div>1</div>
+    <div>1</div>
+  </div>
 
+  <p style="font-size:17px;color:#fff;">
+    01000011
+  </p>
+
+  <p style="font-size:17px;">
+    64 + 2 + 1 = <strong>67</strong>
+  </p>
+
+  <h2 style="color:#48e69b;">
+    67 = LETTER C ✅
+  </h2>
+
+  <p>
+    Now try decoding the four signals!
+  </p>
+
+</section>
+
+
+    <!-- ALWAYS-VISIBLE ASCII LETTER REFERENCE -->
+    <section class="ascii-reference" aria-label="ASCII letter reference">
+      <h2>🔤 ASCII LETTER CHART — A TO Z</h2>
+      <p>Match each decimal total to its letter. Example: 65 = A, 66 = B, 67 = C.</p>
       <div class="alphabet" id="alphabet"></div>
-
     </section>
 
   </main>
@@ -989,23 +1076,29 @@
        HINT BUTTON
     ============================== */
 
-    $("hintBtn").addEventListener(
-      "click",
-      () => {
-
-        const showing = $("hintPanel")
-          .classList.toggle("show");
-
-        $("hintBtn").textContent = showing
-          ? "🙈 HIDE HINT"
-          : "💡 SHOW HINT";
-
-        $("hintBtn").setAttribute(
-          "aria-expanded",
-          String(showing)
-        );
+    // Unlock the hint after 5 minutes of the shared 15-minute timer.
+    function updateHintLock() {
+      const end = Number(sessionStorage.getItem(END_KEY));
+      const wait = Math.max(0, end - Date.now() - (GAME_MINUTES - 3) * 60 * 1000);
+      const unlocked = Number.isFinite(end) && end > 0 && wait === 0;
+      const button = $("hintBtn");
+      button.disabled = !unlocked || expired || sessionStorage.getItem(TIMEOUT_KEY) === "true";
+      if (!unlocked) {
+        const seconds = Math.ceil(wait / 1000);
+        button.textContent = `🔒 HINT LOCKED — ${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
+        $("hintPanel").classList.remove("show");
+        button.setAttribute("aria-expanded", "false");
+      } else {
+        button.textContent = $("hintPanel").classList.contains("show") ? "🙈 HIDE HINT" : "💡 SHOW HINT";
       }
-    );
+    }
+
+    $("hintBtn").addEventListener("click", () => {
+      if ($("hintBtn").disabled) return;
+      const showing = $("hintPanel").classList.toggle("show");
+      $("hintBtn").setAttribute("aria-expanded", String(showing));
+      updateHintLock();
+    });
 
     /* ==============================
        ANSWER INPUT
@@ -1439,8 +1532,9 @@ function showTimeout() {
     }
 
     updateTimer();
-
+    updateHintLock();
     setInterval(updateTimer, 250);
+    setInterval(updateHintLock, 1000);
 
   </script>
 
