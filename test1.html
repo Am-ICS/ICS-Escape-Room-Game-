@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Lia and Amber - Game Credits</title>
+
+    <style>
+        body {
+            margin: 0;
+            background: #000000;
+            color: white;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        /* Mostly black Matrix background */
+        #matrix {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .credits-container {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .credits {
+            position: absolute;
+            top: 100%;
+            width: 100%;
+            text-align: center;
+            color: #fff5f5;
+            animation: scrollUp 30s linear forwards;
+        }
+
+        h1 {
+            font-size: 50px;
+            font-weight: bold;
+            margin: 70px 15px;
+        }
+
+        h2 {
+            font-size: 30px;
+            font-weight: normal;
+            margin: 45px 0 15px;
+        }
+
+        p {
+            font-size: 30px;
+            margin: 15px 0;
+        }
+
+        .thankyou {
+            font-size: 32px;
+            margin-top: 100px;
+        }
+
+        .copyright {
+            font-size: 23px;
+            color: #dfc5c8;
+            margin-top: 90px;
+        }
+
+        /* Credits move upward */
+        @keyframes scrollUp {
+            from {
+                transform: translateY(0);
+            }
+
+            to {
+                transform: translateY(
+                    calc(-100vh - 100%)
+                );
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 34px;
+            }
+
+            h2, p {
+                font-size: 24px;
+            }
+
+            .thankyou {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="matrix"></canvas>
+
+    <div class="credits-container">
+        <div class="credits">
+
+            <h1>THE END</h1>
+
+            <h2>Created By</h2>
+            <p>Lia and Amber</p>
+
+            <h2>Starring</h2>
+            <p>Lia</p>
+            <p>Amber</p>
+
+            <h1 class="thankyou">
+                THANK YOU FOR ENJOYING THE GAME!
+            </h1>
+
+            <p class="copyright">
+                © Copyright 2026
+            </p>
+
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("matrix");
+        const ctx = canvas.getContext("2d");
+
+        const fontSize = 22;
+        const characters = "01";
+
+        // Only about 20% of columns have red numbers
+        const redDensity = 0.20;
+
+        let drops = [];
+        let activeColumns = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const columns = Math.ceil(
+                canvas.width / fontSize
+            );
+
+            drops = [];
+            activeColumns = [];
+
+            for (let i = 0; i < columns; i++) {
+                drops[i] = Math.random() *
+                    canvas.height / fontSize;
+
+                // 80% empty black, 20% red columns
+                activeColumns[i] =
+                    Math.random() < redDensity;
+            }
+
+            ctx.fillStyle = "#000000";
+            ctx.fillRect(
+                0, 0,
+                canvas.width,
+                canvas.height
+            );
+        }
+
+        resizeCanvas();
+
+        function drawMatrix() {
+
+            // Fade old numbers back into black
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = "rgba(0, 0, 0, 0.22)";
+            ctx.fillRect(
+                0, 0,
+                canvas.width,
+                canvas.height
+            );
+
+            ctx.font = fontSize + "px monospace";
+
+            // Bright red Matrix digits
+            ctx.fillStyle = "#ed3549";
+
+            // Small red glow
+            ctx.shadowColor = "#ff3045";
+            ctx.shadowBlur = 5;
+
+            for (let i = 0; i < drops.length; i++) {
+
+                // Skip 80% of columns
+                if (!activeColumns[i]) {
+                    continue;
+                }
+
+                const text = characters.charAt(
+                    Math.floor(
+                        Math.random() * characters.length
+                    )
+                );
+
+                // Draw a red number occasionally
+                if (Math.random() < 0.35) {
+                    ctx.fillText(
+                        text,
+                        i * fontSize,
+                        drops[i] * fontSize
+                    );
+                }
+
+                // Restart numbers at the top
+                if (drops[i] * fontSize > canvas.height) {
+                    if (Math.random() > 0.96) {
+                        drops[i] = 0;
+                    }
+                }
+
+                // Slow downward motion
+                drops[i] += 0.45;
+            }
+        }
+
+        setInterval(drawMatrix, 70);
+
+        window.addEventListener(
+            "resize",
+            resizeCanvas
+        );
+    </script>
+
+</body>
+</html>
+
+
+
+
