@@ -266,15 +266,59 @@ setInterval(drawMatrix, 45);
 
 /* START GAME */
 
+
 function startGame() {
-  // 1. Trigger the fade-out animation
+
+  // Reset saved escape room progress for a NEW game.
+  const gameKeys = [
+    "escapeRoomEndTime",
+    "escapeRoomTimedOut",
+    "escapeRoomFinished",
+    "escapeHintStartTime",
+    "puzzleEndTime",
+    "hearts",
+    "stage1SharedHearts",
+    "secretWord",
+    "easyComplete",
+    "mediumComplete",
+    "hardComplete",
+    "easyRewardLetters",
+    "mediumRewardLetters",
+    "hardRewardLetters",
+    "easyMediumUnlocked",
+    "easyTaskIds",
+    "easyTimerSeconds",
+    "easyRandomTasks",
+    "easyRandomGameWord",
+    "easyRandomSeconds",
+    "mediumRewardLetters",
+    "hardAttemptsUsed",
+    "hardAttemptsWord",
+    "hardSignalOrder",
+    "finalScrambledLetters",
+    "websitesSolved",
+    "filesSolved",
+    "applicationsSolved"
+  ];
+
+  gameKeys.forEach(key => sessionStorage.removeItem(key));
+
+  // Also clear other saved challenge-specific keys.
+  Object.keys(sessionStorage).forEach(key => {
+    if (/^(easy|medium|hard|escapeRoom|escapeHint|puzzle)/i.test(key)) {
+      sessionStorage.removeItem(key);
+    }
+  });
+
+  // Keep the original fade-out animation.
   document.body.classList.add("fade-out");
 
-  // 2. Wait for the transition to finish (1500ms = 1.5 seconds) before redirecting
+  // Go to the original intro page.
   setTimeout(function() {
     window.location.href = "intro.html";
-  }, 1500); 
+  }, 1500);
 }
+
 </script>
 
 </body>

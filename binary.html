@@ -695,7 +695,7 @@
         aria-controls="hintPanel"
         aria-expanded="false"
       >
-        🔒 HINT LOCKED — 05:00
+        🔒 HINT LOCKED — 03:00
       </button>
 
       <button
@@ -1076,11 +1076,16 @@
        HINT BUTTON
     ============================== */
 
-    // Unlock the hint after 5 minutes of the shared 15-minute timer.
+    // Binary's hint starts only on the first visit to this page.
+    const BINARY_HINT_KEY = "hardHintStartTime";
+    if (!sessionStorage.getItem(BINARY_HINT_KEY)) {
+      sessionStorage.setItem(BINARY_HINT_KEY, String(Date.now()));
+    }
+
     function updateHintLock() {
-      const end = Number(sessionStorage.getItem(END_KEY));
-      const wait = Math.max(0, end - Date.now() - (GAME_MINUTES - 3) * 60 * 1000);
-      const unlocked = Number.isFinite(end) && end > 0 && wait === 0;
+      const started = Number(sessionStorage.getItem(BINARY_HINT_KEY));
+      const wait = Math.max(0, started + 3 * 60 * 1000 - Date.now());
+      const unlocked = Number.isFinite(started) && started > 0 && wait === 0;
       const button = $("hintBtn");
       button.disabled = !unlocked || expired || sessionStorage.getItem(TIMEOUT_KEY) === "true";
       if (!unlocked) {
@@ -1155,6 +1160,7 @@ function clearAllEscapeProgress() {
     "hardAttemptsUsed",
     "hardAttemptsWord",
     "hardSignalOrder",
+    "hardHintStartTime",
     "finalScrambledLetters"
   ];
   progressKeys.forEach(key => sessionStorage.removeItem(key));
