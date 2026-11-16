@@ -16,12 +16,66 @@ html, body {
   width: 100%;
   height: 100%;
   overflow: hidden;
+    overflow-x: hidden;
+  overflow-y: auto;
 }
+
+/* SCROLLABLE TEACHER MENU */
+#teacherMenu {
+  overflow-x: hidden;
+  overflow-y: auto;
+  align-items: flex-start;
+  scrollbar-width: thin;
+  scrollbar-color: #ff3030 #100000;
+}
+
+#teacherMenu .encounter {
+  margin: auto;
+  padding: 35px 15px 50px;
+}
+
+/* RED SCROLLBAR */
+#teacherMenu::-webkit-scrollbar {
+  width: 10px;
+}
+
+#teacherMenu::-webkit-scrollbar-track {
+  background: #100000;
+}
+
+#teacherMenu::-webkit-scrollbar-thumb {
+  background: #ff3030;
+  border-radius: 10px;
+}
+
+#teacherMenu::-webkit-scrollbar-thumb:hover {
+  background: #ff6666;
+}
+
 
 body {
   background: #000;
   color: white;
   font-family: "Courier New", monospace;
+}
+
+/* 3D LAB CONTROLS DESIGN */
+#labControls {
+  width: min(560px, 90vw);
+  padding: 20px 25px;
+  background: rgba(20, 0, 0, 0.9);
+  border: 2px solid #ff3030;
+  border-radius: 14px;
+  color: #ffcccc;
+  font: bold 15px "Courier New", monospace;
+  line-height: 1.8;
+  text-align: center;
+  box-shadow: 0 0 25px #ff000055;
+}
+
+#labControls:hover {
+  border-color: #ff6666;
+  box-shadow: 0 0 35px #ff000088;
 }
 
 #game {
@@ -74,7 +128,7 @@ body {
 #noise {position:fixed;inset:0;z-index:6;pointer-events:none;opacity:.13;background:repeating-linear-gradient(0deg,transparent 0px,transparent 3px,#fff 4px,transparent 5px);animation:staticMove .12s steps(2) infinite;}
 @keyframes staticMove {to{transform:translateY(7px)}}
 #teacherMenu .encounter {width:min(900px,95vw);display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;}
-#paranoidImage {width:min(720px,90vw);max-height:60vh;object-fit:contain;filter:drop-shadow(0 0 28px #a00);}
+#paranoidImage {width:min(500px,90vw);max-height:60vh;object-fit:contain;filter:drop-shadow(0 0 28px #a00);}
 #panicText {font:bold clamp(20px,4vw,36px) 'Courier New',monospace;color:#ff3434;text-shadow:0 0 20px red;animation:glitch 1.4s infinite;}
 @keyframes glitch {0%,92%,100%{transform:translateX(0)}94%{transform:translateX(-4px)}96%{transform:translateX(4px)}}
 #escapeButton {font:bold 24px 'Courier New',monospace;background:#200000;color:white;border:2px solid red;border-radius:12px;padding:18px 60px;cursor:pointer;box-shadow:0 0 24px #f00;animation:escapePulse 1.5s infinite;}
@@ -139,13 +193,33 @@ body {
 <div id="noise"></div>
 <div id="blackout"></div>
 <!-- SCARED GUIDE AFTER THE DOOR OPENS -->
-<div id="teacherMenu"><div class="encounter">
-<img id="paranoidImage" src="paranoid.png" alt="Terrified ICS guide">
-<div id="panicText">😱 OMG! WHAT HAPPENED?!<br>WE ARE HACKED! PLEASE HELP US!</div>
-<button id="escapeButton"
-        onclick="window.location.href='screen3.html'">
-  START THE ESCAPE ROOM
-</button>
+<div id="teacherMenu">
+  <div class="encounter">
+    <img id="paranoidImage" src="paranoid.png" alt="Terrified ICS guide">
+
+    <div id="panicText">
+      😱 OMG! WHAT HAPPENED?!<br>
+      WE ARE HACKED! PLEASE HELP US!
+    </div>
+
+    <div id="labControls">
+      🎮 3D HACKED LAB CONTROLS<br><br>
+      W = Walk Forward<br>
+      A = Move Left<br>
+      S = Walk Backward<br>
+      D = Move Right<br>
+      🖱️ MOUSE = Look Around (No Holding)<br>
+      SHIFT = Run<br>
+      E = Interact with Computers<br><br>
+      🔓 Complete all 3 puzzles to unlock the exit!
+    </div>
+
+    <button id="escapeButton"
+            onclick="window.location.href='screen3.html'">
+      START THE ESCAPE ROOM
+    </button>
+  </div>
+</div>
 </div></div>
 <script type="module">
 

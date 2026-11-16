@@ -1,0 +1,898 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>HACKED - System Locked</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #000;
+  color: white;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  overflow-x: hidden;
+  padding: 20px;
+}
+
+/* RED MATRIX BACKGROUND */
+
+#matrix {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.matrix-overlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(
+    circle,
+    rgba(0, 0, 0, 0.2) 0%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* MAIN CONTAINER */
+
+.container {
+  position: relative;
+  z-index: 2;
+  width: 90%;
+  max-width: 800px;
+  padding: 30px;
+  border: 2px solid red;
+  border-radius: 15px;
+  background: rgba(20, 5, 5, 0.94);
+  box-shadow: 0 0 40px #a00000;
+  animation: appear 1s ease;
+}
+
+.warning {
+  color: #ff4444;
+  font-size: 16px;
+  letter-spacing: 3px;
+}
+
+h1 {
+  font-size: clamp(35px, 7vw, 70px);
+  color: #ff2020;
+  text-shadow: 0 0 20px red;
+  animation: glitch 0.3s 3;
+}
+
+.subtitle {
+  font-size: 20px;
+  color: #ffaaaa;
+}
+
+/* SHARED FIVE-MINUTE TIMER */
+
+.timer-box {
+  margin: 20px auto;
+  padding: 15px;
+  max-width: 350px;
+  background: #220909;
+  border: 2px solid #ff3333;
+  border-radius: 12px;
+  box-shadow: 0 0 20px #ff000055;
+}
+
+.timer-label {
+  color: #ffaaaa;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+#puzzleTimer {
+  display: block;
+  margin: 10px 0;
+  color: #ff4444;
+  font-size: 42px;
+  font-weight: 900;
+  font-family: monospace;
+}
+
+.timer-progress {
+  width: 100%;
+  height: 12px;
+  background: #100505;
+  border: 1px solid #803030;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+#timerBar {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    #990000,
+    #ff3333
+  );
+  transition: width 0.25s linear;
+}
+
+.timer-box.urgent {
+  animation: urgentGlow 0.7s infinite alternate;
+}
+
+@keyframes urgentGlow {
+  from {
+    box-shadow: 0 0 10px red;
+  }
+  to {
+    box-shadow: 0 0 30px red;
+  }
+}
+
+/* SYSTEM LOCK */
+
+.locked {
+  border: 3px solid red;
+  border-radius: 12px;
+  padding: 25px;
+  margin: 30px 0;
+  box-shadow: 0 0 20px #990000;
+}
+
+.locked h2 {
+  font-size: clamp(24px, 5vw, 40px);
+}
+
+/* THREE CLICKABLE PUZZLE BUTTONS */
+
+.icons {
+  display: flex;
+  justify-content: space-around;
+  gap: 12px;
+  margin: 30px 0;
+}
+
+.puzzle-btn {
+  flex: 1;
+  min-width: 0;
+  margin-top: 0;
+  padding: 20px 10px;
+  background: #210909;
+  border: 2px solid #ff3333;
+  border-radius: 12px;
+  color: #ff7777;
+  cursor: pointer;
+  transition: 0.3s;
+  font-family: Arial, sans-serif;
+}
+
+.puzzle-btn:hover:not(:disabled) {
+  background: #4b1010;
+  border-color: #ff6666;
+  box-shadow: 0 0 25px #ff000088;
+  transform: translateY(-5px);
+}
+
+.puzzle-btn span {
+  display: block;
+  font-size: 35px;
+}
+
+.puzzle-btn p {
+  margin: 10px 0;
+}
+
+.puzzle-btn .puzzle-name {
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.puzzle-btn .status {
+  color: #ff5555;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.puzzle-btn .status.solved {
+  color: #60efa5;
+  text-shadow: 0 0 12px #00ff88;
+}
+
+.puzzle-btn.completed {
+  background: #10271b;
+  border-color: #60efa5;
+}
+
+.puzzle-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* MESSAGE */
+
+.message {
+  background: #270909;
+  padding: 20px;
+  border-radius: 10px;
+  color: #ffbbbb;
+  line-height: 1.6;
+}
+
+/* BEGIN BUTTON */
+
+#beginButton {
+  margin-top: 25px;
+  padding: 18px 30px;
+  background: #cc0000;
+  color: white;
+  border: 2px solid #ff5555;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#beginButton:hover:not(:disabled) {
+  background: red;
+  box-shadow: 0 0 20px red;
+}
+
+#beginButton:disabled {
+  background: #350d0d;
+  border-color: #754040;
+  color: #a47777;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+#beginButton.unlocked {
+  background: #176b38;
+  border-color: #60efa5;
+  box-shadow: 0 0 20px #00ff8855;
+}
+
+#beginButton.unlocked:hover {
+  background: #229b52;
+}
+
+#accessMessage {
+  margin-top: 15px;
+  min-height: 20px;
+  color: #ff8888;
+  font-weight: bold;
+}
+
+/* TEACHER */
+
+.teacher-area {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  width: 190px;
+  z-index: 5;
+  pointer-events: none;
+  animation: teacherAppear 0.8s ease-out;
+}
+
+.teacher-image {
+  display: block;
+  width: 300px;
+  height: auto;
+  filter: drop-shadow(0 5px 15px #000);
+}
+
+/* ANIMATIONS */
+
+@keyframes glitch {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes appear {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes teacherAppear {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+  body {
+    padding: 15px;
+    padding-bottom: 190px;
+  }
+
+  .container {
+    width: 100%;
+    padding: 15px;
+  }
+
+  .puzzle-btn {
+    padding: 12px 5px;
+  }
+
+  .puzzle-btn span {
+    font-size: 26px;
+  }
+
+  .puzzle-btn .puzzle-name {
+    font-size: 12px;
+  }
+
+  .puzzle-btn .status {
+    font-size: 11px;
+  }
+
+  .teacher-area {
+    width: 110px;
+    left: 5px;
+    bottom: 5px;
+  }
+
+  .teacher-image {
+    width: 180px;
+  }
+
+  #puzzleTimer {
+    font-size: 34px;
+  }
+
+  #beginButton {
+    font-size: 15px;
+    padding: 15px 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .container,
+  h1,
+  .teacher-area,
+  .timer-box {
+    animation: none;
+  }
+}
+
+/* TIMEOUT OVERLAY — MATCHES WEBSITE, FILES, APPLICATIONS */
+.timeout-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.94);
+  justify-content: center;
+  align-items: center;
+}
+.timeout-overlay.show { display: flex; }
+.timeout-panel {
+  width: 100%;
+  max-width: 520px;
+  padding: 35px 25px;
+  background: #190a0e;
+  border: 2px solid #ff454e;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 0 40px #ff000055;
+}
+.timeout-panel h2 { color: #ff454e; font-size: 32px; }
+.timeout-panel p { color: #c6e7d5; line-height: 1.6; }
+
+</style>
+</head>
+
+<body>
+
+<!-- MAIN SCREEN -->
+
+<div class="container">
+
+  <p class="warning">
+    ⚠ SECURITY BREACH DETECTED ⚠
+  </p>
+
+  <h1>SYSTEM HACKED!</h1>
+
+  <p class="subtitle">
+    Your computer has been HACKED.
+  </p>
+
+  <!-- TIMER -->
+
+  <div class="timer-box" id="timerBox">
+    <div class="timer-label">
+      ⏰ RESTORE THE SYSTEM
+    </div>
+
+    <span id="puzzleTimer">05:00</span>
+
+    <div class="timer-progress">
+      <div id="timerBar"></div>
+    </div>
+  </div>
+
+  <!-- LOCK STATUS -->
+
+  <div class="locked">
+    <h2 id="systemHeading">
+      🔒 EVERYTHING IS LOCKED!
+    </h2>
+  </div>
+
+  <!-- CLICKABLE PUZZLE BUTTONS -->
+
+  <div class="icons">
+
+    <button
+      type="button"
+      class="puzzle-btn"
+      id="websitesButton"
+      onclick="openPuzzle('website.html')"
+    >
+      <span>🌐</span>
+      <p class="puzzle-name">Websites</p>
+      <p class="status" id="websitesStatus">
+        🔒 LOCKED
+      </p>
+    </button>
+
+    <button
+      type="button"
+      class="puzzle-btn"
+      id="filesButton"
+      onclick="openPuzzle('files.html')"
+    >
+      <span>📁</span>
+      <p class="puzzle-name">Files</p>
+      <p class="status" id="filesStatus">
+        🔒 LOCKED
+      </p>
+    </button>
+
+    <button
+      type="button"
+      class="puzzle-btn"
+      id="applicationsButton"
+      onclick="openPuzzle('applications.html')"
+    >
+      <span>💻</span>
+      <p class="puzzle-name">Applications</p>
+      <p class="status" id="applicationsStatus">
+        🔒 LOCKED
+      </p>
+    </button>
+
+  </div>
+
+  <!-- INSTRUCTIONS -->
+
+  <div class="message" id="systemMessage">
+    WARNING! A hacker has taken control
+    of the computer system.
+
+    <p>
+      Click Websites, Files, and Applications
+      to solve their puzzles and restore access!
+    </p>
+  </div>
+
+  <!-- MAIN ESCAPE BUTTON -->
+
+  <button
+    type="button"
+    id="beginButton"
+    onclick="startEscape()"
+    disabled
+  >
+    🔒 BEGIN ESCAPE CHALLENGE →
+  </button>
+
+  <p id="accessMessage" aria-live="polite">
+    Complete all three puzzles to unlock.
+  </p>
+
+</div>
+
+<!-- SHOCKED TEACHER -->
+
+<div class="teacher-area">
+  <img
+    src="Shocked.png"
+    alt="Shocked teacher"
+    class="teacher-image"
+  >
+</div>
+
+<!-- RED MATRIX -->
+
+<canvas id="matrix"></canvas>
+<div class="matrix-overlay"></div>
+
+
+<!-- TIMEOUT MESSAGE: VISIBLE FOR 10 SECONDS BEFORE RESTART -->
+<div class="timeout-overlay" id="timeoutScreen" role="alertdialog" aria-modal="true" aria-labelledby="timeoutTitle">
+  <div class="timeout-panel">
+    <h2 id="timeoutTitle">⏰ TIME'S UP! YOU FAILED!</h2>
+    <p>The 5-minute security timer has expired.<br><br>The system remains locked!</p>
+    <p>Returning to the start in 10 seconds...</p>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+/* ==========================
+   TIMER SETTINGS
+========================== */
+
+const PUZZLE_TIMER_KEY = "puzzleEndTime";
+const PUZZLE_DURATION = 5 * 60 * 1000;
+
+const WEBSITE_KEY = "websitesSolved";
+const FILES_KEY = "filesSolved";
+const APPLICATIONS_KEY = "applicationsSolved";
+
+const $ = id => document.getElementById(id);
+
+let puzzleInterval = null;
+let timeoutStarted = false;
+
+function initializePuzzleTimer() {
+  const saved = Number(
+    sessionStorage.getItem(PUZZLE_TIMER_KEY)
+  );
+
+  if (!Number.isFinite(saved) || saved <= 0) {
+    sessionStorage.setItem(
+      PUZZLE_TIMER_KEY,
+      String(Date.now() + PUZZLE_DURATION)
+    );
+  }
+}
+
+function puzzleHasTime() {
+  const endTime = Number(
+    sessionStorage.getItem(PUZZLE_TIMER_KEY)
+  );
+
+  return Number.isFinite(endTime) &&
+    endTime > 0 &&
+    Date.now() < endTime;
+}
+
+/* ==========================
+   CHECK COMPLETION
+========================== */
+
+function allPuzzlesSolved() {
+  return (
+    sessionStorage.getItem(WEBSITE_KEY) === "true" &&
+    sessionStorage.getItem(FILES_KEY) === "true" &&
+    sessionStorage.getItem(APPLICATIONS_KEY) === "true"
+  );
+}
+
+function updateLockStatus() {
+  const websites =
+    sessionStorage.getItem(WEBSITE_KEY) === "true";
+
+  const files =
+    sessionStorage.getItem(FILES_KEY) === "true";
+
+  const applications =
+    sessionStorage.getItem(APPLICATIONS_KEY) === "true";
+
+  const puzzles = [
+    ["websitesStatus", "websitesButton", websites],
+    ["filesStatus", "filesButton", files],
+    ["applicationsStatus", "applicationsButton", applications]
+  ];
+
+  puzzles.forEach(([statusId, buttonId, solved]) => {
+    const status = $(statusId);
+    const button = $(buttonId);
+
+    status.textContent =
+      solved ? "🔓 SOLVED" : "🔒 LOCKED";
+
+    status.classList.toggle("solved", solved);
+    button.classList.toggle("completed", solved);
+    button.disabled = !puzzleHasTime();
+  });
+
+  const complete = allPuzzlesSolved();
+  const hasTime = puzzleHasTime();
+
+  if (complete) {
+    $("systemHeading").textContent =
+      "🔓 SYSTEM ACCESS RESTORED!";
+
+    $("systemHeading").style.color = "#60efa5";
+
+    $("systemMessage").innerHTML =
+      "All three systems have been restored!" +
+      "<p>You're ready for the escape challenge.</p>";
+  } else {
+    $("systemHeading").textContent =
+      "🔒 EVERYTHING IS LOCKED!";
+
+    $("systemHeading").style.color = "";
+  }
+
+  $("beginButton").disabled = !complete || !hasTime;
+
+  $("beginButton").classList.toggle(
+    "unlocked",
+    complete && hasTime
+  );
+
+  $("beginButton").textContent =
+    complete && hasTime
+      ? "🔓 BEGIN ESCAPE CHALLENGE →"
+      : "🔒 BEGIN ESCAPE CHALLENGE →";
+
+  $("accessMessage").textContent =
+    !hasTime
+      ? "⏰ TIME'S UP! SYSTEM LOCKED."
+      : complete
+        ? "✓ ALL SYSTEMS RESTORED! YOU MAY ENTER."
+        : "Solve Websites, Files, and Applications first.";
+}
+
+/* ==========================
+   TIMER COUNTDOWN
+========================== */
+
+function updatePuzzleTimer() {
+  if (timeoutStarted) return;
+
+  const endTime = Number(
+    sessionStorage.getItem(PUZZLE_TIMER_KEY)
+  );
+
+  const remaining = Number.isFinite(endTime) && endTime > 0
+    ? Math.max(0, endTime - Date.now())
+    : 0;
+
+  const seconds = Math.ceil(remaining / 1000);
+
+  const minutes = String(
+    Math.floor(seconds / 60)
+  ).padStart(2, "0");
+
+  const secs = String(
+    seconds % 60
+  ).padStart(2, "0");
+
+  $("puzzleTimer").textContent =
+    `${minutes}:${secs}`;
+
+  const percentage = Math.max(
+    0,
+    Math.min(
+      100,
+      (remaining / PUZZLE_DURATION) * 100
+    )
+  );
+
+  $("timerBar").style.width =
+    percentage + "%";
+
+  $("timerBox").classList.toggle(
+    "urgent",
+    remaining > 0 && seconds <= 60
+  );
+
+  updateLockStatus();
+
+  if (remaining <= 0) {
+    showTimeout();
+  }
+}
+
+/* ==========================
+   OPEN PUZZLE PAGES
+========================== */
+
+function openPuzzle(filename) {
+  if (timeoutStarted || !puzzleHasTime()) {
+    showTimeout();
+    return;
+  }
+
+  window.location.href = filename;
+}
+
+/* ==========================
+   BEGIN ESCAPE CHALLENGE
+========================== */
+
+function startEscape() {
+  if (timeoutStarted || !puzzleHasTime()) {
+    showTimeout();
+    return;
+  }
+
+  if (!allPuzzlesSolved()) {
+    $("accessMessage").textContent =
+      "🔒 SOLVE ALL THREE PUZZLES FIRST!";
+    return;
+  }
+
+  // Start the separate 15-minute timer
+  // when the main escape room begins.
+
+  const stage2End = Number(sessionStorage.getItem("escapeRoomEndTime"));
+  if (!Number.isFinite(stage2End) || stage2End <= 0) {
+    sessionStorage.setItem(
+      "escapeRoomEndTime",
+      String(Date.now() + 15 * 60 * 1000)
+    );
+  }
+
+  window.location.href = "screen4.html";
+}
+
+/* ==========================
+   RED MATRIX BACKGROUND
+========================== */
+
+(function () {
+  const canvas = $("matrix");
+  const ctx = canvas.getContext("2d");
+
+  const characters =
+    "01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&@";
+
+  const fontSize = 18;
+
+  let columns;
+  let drops;
+
+  function resizeMatrix() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    columns = Math.ceil(
+      canvas.width / fontSize
+    );
+
+    drops = Array.from(
+      { length: columns },
+      () => Math.random() * -50
+    );
+  }
+
+  function drawMatrix() {
+    ctx.fillStyle =
+      "rgba(0, 0, 0, 0.06)";
+
+    ctx.fillRect(
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+
+    ctx.fillStyle = "#ff2020";
+    ctx.font = fontSize + "px monospace";
+
+    for (let i = 0; i < drops.length; i++) {
+      const character =
+        characters[
+          Math.floor(
+            Math.random() * characters.length
+          )
+        ];
+
+      ctx.fillText(
+        character,
+        i * fontSize,
+        drops[i] * fontSize
+      );
+
+      if (
+        drops[i] * fontSize > canvas.height &&
+        Math.random() > 0.975
+      ) {
+        drops[i] = 0;
+      }
+
+      drops[i]++;
+    }
+  }
+
+  resizeMatrix();
+
+  window.addEventListener(
+    "resize",
+    resizeMatrix
+  );
+
+  setInterval(drawMatrix, 45);
+})();
+
+/* ==========================
+   START GAME
+========================== */
+
+initializePuzzleTimer();
+updatePuzzleTimer();
+
+puzzleInterval = setInterval(
+  updatePuzzleTimer,
+  250
+);
+
+// Refresh the statuses when
+// returning from a puzzle page.
+window.addEventListener("pageshow", () => {
+  updatePuzzleTimer();
+});
+/* ==========================
+   GAME OVER - FULL RESTART
+========================== */
+
+function showTimeout() {
+  if (timeoutStarted) return;
+  timeoutStarted = true;
+  clearInterval(puzzleInterval);
+  $("puzzleTimer").textContent = "00:00";
+  $("timerBar").style.width = "0%";
+  $("timeoutScreen").classList.add("show");
+  document.querySelectorAll(".puzzle-btn").forEach(button => button.disabled = true);
+  $("beginButton").disabled = true;
+  setTimeout(restartEntireGame, 5000);
+}
+
+function restartEntireGame() {
+
+  // Remove progress from the first stage.
+  sessionStorage.removeItem("puzzleEndTime");
+  sessionStorage.removeItem("websitesSolved");
+  sessionStorage.removeItem("filesSolved");
+  sessionStorage.removeItem("applicationsSolved");
+
+  // Remove progress from the escape challenge.
+  sessionStorage.removeItem("escapeRoomEndTime");
+  sessionStorage.removeItem("easyComplete");
+  sessionStorage.removeItem("mediumComplete");
+  sessionStorage.removeItem("hardComplete");
+  sessionStorage.removeItem("secretWord");
+  sessionStorage.removeItem("escapeRoomTimedOut");
+  sessionStorage.removeItem("escapeRoomFinished");
+
+  // Return to the beginning.
+  window.location.replace("index.html");
+}
+
+</script>
+
+</body>
+</html>
