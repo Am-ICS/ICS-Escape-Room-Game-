@@ -29,7 +29,7 @@ body {
   background: #000 !important;
 }
 /* Animated falling code */
-\#matrix {
+#matrix {
   position: fixed;
   inset: 0;
   width: 100%;
@@ -50,16 +50,18 @@ body {
   pointer-events: none;
 }
 /* Keep game content above Matrix */
-body > *:not(#matrix):not(.matrix-overlay) {
+body > .page {
+  position: relative;
   z-index: 2;
 }
 /* Keep popups and victory screens on top */
-\#winScreen,
-\#timeoutScreen {
+#winScreen,
+#timeoutScreen {
   position: fixed !important;
   z-index: 200 !important;
 }
     body::before {
+      z-index: 1;
       content: "";
       position: fixed;
       inset: 0;
@@ -373,30 +375,18 @@ body > *:not(#matrix):not(.matrix-overlay) {
       border-radius: 4px;
     }
     .chart > span {
-
       display: flex;
-
       align-items: center;
-
       justify-content: space-between;
-
       gap: 8px;
-
       min-height: 43px;
-
     }
     .chart .morse-symbols {
-
       font-size: 22px;
-
       font-weight: bold;
-
       letter-spacing: 2px;
-
       color: #fff4c4;
-
       white-space: nowrap;
-
     }
     /* SHARED TIMER */
     #escapeRoomTimer {
@@ -497,7 +487,32 @@ body > *:not(#matrix):not(.matrix-overlay) {
         transition: none !important;
       }
     }
-  </style>
+  
+/* VICTORY POPUP — matches Rebuild the Computer */
+#victoryOverlay {
+  position: fixed !important; inset: 0; z-index: 200 !important;
+  display: none; align-items: center; justify-content: center;
+  padding: 18px; background: #050507ed;
+}
+#victoryOverlay.show { display: flex !important; }
+#victoryOverlay .victory-result {
+  width: 100%; max-width: 470px; max-height: calc(100vh - 36px);
+  overflow-y: auto; padding: 35px 22px; text-align: center;
+  background: #101a17; border: 2px solid #42e69a;
+  border-radius: 16px; box-shadow: 0 0 60px #16ba6b50;
+}
+#victoryOverlay .victory-result h2 { color: #6dffb0; font-size: 35px; }
+#victoryOverlay .victory-result p { color: #bcebd3; }
+#victoryOverlay .victory-code {
+  font-size: clamp(42px, 10vw, 65px); font-weight: bold;
+  letter-spacing: 10px; color: white;
+  text-shadow: 0 0 18px #2eff91; margin: 20px 0;
+}
+#victoryOverlay .victory-teacher {
+  display: block; max-height: 190px; max-width: 180px;
+  width: auto; margin: 0 auto 8px; object-fit: contain;
+}
+</style>
 </head>
 <body>
   <!-- SHARED 15-MINUTE TIMER -->
@@ -581,32 +596,19 @@ body > *:not(#matrix):not(.matrix-overlay) {
         aria-live="assertive"
       ></div>
       <!-- HINT AND MORSE CHART: HIDDEN UNTIL THE SHARED 3-MINUTE UNLOCK -->
-
         <div class="hint-box" id="hintBox">
-
           <strong>💡 HOW TO READ THE FLASHES</strong>
-
           <p class="instructions">
-
             · DOT = short flash &nbsp; | &nbsp; — DASH = long flash.
-
             Watch the full pattern for each letter, then match it to the chart below.
-
             Example: ·— means A, and —··· means B.
-
           </p>
-
         </div>
         <!-- BACK -->
-
           <section class="morse-reference" aria-label="Morse Code alphabet">
-
             <strong>📡 MORSE CODE A–Z</strong>
-
             <div class="chart" id="chart"></div>
-
           </section>
-
       <button class="back" id="backBtn">
         ← BACK TO CHALLENGES
       </button>
@@ -627,6 +629,21 @@ body > *:not(#matrix):not(.matrix-overlay) {
       Hmm... let's decode the signal!
     </div>
   </div>
+
+<!-- VICTORY SCREEN — REBUILD THE COMPUTER STYLE -->
+<div id="victoryOverlay" role="dialog" aria-modal="true" aria-labelledby="victoryTitle">
+  <div class="victory-result">
+    <img class="victory-teacher" src="Joyful.png" alt="Teacher celebrating">
+    <p style="font-weight:bold;color:#6dffb0">YAY! WE GOT THE ANSWER!</p>
+    <div style="font-size:50px">🔓</div>
+    <h2 id="victoryTitle">ACCESS GRANTED!</h2>
+    <p>SIGNAL RESTORED • SYSTEM ONLINE</p>
+    <p>YOUR COLLECTED LETTERS</p>
+    <div class="victory-code" id="victoryCode">---</div>
+    <p>Challenge completed successfully.</p>
+    <button id="victoryContinueBtn">CONTINUE</button>
+  </div>
+</div>
 <!-- RED MATRIX BACKGROUND -->
 <canvas id="matrix"></canvas>
 <div class="matrix-overlay"></div>
@@ -926,6 +943,10 @@ body > *:not(#matrix):not(.matrix-overlay) {
         "success"
       );
       showJoyfulTeacher();
+      // Display victory only after the correct Morse answer.
+      document.getElementById("victoryCode").textContent = reward;
+      document.querySelector(".teacher-area").style.visibility = "hidden";
+      document.getElementById("victoryOverlay").classList.add("show");
     }
     // ========================================
     // RESET MORSE PUZZLE
@@ -943,6 +964,8 @@ body > *:not(#matrix):not(.matrix-overlay) {
       feedback.textContent = "";
       feedback.className = "";
       hintBox.classList.remove("visible");
+      document.getElementById("victoryOverlay").classList.remove("show");
+      document.querySelector(".teacher-area").style.visibility = "visible";
       showThinkingTeacher();
       updateControls();
     }
@@ -1000,7 +1023,9 @@ function clearAllEscapeProgress() {
     "hardAttemptsUsed",
     "hardAttemptsWord",
     "finalScrambledLetters",
-    "mediumHintStartTime"
+    "mediumHintStartTime",
+    "mediumHintActivated",
+    "mediumHintActivated"
   ];
   progressKeys.forEach(key => sessionStorage.removeItem(key));
 }
@@ -1078,6 +1103,7 @@ function showOverallTimeout() {
     // BUTTON EVENTS
     // ========================================
     playBtn.addEventListener("click", () => {
+      if (!escapeTimeAvailable() || playing) return;
       playMorse(500);
     });
     nextBtn.addEventListener("click", () => {
@@ -1111,16 +1137,17 @@ function showOverallTimeout() {
         }
       }
     );
-    // The Morse hint starts only on the first visit to this challenge.
-    // Its deadline is preserved when the player leaves and returns.
+    // The hint starts when this challenge page opens for the first time.
+    // Its countdown persists if the player leaves and returns.
     const MORSE_HINT_KEY = "mediumHintStartTime";
     const MORSE_HINT_DELAY = 3 * 60 * 1000;
+    // Start on opening this page, not on the previous challenge or PLAY.
+    // A fresh game run clears this key through clearAllEscapeProgress().
     let morseHintStart = Number(sessionStorage.getItem(MORSE_HINT_KEY));
     if (!Number.isFinite(morseHintStart) || morseHintStart <= 0) {
       morseHintStart = Date.now();
       sessionStorage.setItem(MORSE_HINT_KEY, String(morseHintStart));
     }
-
     function updateHintLock() {
       const wait = Math.max(0, morseHintStart + MORSE_HINT_DELAY - Date.now());
       const unlocked = wait === 0;
@@ -1133,12 +1160,16 @@ function showOverallTimeout() {
         hintBtn.textContent = hintBox.classList.contains("visible") ? "🙈 HIDE HINT" : "💡 SHOW HINT";
       }
     }
-
     hintBtn.addEventListener("click", () => {
       if (hintBtn.disabled || !escapeTimeAvailable()) return;
       hintBox.classList.toggle("visible");
       updateHintLock();
     });
+    document.getElementById("victoryContinueBtn").addEventListener("click", () => {
+      if (!escapeTimeAvailable()) return;
+      window.location.href = "screen4.html";
+    });
+
     backBtn.addEventListener("click", () => {
       window.location.href = "screen4.html";
     });

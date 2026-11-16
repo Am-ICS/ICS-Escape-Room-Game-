@@ -1251,369 +1251,190 @@
 
     // CPU usage alone does not prove an app is malicious.
 
-    const processBank = [
 
-      {
+const processBank = [
+  {
+    name: "School Browser",
+    icon: "🌐",
+    publisher: "Verified School IT",
+    source: "Official school software portal",
+    permissions: "Access to approved school websites",
+    behavior: "Opens classroom learning websites normally",
+    type: "safe",
+    reason: "Verified publisher and expected classroom behavior."
+  },
+  {
+    name: "Classroom Notes",
+    icon: "📝",
+    publisher: "Verified School IT",
+    source: "School-managed application catalog",
+    permissions: "Read and save classroom notes",
+    behavior: "Saves documents to the student's folder",
+    type: "safe",
+    reason: "Trusted school installation and normal permissions."
+  },
+  {
+    name: "Library Reader",
+    icon: "📚",
+    publisher: "School Library Services",
+    source: "Official school library portal",
+    permissions: "Read downloaded library books",
+    behavior: "Displays borrowed digital books",
+    type: "safe",
+    reason: "Legitimate library software with expected behavior."
+  },
+  {
+    name: "Video Classroom",
+    icon: "🎥",
+    publisher: "Verified Education Software",
+    source: "School-approved app store",
+    permissions: "Camera and microphone during lessons",
+    behavior: "Runs scheduled video classes",
+    type: "safe",
+    reason: "Approved app using expected video-call permissions."
+  },
+  {
+    name: "Homework Sync",
+    icon: "☁️",
+    publisher: "Verified School IT",
+    source: "Official school software portal",
+    permissions: "Sync assigned homework folders",
+    behavior: "Uploads completed homework to school storage",
+    type: "safe",
+    reason: "Expected syncing to an approved school service."
+  },
+  {
+    name: "Calculator Pro",
+    icon: "🧮",
+    publisher: "Verified Education Software",
+    source: "School-managed application catalog",
+    permissions: "Basic local calculations",
+    behavior: "Performs calculations without unusual access",
+    type: "safe",
+    reason: "Trusted source and limited, appropriate permissions."
+  },
+  {
+    name: "School Calendar",
+    icon: "📅",
+    publisher: "Verified School IT",
+    source: "Official school portal",
+    permissions: "Read school event schedules",
+    behavior: "Displays lessons, exams, and school events",
+    type: "safe",
+    reason: "Normal scheduling application."
+  },
+  {
+    name: "Presentation Viewer",
+    icon: "📊",
+    publisher: "Verified Education Software",
+    source: "Approved school app store",
+    permissions: "Read presentation files",
+    behavior: "Opens teacher-provided slide presentations",
+    type: "safe",
+    reason: "Approved software performing its expected task."
+  },
+  {
+    name: "Grade Manager",
+    icon: "📊",
+    publisher: "Unknown",
+    source: "Random pop-up advertisement",
+    permissions: "Administrator access and password storage",
+    behavior: "Attempts to read saved passwords",
+    type: "danger",
+    reason: "Unknown executable attempting credential access."
+  },
+  {
+    name: "System Cleaner",
+    icon: "🧹",
+    publisher: "Unverified Publisher",
+    source: "Unexpected browser download",
+    permissions: "Full disk access",
+    behavior: "Displays fake virus warnings and demands payment",
+    type: "danger",
+    reason: "Scareware behavior and an untrusted source."
+  },
+  {
+    name: "Homework Helper",
+    icon: "📚",
+    publisher: "Unknown",
+    source: "Unrequested email attachment",
+    permissions: "Run programs",
+    behavior: "Starts hidden background commands",
+    type: "danger",
+    reason: "Suspicious executable from an unexpected attachment."
+  },
+  {
+    name: "Account Manager",
+    icon: "👤",
+    publisher: "Unknown",
+    source: "Unknown website",
+    permissions: "Read saved browser passwords",
+    behavior: "Sends stored login information to an unknown server",
+    type: "danger",
+    reason: "Credential theft and unauthorized data transfer."
+  },
+  {
+    name: "Security Center",
+    icon: "🛡️",
+    publisher: "Unverified Publisher",
+    source: "Browser pop-up claiming the computer is infected",
+    permissions: "System configuration access",
+    behavior: "Demands payment before allowing normal computer use",
+    type: "danger",
+    reason: "Fake security warnings and extortion behavior."
+  },
+  {
+    name: "Camera Assistant",
+    icon: "📷",
+    publisher: "Unknown",
+    source: "Installed without permission",
+    permissions: "Camera and microphone access",
+    behavior: "Activates the camera when no lesson is running",
+    type: "danger",
+    reason: "Unauthorized camera use."
+  },
+  {
+    name: "Update Service",
+    icon: "🔄",
+    publisher: "Unknown",
+    source: "Untrusted file-sharing site",
+    permissions: "Administrator access",
+    behavior: "Disables security software without approval",
+    type: "danger",
+    reason: "Untrusted process disabling security protections."
+  },
+  {
+    name: "Study Resources",
+    icon: "📥",
+    publisher: "Unknown",
+    source: "Suspicious exam-answer advertisement",
+    permissions: "Download and execute additional files",
+    behavior: "Silently installs unrelated programs",
+    type: "danger",
+    reason: "Unwanted software installation."
+  },
+  {
+    name: "Performance Monitor",
+    icon: "📈",
+    publisher: "Unknown",
+    source: "Bundled with an untrusted download",
+    permissions: "Background processing",
+    behavior: "Uses computing resources without the user's consent",
+    type: "danger",
+    reason: "Unauthorized resource usage."
+  },
+  {
+    name: "Remote Support",
+    icon: "🖥️",
+    publisher: "Unknown",
+    source: "Installed through an unexpected attachment",
+    permissions: "Remote desktop and file access",
+    behavior: "Allows an unknown person to control the computer",
+    type: "danger",
+    reason: "Unauthorized remote access."
+  }
+];
 
-        name: "School Browser",
-
-        icon: "🌐",
-
-        publisher: "Verified School IT",
-
-        source: "Official school software portal",
-
-        permissions: "Access to approved school websites",
-
-        behavior: "Opens classroom learning websites normally",
-
-        type: "safe",
-
-        reason: "Verified publisher and expected classroom behavior."
-
-      },
-
-      {
-
-        name: "Classroom Notes",
-
-        icon: "📝",
-
-        publisher: "Verified School IT",
-
-        source: "School-managed application catalog",
-
-        permissions: "Read and save classroom notes",
-
-        behavior: "Saves documents to the student's folder",
-
-        type: "safe",
-
-        reason: "Trusted school installation and normal permissions."
-
-      },
-
-      {
-
-        name: "Library Reader",
-
-        icon: "📚",
-
-        publisher: "School Library Services",
-
-        source: "Official school library portal",
-
-        permissions: "Read downloaded library books",
-
-        behavior: "Displays borrowed digital books",
-
-        type: "safe",
-
-        reason: "Legitimate library software with expected behavior."
-
-      },
-
-      {
-
-        name: "Video Classroom",
-
-        icon: "🎥",
-
-        publisher: "Verified Education Software",
-
-        source: "School-approved app store",
-
-        permissions: "Camera and microphone during lessons",
-
-        behavior: "Runs scheduled video classes",
-
-        type: "safe",
-
-        reason: "Approved app using expected video-call permissions."
-
-      },
-
-      {
-
-        name: "Homework Sync",
-
-        icon: "☁️",
-
-        publisher: "Verified School IT",
-
-        source: "Official school software portal",
-
-        permissions: "Sync assigned homework folders",
-
-        behavior: "Uploads completed homework to school storage",
-
-        type: "safe",
-
-        reason: "Expected syncing to an approved school service."
-
-      },
-
-      {
-
-        name: "Calculator Pro",
-
-        icon: "🧮",
-
-        publisher: "Verified Education Software",
-
-        source: "School-managed application catalog",
-
-        permissions: "Basic local calculations",
-
-        behavior: "Performs calculations without unusual access",
-
-        type: "safe",
-
-        reason: "Trusted source and limited, appropriate permissions."
-
-      },
-
-      {
-
-        name: "School Calendar",
-
-        icon: "📅",
-
-        publisher: "Verified School IT",
-
-        source: "Official school portal",
-
-        permissions: "Read school event schedules",
-
-        behavior: "Displays lessons, exams, and school events",
-
-        type: "safe",
-
-        reason: "Normal scheduling application."
-
-      },
-
-      {
-
-        name: "Presentation Viewer",
-
-        icon: "📊",
-
-        publisher: "Verified Education Software",
-
-        source: "Approved school app store",
-
-        permissions: "Read presentation files",
-
-        behavior: "Opens teacher-provided slide presentations",
-
-        type: "safe",
-
-        reason: "Approved software performing its expected task."
-
-      },
-
-      {
-
-        name: "FreeGradeHack.exe",
-
-        icon: "🦠",
-
-        publisher: "Unknown",
-
-        source: "Random pop-up advertisement",
-
-        permissions: "Administrator access and password storage",
-
-        behavior: "Attempts to read saved passwords",
-
-        type: "danger",
-
-        reason: "Unknown executable attempting credential access."
-
-      },
-
-      {
-
-        name: "SystemCleaner_2026.exe",
-
-        icon: "⚠️",
-
-        publisher: "Unverified Publisher",
-
-        source: "Unexpected browser download",
-
-        permissions: "Full disk access",
-
-        behavior: "Displays fake virus warnings and demands payment",
-
-        type: "danger",
-
-        reason: "Scareware behavior and an untrusted source."
-
-      },
-
-      {
-
-        name: "HomeworkHelper.scr",
-
-        icon: "🦠",
-
-        publisher: "Unknown",
-
-        source: "Unrequested email attachment",
-
-        permissions: "Run programs",
-
-        behavior: "Starts hidden background commands",
-
-        type: "danger",
-
-        reason: "Suspicious executable from an unexpected attachment."
-
-      },
-
-      {
-
-        name: "PasswordCollector",
-
-        icon: "🔑",
-
-        publisher: "Unknown",
-
-        source: "Unknown website",
-
-        permissions: "Read saved browser passwords",
-
-        behavior: "Sends stored login information to an unknown server",
-
-        type: "danger",
-
-        reason: "Credential theft and unauthorized data transfer."
-
-      },
-
-      {
-
-        name: "FakeAntivirus",
-
-        icon: "🚨",
-
-        publisher: "Unverified Publisher",
-
-        source: "Browser pop-up claiming the computer is infected",
-
-        permissions: "System configuration access",
-
-        behavior: "Demands payment before allowing normal computer use",
-
-        type: "danger",
-
-        reason: "Fake security warnings and extortion behavior."
-
-      },
-
-      {
-
-        name: "CameraSpy",
-
-        icon: "📷",
-
-        publisher: "Unknown",
-
-        source: "Installed without permission",
-
-        permissions: "Camera and microphone access",
-
-        behavior: "Activates the camera when no lesson is running",
-
-        type: "danger",
-
-        reason: "Unauthorized camera use."
-
-      },
-
-      {
-
-        name: "UpdateService_Fake",
-
-        icon: "⚙️",
-
-        publisher: "Unknown",
-
-        source: "Untrusted file-sharing site",
-
-        permissions: "Administrator access",
-
-        behavior: "Disables security software without approval",
-
-        type: "danger",
-
-        reason: "Untrusted process disabling security protections."
-
-      },
-
-      {
-
-        name: "ExamAnswersDownloader",
-
-        icon: "📥",
-
-        publisher: "Unknown",
-
-        source: "Suspicious exam-answer advertisement",
-
-        permissions: "Download and execute additional files",
-
-        behavior: "Silently installs unrelated programs",
-
-        type: "danger",
-
-        reason: "Unwanted software installation."
-
-      },
-
-      {
-
-        name: "BackgroundMiner",
-
-        icon: "⛏️",
-
-        publisher: "Unknown",
-
-        source: "Bundled with an untrusted download",
-
-        permissions: "Background processing",
-
-        behavior: "Uses computing resources without the user's consent",
-
-        type: "danger",
-
-        reason: "Unauthorized resource usage."
-
-      },
-
-      {
-
-        name: "RemoteControl_Unknown",
-
-        icon: "🖥️",
-
-        publisher: "Unknown",
-
-        source: "Installed through an unexpected attachment",
-
-        permissions: "Remote desktop and file access",
-
-        behavior: "Allows an unknown person to control the computer",
-
-        type: "danger",
-
-        reason: "Unauthorized remote access."
-
-      }
-
-    ];
 
     /* ==============================
 

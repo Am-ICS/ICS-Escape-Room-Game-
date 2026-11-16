@@ -478,6 +478,37 @@
       object-fit: contain;
     }
 
+    /* VICTORY PRESENTATION ONLY — matches Rebuild the Computer. */
+    body > #winOverlay {
+      position: fixed !important;
+      inset: 0;
+      z-index: 200 !important;
+      align-items: center;
+      justify-content: center;
+    }
+    body > #winOverlay.show { display: flex !important; }
+    #winOverlay .result {
+      position: relative;
+      margin: auto;
+      max-height: calc(100vh - 36px);
+      overflow-y: auto;
+      background: #101a17;
+      border: 2px solid #42e69a;
+      border-radius: 16px;
+      box-shadow: 0 0 60px #16ba6b50;
+      padding: 35px 22px;
+    }
+    #winOverlay .result h2 { color: #6dffb0; font-size: clamp(28px, 6vw, 35px); }
+    #winOverlay .result p { color: #bcebd3; }
+    #winOverlay .result .victory-teacher-message {
+      font-weight: 900;
+      color: #6dffb0;
+      margin: 0 0 12px;
+    }
+    #winOverlay .victory-icon { font-size: 50px; }
+    #winOverlay .reward { color: white; }
+    #winOverlay #continueBtn { margin-top: 10px; }
+
     /* ==============================
        TIMEOUT SCREEN
     ============================== */
@@ -810,7 +841,9 @@
         alt="Teacher celebrating"
       >
 
-      <h2>🔓 ACCESS GRANTED!</h2>
+      <p class="victory-teacher-message">YAY! WE GOT THE ANSWER!</p>
+      <div class="victory-icon" aria-hidden="true">🔓</div>
+      <h2>ACCESS GRANTED!</h2>
 
       <p>YOU CRACKED THE BINARY CODE!</p>
 

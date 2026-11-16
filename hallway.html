@@ -176,12 +176,24 @@ body {
 /* BALD GUY ENCOUNTER */
 #teacherMenu {position:fixed;inset:0;z-index:20;display:none;align-items:center;justify-content:center;background:radial-gradient(circle,#300000,#000 75%);padding:16px;opacity:0;transition:opacity 1.2s ease;}
 #teacherMenu.visible {opacity:1;}
+
+/* SKIP CINEMATIC BUTTON */
+#skipCinematic {
+  position:fixed; bottom:9vh; right:20px; z-index:40;
+  padding:12px 20px; border:2px solid #ff3030;
+  border-radius:10px; background:#200000; color:#fff;
+  font:bold 15px "Courier New",monospace; cursor:pointer;
+  box-shadow:0 0 18px #f005;
+}
+#skipCinematic:hover {background:#9b0000;}
+#skipCinematic:focus-visible {outline:3px solid white;}
 </style>
 </head>
 
 <body>
 
 <div id="game"></div>
+<button id="skipCinematic" type="button">SKIP INTRO ⏭</button>
 
 <div class="cinematic-bar top"></div>
 <div class="cinematic-bar bottom"></div>
@@ -519,12 +531,24 @@ function finishCinematic() {
   finished = true;
   showStatus("");
 
+  document.getElementById("skipCinematic").style.display = "none";
+  document.getElementById("blackout").style.display = "none";
   teacherMenu.style.display = "flex";
 
   requestAnimationFrame(() => {
     teacherMenu.classList.add("visible");
   });
 }
+
+/* SKIP THE CINEMATIC AND OPEN THE EXISTING TEACHER MENU */
+document.getElementById("skipCinematic").addEventListener("click", () => {
+  if (finished) return;
+  started = false;
+  doorPivot.rotation.y = -Math.PI / 2;
+  camera.position.set(0, 1.7, -21);
+  camera.rotation.set(0, 0, 0);
+  finishCinematic();
+});
 
 /* MAIN ANIMATION */
 

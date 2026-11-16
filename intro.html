@@ -91,6 +91,23 @@ canvas {
 @media (max-width: 650px) {
   #topBar { font-size: 13px; padding: 11px 16px; }
 }
+
+/* SKIP BUTTON - BOTTOM RIGHT */
+#skipButton {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 12;
+  padding: 12px 20px;
+  border: 2px solid #f76902;
+  border-radius: 10px;
+  background: rgba(28,35,44,.94);
+  color: white;
+  font: bold 15px Arial, sans-serif;
+  cursor: pointer;
+  box-shadow: 0 5px 20px #0007;
+}
+#skipButton:hover { background: #f76902; }
 </style>
 </head>
 
@@ -107,6 +124,7 @@ canvas {
 </div>
 
 <div id="fade"></div>
+<button id="skipButton" onclick="window.location.href='screen2.html'">SKIP INTRO ⏭</button>
 
 <!-- THREE.JS -->
 
