@@ -466,6 +466,33 @@
         debris.push(d);
       }
 
+      // ===== The hacker waiting BEHIND the player =====
+      const hacker = new THREE.Group();
+      hacker.position.set(0, 0, 10.5);
+      scene.add(hacker);
+      const hackerBlack = new THREE.MeshStandardMaterial({color:0x08090e, roughness:1});
+      const hackerHood = new THREE.MeshStandardMaterial({color:0x141019, roughness:1, side:THREE.DoubleSide});
+      const hackerEyes = new THREE.MeshBasicMaterial({color:0xff1717});
+      function hackerPart(geometry, material, x, y, z) {
+        const part = new THREE.Mesh(geometry, material);
+        part.position.set(x,y,z);
+        hacker.add(part);
+        return part;
+      }
+      hackerPart(new THREE.CylinderGeometry(.48,.68,1.85,10), hackerBlack, 0,1.3,0);
+      hackerPart(new THREE.SphereGeometry(.64,12,10), hackerHood, 0,2.55,0);
+      hackerPart(new THREE.SphereGeometry(.39,12,10), hackerBlack, 0,2.52,-.39);
+      for (const x of [-.17,.17]) {
+        hackerPart(new THREE.BoxGeometry(.13,.085,.065), hackerEyes,x,2.57,-.76);
+        hackerPart(new THREE.BoxGeometry(.22,1.45,.24),hackerBlack,x<0?-.68:.68,1.38,-.05).rotation.z=x<0?-.17:.17;
+        hackerPart(new THREE.BoxGeometry(.25,1.25,.29),hackerBlack,x<0?-.27:.27,.1,0);
+      }
+      const hackerGlow = new THREE.PointLight(0xff1010,2.6,9);
+      hackerGlow.position.set(0,2.6,9.6);
+      scene.add(hackerGlow);
+      hacker.visible = false;
+      hackerGlow.visible = false;
+
       // ===== Timeline and easing =====
       const clock = new THREE.Clock();
       let ended = false;
@@ -494,49 +521,69 @@
             : 'THE HACKER IS LOSING CONTROL!';
         }
 
-        // 2.8–4.8 seconds: escape route opens
-        else if (t < 4.8) {
-          const p = smooth(2.8, 4.8, t);
-          camera.position.set(0, 1.7, 5 - p * 4);
-          camera.lookAt(0, 1.8, -35);
-          statusEl.textContent = '🚨 SECURITY LOCKDOWN OVERRIDDEN';
-          subtitle.textContent = 'THE EXIT IS OPEN — RUN!';
+        // 2.8–5.0: hear the hacker, turn around and LOOK BACK.
+        else if (t < 5.0) {
+          const p = smooth(2.8, 4.3, t);
+          camera.position.set(0, 1.7, 5);
+          // Smoothly turn 180 degrees from facing down the hallway.
+          camera.rotation.order = 'YXZ';
+          camera.rotation.y = Math.PI * p;
+          camera.rotation.x = 0;
+          statusEl.textContent = '⚠ SOMEONE IS BEHIND YOU';
+          subtitle.textContent = p < .7 ? 'WAIT... WHAT WAS THAT?!' : 'THE HACKER! RUN!';
+          hacker.visible = true;
+          hackerGlow.visible = true;
           portal.visible = true;
-          exitLight.intensity = p * 3;
+          exitLight.intensity = 2;
         }
 
-        // 4.8–14.3 seconds: sprint through the hallway
-        else if (t < 14.3) {
-          const p = smooth(4.8, 14.3, t);
-          camera.position.z = 1 - p * 76;
+        // 5.0–6.4: turn back toward the exit.
+        else if (t < 6.4) {
+          const p = smooth(5.0, 6.4, t);
+          camera.position.set(0, 1.7, 5);
+          camera.rotation.order = 'YXZ';
+          camera.rotation.y = Math.PI * (1-p);
+          camera.rotation.x = 0;
+          statusEl.textContent = '🚨 ESCAPE ROUTE OPEN';
+          subtitle.textContent = 'LOOK FORWARD — RUN TO THE EXIT!';
+          hacker.visible = true;
+          hackerGlow.visible = true;
+          portal.visible = true;
+          exitLight.intensity = 3;
+        }
+
+        // 6.4–15.9: sprint FORWARD through the hallway to the exit.
+        else if (t < 15.9) {
+          const p = smooth(6.4, 15.9, t);
+          hacker.visible = false;
+          hackerGlow.visible = false;
+          camera.rotation.order = 'XYZ';
+          camera.position.z = 5 - p * 80;
           camera.position.x = Math.sin(t * 2.4) * .17;
           camera.position.y = 1.72 + Math.sin(t * 13) * .09;
           camera.lookAt(Math.sin(t * 1.4) * .3, 1.8, camera.position.z - 14);
           statusEl.textContent = p < .65
-            ? '⚠ SYSTEM COLLAPSE — ESCAPE NOW'
+            ? '⚠ HACKER BEHIND YOU — ESCAPE NOW'
             : '✓ HACKER CONNECTION TERMINATED';
           subtitle.textContent = p < .65
-            ? 'KEEP MOVING! THE HALLWAY IS COLLAPSING!'
+            ? 'DON\'T LOOK BACK! KEEP RUNNING!'
             : 'THE EXIT! WE MADE IT!';
           portal.visible = true;
           exitLight.intensity = 3 + p * 5;
         }
 
-        // 14.3–17.2 seconds: escape, slowly fade to black, then reveal victory
+        // 15.9–18.8: pass through the exit and reveal victory.
         else {
-          const p = smooth(14.3, 16.3, t);
+          const p = smooth(15.9, 17.9, t);
           camera.position.set(0, 1.7, -75 - p * 10);
           camera.lookAt(0, 2, -90);
           portal.visible = true;
           exitLight.intensity = 8 + p * 16;
-          // Fade to black while passing through the exit.
-          // Disable CSS transitions during the camera-controlled fade.
           flash.style.transition = 'none';
-          flash.style.opacity = String(smooth(14.9, 16.2, t));
+          flash.style.opacity = String(smooth(16.5, 17.8, t));
 
-          if (t >= 17.2) {
+          if (t >= 18.8) {
             ended = true;
-            // Restore the slow transition for the fade back in.
             flash.style.transition = 'opacity 2.5s ease-in-out';
             showFinish();
             return;
@@ -563,7 +610,7 @@
         }
 
         // Subtle camera shake
-        camera.rotation.z = (t > 4.8 && t < 14.3)
+        camera.rotation.z = (t > 6.4 && t < 15.9)
           ? Math.sin(t * 14) * .012
           : Math.sin(t * 6) * .003;
 
