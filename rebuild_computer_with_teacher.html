@@ -695,6 +695,41 @@ body > .teacher-area {
   #escapeRoomTimeout h2 { margin-bottom: 35px; }
 }
 
+
+/* FIX: Keep the teacher's speech bubble away from the game panel. */
+body > .teacher-area {
+  flex-direction: column-reverse;
+  align-items: flex-start;
+  gap: 8px;
+  z-index: 80;
+}
+.teacher-message {
+  max-width: 200px;
+  margin-left: 8px;
+}
+.teacher-message::before {
+  left: 24px;
+  top: auto;
+  bottom: -12px;
+  transform: rotate(-45deg);
+}
+
+
+/* Speech bubble must stay completely inside the left-side teacher area. */
+body > .teacher-area { z-index: 500 !important; }
+body > .teacher-area .teacher-message {
+  box-sizing: border-box;
+  width: 175px;
+  max-width: 175px;
+  margin-left: 0;
+  padding: 12px 13px;
+  overflow-wrap: break-word;
+  font-size: 15px;
+}
+@media (max-width: 560px) {
+  body > .teacher-area .teacher-message { width: 155px; max-width: 155px; font-size: 13px; }
+}
+
 </style>
 </head>
 

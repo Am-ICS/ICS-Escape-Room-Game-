@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RIT ICS Escape Room — 3D Hacked Lab</title>
+<style>
+/* ===== VISUAL STYLES ===== */
+*{
+  box-sizing:border-box
+}
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#030407;
+  color:#fff;
+  font-family:Arial,sans-serif
+}
+canvas{
+  display:block
+}
+#hud{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:3
+}
+#top{
+  position:absolute;
+  top:14px;
+  left:50%;
+  transform:translateX(-50%);
+  width:min(94%,650px);
+  text-align:center;
+  background:#10070be8;
+  border:1px solid #a52a31;
+  border-radius:13px;
+  padding:11px 15px;
+  box-shadow:0 0 30px #f004
+}
+#brand{
+  color:#f76902;
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:2px
+}
+#clock{
+  font:bold 32px monospace;
+  color:#ff5353;
+  margin:4px
+}
+#progress{
+  height:6px;
+  border-radius:8px;
+  background:#3c1519;
+  overflow:hidden
+}
+#bar{
+  height:100%;
+  width:100%;
+  background:#f44
+}
+#status{
+  font-size:13px;
+  color:#ffd4d4;
+  margin-top:7px
+}
+#aim{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  font-size:26px;
+  color:#fff9;
+  text-shadow:0 0 10px #f33
+}
+#prompt{
+  position:absolute;
+  left:50%;
+  bottom:17%;
+  transform:translateX(-50%);
+  background:#0a1019df;
+  border:1px solid #ff5555;
+  padding:12px 18px;
+  border-radius:10px;
+  font-size:14px;
+  text-align:center;
+  max-width:90%;
+  display:none
+}
+#help{
+  position:absolute;
+  bottom:18px;
+  left:50%;
+  transform:translateX(-50%);
+  text-align:center;
+  background:#000b;
+  border-radius:10px;
+  padding:10px 14px;
+  font-size:12px;
+  color:#ddd;
+  white-space:nowrap
+}
+#teacher{
+  position:absolute;
+  bottom:10px;
+  left:10px;
+  width:clamp(95px,16vw,190px);
+  max-height:34vh;
+  object-fit:contain;
+  object-position:bottom;
+  filter:drop-shadow(0 0 15px #000)
+}
+#overlay,#timeout{
+  position:fixed;
+  inset:0;
+  z-index:8;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#000d;
+  padding:18px
+}
+#overlay.hidden,#timeout.hidden{
+  display:none
+}.panel{
+  width:min(94vw,500px);
+  padding:27px;
+  background:#160b12;
+  border:2px solid #e33;
+  border-radius:17px;
+  text-align:center;
+  box-shadow:0 0 60px #f002
+}.panel h1{
+  color:#ff5050;
+  margin:0 0 12px;
+  font-size:clamp(26px,5vw,40px)
+}.panel p{
+  line-height:1.5;
+  color:#e9cbd0
+}.btn{
+  border:2px solid #ff6c6c;
+  background:#9c171c;
+  color:white;
+  padding:13px 20px;
+  border-radius:10px;
+  font-weight:bold;
+  cursor:pointer;
+  font-size:16px
+}.btn:hover{
+  filter:brightness(1.25)
+}
+#action{
+  position:fixed;
+  bottom:72px;
+  right:18px;
+  z-index:4;
+  display:none
+}
+#mobile{
+  display:none;
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:5
+}
+#mobile button{
+  pointer-events:auto;
+  border:1px solid #f777;
+  background:#170b10bd;
+  color:#fff;
+  border-radius:12px;
+  padding:12px;
+  font-weight:bold
+}
+#pad{
+  position:absolute;
+  bottom:18px;
+  left:12px;
+  display:grid;
+  grid-template-columns:repeat(3,45px);
+  gap:4px
+}
+#pad button{
+  height:43px;
+  padding:0
+}
+#use{
+  position:absolute;
+  right:14px;
+  bottom:24px;
+  padding:18px!important
+}
+#lookhint{
+  position:absolute;
+  right:12px;
+  bottom:94px;
+  font-size:11px;
+  color:#fff9
+}
+#fade{
+  position:fixed;
+  inset:0;
+  z-index:7;
+  background:#000;
+  pointer-events:none;
+  animation:reveal 2s forwards
+}
+@keyframes reveal{
+  to{
+    opacity:0
+  }
+}
+@media(pointer:coarse){
+  #mobile{
+    display:block
+  }
+  #help{
+    bottom:110px;
+    font-size:11px
+  }
+  #teacher{
+    bottom:95px;
+    width:90px
+  }
+  #action{
+    bottom:95px
+  }
+}
+@media(max-width:560px){
+  #top{
+    top:5px;
+    padding:7px
+  }
+  #clock{
+    font-size:25px
+  }
+  #status{
+    font-size:11px
+  }
+  #prompt{
+    bottom:25%
+  }
+}
+</style>
+</head>
+<body>
+<div id="hud">
+<div id="top">
+<div id="brand">🐯 RIT | ICS ESCAPE ROOM — SECURITY BREACH</div>
+<div id="clock">05:00</div>
+<div id="progress">
+<div id="bar">
+</div>
+</div>
+<div id="status">🔒 Restore Websites, Files, and Applications</div>
+</div>
+<div id="aim">+</div>
+<div id="prompt">
+</div>
+<div id="help">W A S D = move • Mouse / drag = look • E or click = interact</div>
+<img id="teacher" src="Shocked.png" alt="Shocked teacher" onerror="this.style.display='none'">
+</div>
+<button id="action" class="btn" type="button">INTERACT</button>
+<div id="mobile">
+<div id="pad">
+<span>
+</span>
+<button data-key="w">▲</button>
+<span>
+</span>
+<button data-key="a">◀</button>
+<button data-key="s">▼</button>
+<button data-key="d">▶</button>
+</div>
+<div id="lookhint">Drag screen to look around</div>
+<button id="use">USE</button>
+</div>
+<div id="overlay">
+<div class="panel">
+<h1>⚠ SYSTEM HACKED!</h1>
+<p>The ICS computer lab is locked down. Explore the 3D room, access the three hacked terminals, and solve their puzzles before the five-minute timer expires.</p>
+<p>Move with <b>W A S D</b>. Drag or move the mouse to look. Press <b>E</b> or click a terminal to interact.</p>
+<button class="btn" id="start">ENTER THE LAB</button>
+</div>
+</div>
+<div id="timeout" class="hidden">
+<div class="panel">
+<h1>⏰ TIME'S UP!</h1>
+<p>The hacker has locked the system. Returning to the beginning in 5 seconds...</p>
+</div>
+</div>
+<div id="fade">
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js">
+
+</script>
+<script>
+// ===== GAME LOGIC AND 3D SCENE =====
+'use strict';
+const $=id=>document.getElementById(id);
+const TIMER_KEY='puzzleEndTime', DURATION=300000;
+const PUZZLES=[{
+  name:'WEBSITES',file:'website.html',key:'websitesSolved',color:0xff3131
+},{
+  name:'FILES',file:'files.html',key:'filesSolved',color:0xff683b
+},{
+  name:'APPLICATIONS',file:'applications.html',key:'applicationsSolved',color:0xff3c83
+}];
+const keys={
+},clickTargets=[];
+let started=false,timedOut=false,near=null,looking=false,previousX=0,previousY=0,yaw=0,pitch=0,scene,camera,renderer,clock,door,doorLight,terminals=[];
+function solved(p){
+  return sessionStorage.getItem(p.key)==='true'
+}
+function allSolved(){
+  return PUZZLES.every(solved)
+}
+function timeLeft(){
+  return Math.max(0,Number(sessionStorage.getItem(TIMER_KEY)||0)-Date.now())
+}
+function resetProgress(){
+  ['puzzleEndTime','websitesSolved','filesSolved','applicationsSolved','escapeRoomEndTime','easyComplete','mediumComplete','hardComplete','secretWord','escapeRoomTimedOut','escapeRoomFinished'].forEach(k=>sessionStorage.removeItem(k))
+}
+function timeout(){
+  if(timedOut)return;
+  timedOut=true;
+  $('timeout').classList.remove('hidden');
+  setTimeout(()=>{
+    resetProgress(); location.replace('index.html')
+  },5000)
+}
+function updateHUD(){
+  if(!started||timedOut)return;
+  const ms=timeLeft(),seconds=Math.ceil(ms/1000);
+  $('clock').textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0');
+  $('bar').style.width=(ms/DURATION*100)+'%';
+  $('status').textContent=allSolved()?'🔓 ALL SYSTEMS RESTORED — FIND THE GREEN EXIT':`🔒 ${PUZZLES.filter(solved).length}/3 SYSTEMS RESTORED — FIND THE TERMINALS`;
+  if(ms<=0)timeout()
+}
+function goToPuzzle(p){
+  if(timedOut||!timeLeft())return timeout();
+  location.href=p.file
+}
+function interact(){
+  if(!started||timedOut||!near)return;
+  if(near.type==='exit'){
+    if(!allSolved())return;
+    const t=Number(sessionStorage.getItem('escapeRoomEndTime'));
+    if(!Number.isFinite(t)||t<=0)sessionStorage.setItem('escapeRoomEndTime',String(Date.now()+15*60*1000));
+    location.href='screen4.html'
+  }
+  else goToPuzzle(near.puzzle)
+}
+function material(color,emissive=0,intensity=0){
+  return new THREE.MeshStandardMaterial({
+    color,roughness:.62,metalness:.15,emissive,emissiveIntensity:intensity
+  })
+}
+function cube(w,h,d,mat,x,y,z,parent=scene){
+  const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);
+  m.position.set(x,y,z);
+  parent.add(m);
+  return m
+}
+function sign(text,fg='#ff7777',bg='#14060a'){
+  const c=document.createElement('canvas');
+  c.width=512;
+  c.height=160;
+  const x=c.getContext('2d');
+  x.fillStyle=bg;
+  x.fillRect(0,0,512,160);
+  x.fillStyle=fg;
+  x.font='bold 48px Arial';
+  x.textAlign='center';
+  x.textBaseline='middle';
+  x.fillText(text,256,80);
+  return new THREE.MeshBasicMaterial({
+    map:new THREE.CanvasTexture(c)
+  })
+}
+function createRoom(){
+  scene=new THREE.Scene();
+  scene.background=new THREE.Color(0x07090e);
+  scene.fog=new THREE.Fog(0x07090e,14,42);
+  camera=new THREE.PerspectiveCamera(72,innerWidth/innerHeight,.1,90);
+  camera.position.set(0,1.65,6);
+  renderer=new THREE.WebGLRenderer({
+    antialias:true
+  });
+  renderer.setSize(innerWidth,innerHeight);
+  renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));
+  document.body.prepend(renderer.domElement);
+  clock=new THREE.Clock();
+  scene.add(new THREE.HemisphereLight(0x7086b5,0x180a10,.38));
+  const wall=material(0x252b34),floor=material(0x22262c),trim=material(0x5a6875),desk=material(0x393b43),red=material(0x551016,0xff1e2e,.85),green=material(0x174b34,0x21ff83,1.2);
+  // Compact enclosed ICS computer lab
+  cube(18,.3,20,floor,0,-.15,0);
+  cube(18,.3,20,wall,0,5.1,0);
+  cube(.3,5.2,20,wall,-9,2.5,0);
+  cube(.3,5.2,20,wall,9,2.5,0);
+  cube(18,5.2,.3,wall,0,2.5,-10);
+  cube(18,5.2,.3,wall,0,2.5,10);
+  for(let z=-8; z<=8; z+=4){
+    cube(17.6,.04,.07,trim,0,.03,z);
+    cube(1.6,.08,2,red,0,4.92,z);
+    const light=new THREE.PointLight(0xff3344,.85,12);
+    light.position.set(0,4.65,z);
+    scene.add(light)
+  }
+  for(let x of [-8.7,8.7])for(let z of [-6,0,6]){
+    cube(.1,2.6,2.7,trim,x,2.45,z);
+    cube(.12,2.1,2.2,material(0x19303c,0x073b52,.22),x,2.45,z)
+  }
+  const spots=[[-5.5,-5], [0,-5], [5.5,-5]];
+  PUZZLES.forEach((p,i)=>{
+    const [x,z]=spots[i]; cube(3.5,.22,1.5,desk,x,1.05,z+.4); cube(.15,1,.15,trim,x-1.4,.5,z+.9); cube(.15,1,.15,trim,x+1.4,.5,z+.9); const screenMat=material(0x250a0e,p.color,1.2); const monitor=cube(2.7,1.6,.16,screenMat,x,2.15,z); cube(2.9,1.8,.12,trim,x,2.15,z-.1); monitor.position.z=z+.02; cube(2.9,.55,.07,sign(p.name),x,3.45,z); const lamp=new THREE.PointLight(p.color,1.5,8); lamp.position.set(x,2.5,z+1); scene.add(lamp); const obj={
+      type:'puzzle',puzzle:p,x,z:z+1.7,monitor,lamp
+    }; terminals.push(obj); clickTargets.push({
+      mesh:monitor,obj
+    })
+  });
+  // Exit at the opposite end, physically accessible after all three puzzles
+  cube(3.6,4.4,.2,trim,0,2.2,9.7);
+  door=cube(2.9,3.9,.16,red,0,1.95,9.5);
+  cube(3.8,.65,.1,sign('ESCAPE EXIT'),0,4.55,9.45);
+  doorLight=new THREE.PointLight(0xff2525,1.8,9);
+  doorLight.position.set(0,3.5,8.5);
+  scene.add(doorLight);
+  clickTargets.push({
+    mesh:door,obj:{
+      type:'exit',x:0,z:8
+    }
+  });
+  const ambientScreens=[[-7,-1],[7,2]];
+  for(const [x,z]of ambientScreens){
+    cube(.12,1.5,2.5,red,x,2.5,z)
+  }
+}
+const ray=new THREE.Raycaster();
+const mouse=new THREE.Vector2();
+function chooseNearest(){
+  const list=[...terminals,{
+    type:'exit',x:0,z:8
+  }];
+  near=null;
+  let distance=Infinity;
+  for(const obj of list){
+    const d=Math.hypot(camera.position.x-obj.x,camera.position.z-obj.z);
+    if(d<3.1&&d<distance){
+      distance=d;
+      near=obj
+    }
+  }
+  const p=$('prompt');
+  p.style.display=near?'block':'none';
+  if(near){
+    p.textContent=near.type==='exit'?(allSolved()?'🔓 EXIT UNLOCKED — Press E or INTERACT':'🔒 EXIT LOCKED — Restore all three systems'):`${near.puzzle.name}: ${solved(near.puzzle)?'✓ SOLVED — revisit':'🔒 HACKED — Press E or INTERACT'}`
+  }
+  $('action').style.display=near&&(near.type!=='exit'||allSolved())?'block':'none'
+}
+function look(dx,dy){
+  yaw-=dx*.0035;
+  pitch=Math.max(-.9,Math.min(.9,pitch-dy*.003));
+  camera.rotation.order='YXZ';
+  camera.rotation.y=yaw;
+  camera.rotation.x=pitch
+}
+function animate(){
+  requestAnimationFrame(animate);
+  if(!started||timedOut)return;
+  const dt=Math.min(clock.getDelta(),.05),speed=(keys.shift?6:3.7)*dt;
+  let forward=Number(!!keys.w)-Number(!!keys.s),side=Number(!!keys.d)-Number(!!keys.a);
+  const length=Math.hypot(forward,side)||1;
+  forward/=length;
+  side/=length;
+  camera.position.x+=(-Math.sin(yaw)*forward+Math.cos(yaw)*side)*speed;
+  camera.position.z+=(-Math.cos(yaw)*forward-Math.sin(yaw)*side)*speed;
+  camera.position.x=Math.max(-8.1,Math.min(8.1,camera.position.x));
+  camera.position.z=Math.max(-8.8,Math.min(8.5,camera.position.z));
+  camera.position.y=1.65+(forward||side?Math.sin(performance.now()*.011)*.025:0);
+  const t=clock.elapsedTime;
+  for(const term of terminals){
+    const ok=solved(term.puzzle);
+    term.monitor.material.emissive.setHex(ok?0x20ff85:term.puzzle.color);
+    term.lamp.color.setHex(ok?0x20ff85:term.puzzle.color);
+    term.lamp.intensity=.95+Math.sin(t*5+term.x)*.28
+  }
+  door.material.emissive.setHex(allSolved()?0x21ff85:0xff2020);
+  doorLight.color.setHex(allSolved()?0x21ff85:0xff2525);
+  chooseNearest();
+  renderer.render(scene,camera)
+}
+$('start').onclick=()=>{
+  if(typeof THREE==='undefined'){
+    alert('Three.js could not load. Check your internet connection.');
+    return
+  }
+  if(!sessionStorage.getItem(TIMER_KEY))sessionStorage.setItem(TIMER_KEY,String(Date.now()+DURATION));
+  $('overlay').classList.add('hidden');
+  started=true;
+  createRoom();
+  clock.start();
+  updateHUD();
+  setInterval(updateHUD,250);
+  animate()
+};
+$('action').onclick=interact;
+$('use').onclick=interact;
+window.addEventListener('keydown',e=>{
+  keys[e.key.toLowerCase()]=true; if(e.key.toLowerCase()==='e')interact()
+});
+window.addEventListener('keyup',e=>{
+  keys[e.key.toLowerCase()]=false
+});
+window.addEventListener('mousemove',e=>{
+  if(started&&!('ontouchstart'in window))look(e.movementX||0,e.movementY||0)
+});
+renderer=null;
+window.addEventListener('touchstart',e=>{
+  if(e.target.closest('button'))return; looking=true; previousX=e.touches[0].clientX; previousY=e.touches[0].clientY
+},{
+  passive:true
+});
+window.addEventListener('touchmove',e=>{
+  if(!looking||!started)return; const x=e.touches[0].clientX,y=e.touches[0].clientY; look(x-previousX,y-previousY); previousX=x; previousY=y
+},{
+  passive:true
+});
+window.addEventListener('touchend',()=>looking=false);
+document.querySelectorAll('[data-key]').forEach(btn=>{
+  const k=btn.dataset.key; btn.addEventListener('pointerdown',e=>{
+    e.preventDefault(); keys[k]=true
+  }); for(const type of ['pointerup','pointercancel','pointerleave'])btn.addEventListener(type,()=>keys[k]=false)
+});
+window.addEventListener('click',e=>{
+  if(!started||e.target.closest('button'))return; mouse.x=e.clientX/innerWidth*2-1; mouse.y=-(e.clientY/innerHeight)*2+1; ray.setFromCamera(mouse,camera); const hits=ray.intersectObjects(clickTargets.map(t=>t.mesh)); if(hits.length){
+    const hit=clickTargets.find(t=>t.mesh===hits[0].object); if(hit){
+      const d=Math.hypot(camera.position.x-hit.obj.x,camera.position.z-hit.obj.z); if(d<3.5){
+        near=hit.obj; interact()
+      }
+    }
+  }
+});
+window.addEventListener('resize',()=>{
+  if(!camera)return; camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight)
+});
+</script>
+</body>
+</html>

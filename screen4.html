@@ -1585,11 +1585,25 @@ opacity:.60;mix-blend-mode:multiply}
 html::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:6;
 background:radial-gradient(ellipse at 50% 44%,transparent 22%,rgba(0,0,0,.47) 100%)}
 </style>
+<style id="stage4-screen3-terminal">
+/* Screen 3 matching monitor-opening sequence */
+#stage4TerminalTransition{position:fixed;inset:0;z-index:65;display:none;align-items:center;justify-content:center;pointer-events:none;background:rgba(2,3,8,0);transition:background .65s ease}
+#stage4TerminalTransition.active{display:flex}
+#stage4TerminalTransition.zoom{background:rgba(2,3,8,.93)}
+#stage4TerminalTransition .terminalCard{width:min(80vw,750px);height:min(54vh,440px);border:10px solid #14151a;border-radius:14px;background:radial-gradient(ellipse at center,#280e1a,#08090f 80%);box-shadow:0 0 0 3px #a53b53,0 0 85px #ff2c5560;transform:perspective(900px) translateY(28vh) scale(.14) rotateX(18deg);opacity:0;transition:transform .75s cubic-bezier(.2,.8,.15,1),opacity .4s;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:18px}
+#stage4TerminalTransition.zoom .terminalCard{transform:perspective(900px) translateY(0) scale(1) rotateX(0);opacity:1}
+#stage4TerminalTransition strong{font:900 clamp(22px,4vw,43px) monospace;color:#ff8ca5;text-shadow:0 0 20px #ff3e66;text-align:center}
+#stage4TerminalTransition small{font:14px monospace;color:#e7b5c1;letter-spacing:3px}
+#stage4TerminalTransition .load{width:65%;height:5px;background:#35131e;overflow:hidden}
+#stage4TerminalTransition .load:before{content:"";display:block;height:100%;width:0;background:#ff597e;box-shadow:0 0 12px #ff597e;transition:width .7s ease}
+#stage4TerminalTransition.zoom .load:before{width:100%}
+</style>
 </head>
 
   <body class="game3d">
 
 <canvas id="gameCanvas"></canvas>
+<div id="stage4TerminalTransition" aria-hidden="true"></div>
 <div id="gameHud"><strong>◈ ICS / NIGHT SHIFT — 00:47</strong><p class="hud-sub">FACILITY 04 · RED ALERT</p><p class="hud-obj">ROUTE: TOWER → REBUILD → MORSE → BINARY → WORD</p><p id="gameHudProgress">0 / 3 SYSTEMS RESTORED</p><p id="gameHudTime">⏱ 15:00</p><p class="hud-controls">WASD MOVE &nbsp;·&nbsp; MOUSE LOOK &nbsp;·&nbsp; SHIFT SPRINT &nbsp;·&nbsp; E USE</p></div>
 <div id="gameCrosshair">+</div>
 <div id="interactionPrompt"></div>
@@ -2008,7 +2022,7 @@ background:radial-gradient(ellipse at 50% 44%,transparent 22%,rgba(0,0,0,.47) 10
 
   <div id="winScreen">
 
-    <h1>🔓 SYSTEM RESTORED!</h1>
+    <h1>ESCAPE COMPLETE</h1>
 
     <img
 
@@ -2036,6 +2050,7 @@ background:radial-gradient(ellipse at 50% 44%,transparent 22%,rgba(0,0,0,.47) 10
 
     </p>
 
+    <p style="color:#a8ffca;font-weight:bold;letter-spacing:2px">ENTERING FINAL ESCAPE...</p>
   </div>
 
   <!-- TIMEOUT SCREEN -->
@@ -3120,6 +3135,17 @@ background:radial-gradient(ellipse at 50% 44%,transparent 22%,rgba(0,0,0,.47) 10
 
   // ======================================
 
+  function goToEndingSmoothly() {
+    if (document.getElementById("endingFadeOverlay")) return;
+    document.body.classList.remove("panel-open");
+    const fade = document.createElement("div");
+    fade.id = "endingFadeOverlay";
+    fade.style.cssText = "position:fixed;inset:0;z-index:9999;background:#050107;opacity:0;pointer-events:all;transition:opacity 1.1s ease;";
+    document.body.appendChild(fade);
+    requestAnimationFrame(() => requestAnimationFrame(() => { fade.style.opacity = "1"; }));
+    setTimeout(() => { window.location.replace("ending.html"); }, 1200);
+  }
+
   function checkAnswer() {
 
     if (!hasTime()) {
@@ -3180,9 +3206,8 @@ background:radial-gradient(ellipse at 50% 44%,transparent 22%,rgba(0,0,0,.47) 10
 
 
 
-    // Keep the player on screen4 and display the existing victory screen.
-    // Retain FINISHED_KEY so refreshing the page still shows the win.
-    $("winScreen").classList.add("visible");
+    // No victory screen: smoothly fade directly into the ending.
+    goToEndingSmoothly();
 
     }
 
@@ -3220,7 +3245,9 @@ background:radial-gradient(ellipse at 50% 44%,transparent 22%,rgba(0,0,0,.47) 10
 
     }
 
-    window.location.href = filename;
+    if (typeof window.saveStage4Position === "function") window.saveStage4Position();
+    if (typeof window.smoothStage4Open === "function") window.smoothStage4Open(filename);
+    else window.location.href = filename;
 
   }
 
@@ -3231,6 +3258,8 @@ background:radial-gradient(ellipse at 50% 44%,transparent 22%,rgba(0,0,0,.47) 10
   // ======================================
 
   function restartEscape() {
+    // Keep the last hallway position even when restarting the game.
+    if (typeof window.saveStage4Position === "function") window.saveStage4Position();
 
     [
 
@@ -3290,7 +3319,7 @@ background:radial-gradient(ellipse at 50% 44%,transparent 22%,rgba(0,0,0,.47) 10
 
   if (sessionStorage.getItem(FINISHED_KEY) === "true") {
 
-    $("winScreen").classList.add("visible");
+    goToEndingSmoothly();
 
   } else if (
 
@@ -3570,12 +3599,89 @@ const dustGeo=new THREE.BufferGeometry(),dustPos=new Float32Array(420*3);
 for(let i=0;i<420;i++){dustPos[i*3]=(Math.random()-.5)*15;dustPos[i*3+1]=Math.random()*5.5;dustPos[i*3+2]=(Math.random()-.5)*29-1;}
 dustGeo.setAttribute("position",new THREE.BufferAttribute(dustPos,3));
 const dust=new THREE.Points(dustGeo,new THREE.PointsMaterial({color:0xffa2b0,size:.035,transparent:true,opacity:.36,depthWrite:false}));scene.add(dust);
-camera.position.set(0,1.7,13.2);
-let yaw=0,pitch=0,keys={},near=null,last=performance.now(),noticeUntil=0;
+// Restore the player's exact position after returning from a challenge.
+const STAGE4_POSITION_KEY = "icsStage4PlayerPosition";
+let restoredStage4Position = null;
+try {
+ const saved = JSON.parse(sessionStorage.getItem(STAGE4_POSITION_KEY) || "null");
+ if (saved && [saved.x,saved.z,saved.yaw,saved.pitch].every(Number.isFinite)) restoredStage4Position=saved;
+} catch(e) {}
+camera.position.set(restoredStage4Position ? Math.max(-7.1,Math.min(7.1,restoredStage4Position.x)) : 0,1.7,restoredStage4Position ? Math.max(-14.6,Math.min(12.8,restoredStage4Position.z)) : 13.2);
+// Cinematic monitor focus and a soft fade into each challenge.
+const focusShade=document.createElement("div");
+focusShade.id="stage4FocusShade";
+focusShade.style.cssText="position:fixed;inset:0;z-index:60;background:#02050a;opacity:0;pointer-events:none;transition:opacity .35s ease";
+document.body.appendChild(focusShade);
+let focusAnimation=null;
+window.smoothStage4Open=function(filename){
+ if(focusAnimation)return;
+ const target=stations.find(s=>s.file===filename);
+ if(!target){window.location.href=filename;return;}
+ if(document.pointerLockElement===canvas)document.exitPointerLock();
+ focusAnimation={filename,start:performance.now(),from:camera.position.clone(),to:new THREE.Vector3(target.x,1.62,target.z+1.5),fromYaw:yaw,fromPitch:pitch};
+ const label={"rebuild_computer_with_teacher.html":"REBUILD COMPUTER","morsecodelight.html":"MORSE CODE","binary.html":"BINARY"}[filename]||"CONNECTING...";
+ // No connection text: camera movement and cinematic fade only.
+ const layer=document.getElementById("stage4TerminalTransition");
+ layer.classList.remove("zoom");layer.classList.add("active");
+ requestAnimationFrame(()=>requestAnimationFrame(()=>layer.classList.add("zoom")));
+ prompt.style.display="none";
+};
+// First-person hands: lightweight, Three.js r128-compatible meshes.
+const hands=new THREE.Group();
+camera.add(hands);scene.add(camera);
+const sleeveMaterial=new THREE.MeshStandardMaterial({color:0x17191d,roughness:.94});
+const cuffMaterial=new THREE.MeshStandardMaterial({color:0x27282b,roughness:.92});
+const handMaterial=new THREE.MeshStandardMaterial({color:0xb98162,roughness:.91});
+function handPart(geometry,material,x,y,z,rx=0,ry=0,rz=0){
+ const mesh=new THREE.Mesh(geometry,material);mesh.position.set(x,y,z);mesh.rotation.set(rx,ry,rz);hands.add(mesh);return mesh;
+}
+for(const side of [-1,1]){
+ const x=side*.41;
+ handPart(new THREE.CylinderGeometry(.115,.19,.60,9),sleeveMaterial,x,-.56,-.67,-.43,0,side*.18);
+ handPart(new THREE.CylinderGeometry(.12,.125,.12,9),cuffMaterial,x,-.29,-.81,-.43);
+ handPart(new THREE.SphereGeometry(.115,10,8),handMaterial,x,-.205,-.88);
+ // Fingers curl naturally toward the palms.
+ for(let finger=0;finger<4;finger++){
+  const fx=x+side*(finger-1.5)*.043;
+  handPart(new THREE.CylinderGeometry(.018,.022,.105,7),handMaterial,fx,-.135,-.905,-.3);
+ }
+ handPart(new THREE.CylinderGeometry(.03,.037,.14,8),handMaterial,x-side*.11,-.22,-.84,0,0,side*.55);
+}
+let walkPhase=0;
+
+let yaw=restoredStage4Position?.yaw || 0,pitch=restoredStage4Position?.pitch || 0,keys={},near=null,last=performance.now(),noticeUntil=0;
+window.saveStage4Position = function(){
+ sessionStorage.setItem(STAGE4_POSITION_KEY,JSON.stringify({x:camera.position.x,z:camera.position.z,yaw,pitch}));
+};
+// Also preserve position on normal reload or browser navigation.
+window.addEventListener("pagehide",window.saveStage4Position);
+window.addEventListener("blur",()=>{keys={};});
 function message(t){const el=document.getElementById("gameMessage");el.textContent=t;noticeUntil=performance.now()+2700;}
-function isPanel(){return document.body.classList.contains("panel-open");}
-window.openGamePanel=function(){document.body.classList.add("panel-open");if(document.pointerLockElement===canvas)document.exitPointerLock();};
-window.closeGamePanel=function(){document.body.classList.remove("panel-open");};
+function isPanel(){return document.body.classList.contains("panel-open")||!!focusAnimation||!!finalPanelAnimation;}
+// The FINAL WORD terminal also gets a real 3D camera push-in (no connection overlay).
+let finalPanelAnimation=null;
+window.openGamePanel=function(){
+ if(finalPanelAnimation || focusAnimation || document.body.classList.contains("panel-open"))return;
+ if(document.pointerLockElement===canvas)document.exitPointerLock();
+ window.saveStage4Position();
+ const station=stations[3];
+ const from=camera.position.clone();
+ const to=new THREE.Vector3(station.x,1.64,station.z+1.75);
+ const targetYaw=Math.atan2(-(station.x-from.x),-(station.z-from.z));
+ const delta=((targetYaw-yaw+Math.PI*3)%(Math.PI*2))-Math.PI;
+ finalPanelAnimation={phase:"in",start:performance.now(),from,to,originalYaw:yaw,originalPitch:pitch,delta};
+ prompt.style.display="none";
+};
+window.closeGamePanel=function(){
+ if(finalPanelAnimation)return;
+ document.body.classList.remove("panel-open");
+ const stored=JSON.parse(sessionStorage.getItem(STAGE4_POSITION_KEY)||"null");
+ if(!stored)return;
+ const from=camera.position.clone();
+ const to=new THREE.Vector3(stored.x,1.7,stored.z);
+ finalPanelAnimation={phase:"out",start:performance.now(),from,to,originalYaw:stored.yaw,originalPitch:stored.pitch,
+  fromRotY:camera.rotation.y,fromRotX:camera.rotation.x};
+};
 canvas.addEventListener("click",()=>{if(!isPanel()&&document.pointerLockElement!==canvas)canvas.requestPointerLock?.();});
 document.addEventListener("mousemove",e=>{if(document.pointerLockElement!==canvas||isPanel())return;yaw-=e.movementX*.0024;pitch=Math.max(-1.22,Math.min(1.22,pitch-e.movementY*.0024));});
 document.addEventListener("keydown",e=>{
@@ -3593,10 +3699,54 @@ function interact(s){
 }
 function animate(now){
  requestAnimationFrame(animate);
+ if(finalPanelAnimation){
+  const a=finalPanelAnimation;
+  const t=Math.min(1,(now-a.start)/1050),e=t*t*(3-2*t);
+  camera.position.lerpVectors(a.from,a.to,e);
+  camera.rotation.order="YXZ";
+  if(a.phase==="in"){
+   camera.rotation.y=a.originalYaw+a.delta*e;
+   camera.rotation.x=a.originalPitch*(1-e);
+   camera.fov=76-20*e;
+   hands.position.y=-.24*e;
+  }else{
+   camera.rotation.y=a.fromRotY+(a.originalYaw-a.fromRotY)*e;
+   camera.rotation.x=a.fromRotX+(a.originalPitch-a.fromRotX)*e;
+   camera.fov=56+20*e;
+   hands.position.y=-.24*(1-e);
+  }
+  camera.updateProjectionMatrix();
+  if(t>=1){
+   if(a.phase==="in"){document.body.classList.add("panel-open");}
+   else{yaw=a.originalYaw;pitch=a.originalPitch;camera.fov=76;camera.updateProjectionMatrix();}
+   finalPanelAnimation=null;last=now;
+  }
+  renderer.render(scene,camera);return;
+ }
+ if(focusAnimation){
+  const a=focusAnimation,t=Math.min(1,(now-a.start)/1250),e=t*t*(3-2*t);
+  camera.position.lerpVectors(a.from,a.to,e);
+  const dx=a.to.x-camera.position.x,dz=(a.to.z-1.5)-camera.position.z;
+  const targetYaw=Math.atan2(-dx,-dz);
+  let diff=((targetYaw-a.fromYaw+Math.PI)%(Math.PI*2)+Math.PI*2)%(Math.PI*2)-Math.PI;
+  camera.rotation.order="YXZ";camera.rotation.y=a.fromYaw+diff*e;camera.rotation.x=a.fromPitch*(1-e);
+  camera.fov=76-20*e;camera.updateProjectionMatrix();
+  hands.position.y=-.3*e;hands.rotation.x=-.25*e;
+  if(t>.76)focusShade.style.opacity=String(Math.min(1,(t-.76)/.24));
+  if(t>=1){focusAnimation=null;window.location.href=a.filename;return;}
+  renderer.render(scene,camera);return;
+ }
  let dt=Math.min((now-last)/1000,.05);last=now;
  if(!isPanel()){
  let f=Number(!!keys.KeyW)-Number(!!keys.KeyS),r=Number(!!keys.KeyD)-Number(!!keys.KeyA);
  const len=Math.hypot(f,r)||1,speed=(keys.ShiftLeft||keys.ShiftRight?7.2:4.0)*dt;
+ const moving=Math.abs(f)+Math.abs(r)>0;
+ if(moving)walkPhase+=dt*(keys.ShiftLeft||keys.ShiftRight?12:8);
+ const targetBob=moving?1:0;
+ hands.position.y+=( (Math.sin(walkPhase)*.025*targetBob)-hands.position.y)*Math.min(1,dt*10);
+ hands.position.x+=( (Math.cos(walkPhase*.5)*.018*targetBob)-hands.position.x)*Math.min(1,dt*10);
+ hands.rotation.z+=( (Math.sin(walkPhase)*.018*targetBob)-hands.rotation.z)*Math.min(1,dt*9);
+
  camera.position.x+=((Math.cos(yaw)*r-Math.sin(yaw)*f)/len)*speed;
  camera.position.z-=((Math.cos(yaw)*f+Math.sin(yaw)*r)/len)*speed;
  camera.position.x=Math.max(-7.1,Math.min(7.1,camera.position.x));

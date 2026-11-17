@@ -295,16 +295,6 @@ body.puzzle-active > canvas, body.puzzle-active > #hud, body.puzzle-active > #mo
 @keyframes stageLoad{to{width:100%}}
 
 /* Smooth terminal zoom and first-person interaction */
-#terminalTransition{position:fixed;inset:0;z-index:25;display:none;align-items:center;justify-content:center;pointer-events:none;background:rgba(2,3,8,0);transition:background .65s ease}
-#terminalTransition.active{display:flex}
-#terminalTransition.zoom{background:rgba(2,3,8,.93)}
-#terminalTransition .terminalCard{width:min(80vw,750px);height:min(54vh,440px);border:10px solid #14151a;border-radius:14px;background:radial-gradient(ellipse at center,#280e1a,#08090f 80%);box-shadow:0 0 0 3px #a53b53,0 0 85px #ff2c5560;transform:perspective(900px) translateY(28vh) scale(.14) rotateX(18deg);opacity:0;transition:transform .75s cubic-bezier(.2,.8,.15,1),opacity .4s;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:18px}
-#terminalTransition.zoom .terminalCard{transform:perspective(900px) translateY(0) scale(1) rotateX(0);opacity:1}
-#terminalTransition strong{font:900 clamp(22px,4vw,43px) monospace;color:#ff8ca5;text-shadow:0 0 20px #ff3e66;text-align:center}
-#terminalTransition small{font:14px monospace;color:#e7b5c1;letter-spacing:3px}
-#terminalTransition .load{width:65%;height:5px;background:#35131e;overflow:hidden}
-#terminalTransition .load:before{content:"";display:block;height:100%;width:0;background:#ff597e;box-shadow:0 0 12px #ff597e;transition:width .7s ease}
-#terminalTransition.zoom .load:before{width:100%}
 </style>
 <style id="shared-corridor-look">
 /* Both stages share the SAME red emergency corridor treatment. */
@@ -358,7 +348,7 @@ background:radial-gradient(ellipse at 50% 44%,transparent 22%,rgba(0,0,0,.47) 10
 </div>
 </div>
 <div id="stageTransition" role="status" aria-live="polite"><div class="stageInner"><div class="stageEyebrow">◈ ICS LAB // STAGE 01 CLEARED</div><h1>CHALLENGE COMPLETE!</h1><h2>NEXT SCREEN →</h2><p>ENTERING STAGE 2 · SECURITY TOWER</p><div class="stageTrack"><span></span></div></div></div>
-<div id="terminalTransition"><div class="terminalCard"><small>RIT // ICS SECURE TERMINAL</small><strong id="terminalOpeningName">CONNECTING...</strong><div class="load"></div><small>ESTABLISHING CONNECTION</small></div></div>
+
 <div id="fade">
 </div>
 
@@ -429,22 +419,43 @@ function updateHUD(){
   if(ms<=0)timeout()
 }
 let terminalOpening=false;
+let terminalCameraMove=null;
+let prePuzzleView=null;
+let terminalReturning=false;
 function goToPuzzle(p){
   if (terminalOpening || timedOut || !timeLeft()) return;
   terminalOpening=true;
   // Ease the player's view into the computer before opening its actual puzzle.
-  const pages={websites:'website.html',files:'files.html',applications:'applications.html'};
   sessionStorage.setItem(RESUME_KEY,JSON.stringify({x:camera.position.x,z:camera.position.z,yaw,pitch,at:Date.now()}));
-  const layer=$('terminalTransition');
-  $('terminalOpeningName').textContent=p.name.toUpperCase();
-  layer.classList.add('active');
+  prePuzzleView={position:camera.position.clone(),fov:camera.fov,yaw,pitch};
+  const station=terminals.find(t=>t.puzzle.file===p.file);
+  if(station){
+    terminalCameraMove={start:performance.now(),duration:1050,from:camera.position.clone(),to:new THREE.Vector3(station.x,1.65,station.z+.55),fromFov:camera.fov,returning:false};
+  }
   document.exitPointerLock?.();
-  requestAnimationFrame(()=>requestAnimationFrame(()=>layer.classList.add('zoom')));
-  setTimeout(()=>{window.location.href=pages[p.file];},900);
+  setTimeout(()=>{
+    terminalCameraMove=null;
+    terminalOpening=false;
+    puzzleOpen=true;
+    $('puzzleName').textContent=p.name.toUpperCase();
+    $('puzzleFrame').srcdoc=EMBEDDED_PUZZLES[p.file];
+    $('puzzleOverlay').classList.add('open');
+    document.body.classList.add('puzzle-active');
+  },1150);
 }
 
 function closePuzzle(){
   puzzleOpen = false;
+  terminalOpening=false;
+  if(prePuzzleView){
+    // Reverse the camera zoom smoothly, back to the exact position before opening.
+    terminalCameraMove={start:performance.now(),duration:850,
+      from:camera.position.clone(),to:prePuzzleView.position.clone(),
+      fromFov:camera.fov,toFov:prePuzzleView.fov,returning:true};
+    yaw=prePuzzleView.yaw;pitch=prePuzzleView.pitch;
+    camera.rotation.order='YXZ';camera.rotation.y=yaw;camera.rotation.x=pitch;
+    prePuzzleView=null;
+  }
   lastMouseX=null;
   $('puzzleOverlay').classList.remove('open');
   $('puzzleFrame').removeAttribute('srcdoc');
@@ -728,6 +739,16 @@ function animate(){
   requestAnimationFrame(animate);
   if(!started||timedOut)return;
   if(puzzleOpen){ renderer.render(scene,camera); return; }
+  if(terminalCameraMove){
+    const a=terminalCameraMove;
+    const t=Math.min(1,(performance.now()-a.start)/a.duration);
+    const eased=t*t*(3-2*t);
+    camera.position.lerpVectors(a.from,a.to,eased);
+    camera.fov=a.returning?a.fromFov+(a.toFov-a.fromFov)*eased:a.fromFov-14*eased;
+    camera.updateProjectionMatrix();
+    if(t>=1 && a.returning){terminalCameraMove=null;clock.getDelta();}
+    renderer.render(scene,camera);return;
+  }
   const dt=Math.min(clock.getDelta(),.05),speed=(keys.shift?6:3.7)*dt;
   let forward=Number(!!keys.w)-Number(!!keys.s),side=Number(!!keys.d)-Number(!!keys.a);
   const length=Math.hypot(forward,side)||1;
