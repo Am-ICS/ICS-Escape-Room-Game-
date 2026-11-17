@@ -108,6 +108,16 @@ canvas {
   box-shadow: 0 5px 20px #0007;
 }
 #skipButton:hover { background: #f76902; }
+
+/* WARM, MODERN CAMPUS — NOT HORROR */
+body{background:#e5edf3}
+#topBar{top:22px;background:rgba(255,255,255,.92);color:#233244;border:1px solid #dce5eb;border-left:5px solid #f76902;border-radius:14px;padding:14px 25px;box-shadow:0 12px 36px #26384926;letter-spacing:.7px;backdrop-filter:blur(12px)}
+#message{bottom:26px;background:rgba(255,255,255,.94);color:#304355;border:1px solid #d7e3ec;border-radius:14px;box-shadow:0 12px 36px #24374b26;font-size:15px;font-weight:700;letter-spacing:.3px;backdrop-filter:blur(12px)}
+#skipButton{background:#f76902;border:1px solid #ff9b50;border-radius:12px;box-shadow:0 9px 24px #f7690244;transition:transform .2s,background .2s}
+#skipButton:hover{background:#db5600;transform:translateY(-2px)}
+#skipButton:focus-visible{outline:3px solid #264d78;outline-offset:3px}
+#fade{background:#e7eff6}
+@media(max-width:650px){#topBar{max-width:94vw;white-space:normal;text-align:center}#message{bottom:82px}#skipButton{bottom:14px;right:14px}}
 </style>
 </head>
 
@@ -120,7 +130,7 @@ canvas {
 </div>
 
 <div id="message">
-  🚶 Exploring the RIT hallway...
+  ☀️ Welcome to RIT — walking to the ICS Lab
 </div>
 
 <div id="fade"></div>
@@ -145,10 +155,10 @@ if (typeof THREE === "undefined") {
 
   const scene = new THREE.Scene();
 
-  scene.background = new THREE.Color(0x89939e);
+  scene.background = new THREE.Color(0xdceaf3);
 
   scene.fog = new THREE.Fog(
-    0x89939e,
+    0xdceaf3,
     18,
     55
   );
@@ -180,12 +190,12 @@ if (typeof THREE === "undefined") {
   scene.add(new THREE.HemisphereLight(
     0xffffff,
     0x667080,
-    0.85
+    0.57
   ));
 
   const sunlight = new THREE.DirectionalLight(
-    0xffffff,
-    0.55
+    0xfff6e8,
+    0.52
   );
 
   sunlight.position.set(3, 8, 4);
@@ -194,24 +204,24 @@ if (typeof THREE === "undefined") {
   /* MATERIALS */
 
   const wallMat = new THREE.MeshStandardMaterial({
-    color: 0xbfc6cd
+    color: 0xe7ebef
   });
 
   const floorMat = new THREE.MeshStandardMaterial({
-    color: 0x7d8995,
+    color: 0xaebbc7,
     roughness: 0.8
   });
 
   const ceilingMat = new THREE.MeshStandardMaterial({
-    color: 0xd0d5da
+    color: 0xf4f7fa
   });
 
   const trimMat = new THREE.MeshStandardMaterial({
-    color: 0x667583
+    color: 0x8799a7
   });
 
   const doorMat = new THREE.MeshStandardMaterial({
-    color: 0x8e6549
+    color: 0x9c6b4b
   });
 
   const glassMat = new THREE.MeshStandardMaterial({
@@ -300,7 +310,7 @@ if (typeof THREE === "undefined") {
   for (let z=-21;z>=-38;z-=3.4) {
     for (const y of [2,4.5,7]) box(0.07,1.2,1.8,outdoorWindowMat,21.95,y,z);
   }
-  const sunshine = new THREE.DirectionalLight(0xffe5bd, 1.2);
+  const sunshine = new THREE.DirectionalLight(0xffe5bd, 0.67);
   sunshine.position.set(14,9,-20); scene.add(sunshine);
 
   /* WALL TRIM */
@@ -353,7 +363,7 @@ if (typeof THREE === "undefined") {
 
     const light = new THREE.PointLight(
       0xffffff,
-      0.22,
+      0.13,
       10
     );
 
@@ -517,6 +527,68 @@ if (typeof THREE === "undefined") {
     signMat,
     0, 4.4, -41.5
   );
+
+
+  /* CAMPUS DESIGN UPGRADE: warm daylight, real-looking architectural details. */
+  const softWhite = new THREE.MeshStandardMaterial({color:0xf7fafc,roughness:.83});
+  const warmWood = new THREE.MeshStandardMaterial({color:0xb88763,roughness:.78});
+  const darkMetal = new THREE.MeshStandardMaterial({color:0x536574,metalness:.58,roughness:.38});
+  const accentOrange = new THREE.MeshStandardMaterial({color:0xf76902,roughness:.5});
+  const plantGreen = new THREE.MeshStandardMaterial({color:0x41835a,roughness:.92});
+  const plantPot = new THREE.MeshStandardMaterial({color:0xf0e7df,roughness:.86});
+  const blueSeat = new THREE.MeshStandardMaterial({color:0x496d84,roughness:.9});
+  // Ceiling grid, recessed fixtures and floor-tile detail.
+  for(let z=3;z>=-40;z-=2.5){
+    box(6.7,.018,.022,trimMat,0,4.89,z);
+    for(const x of [-2.25,0,2.25])box(.022,.018,2.4,trimMat,x,4.89,z-1.2);
+  }
+  for(let z=3;z>=-40;z-=2){
+    for(const x of [-2.3,0,2.3])box(.018,.012,1.92,trimMat,x,.014,z-.98);
+  }
+  // Low wall panels, warm wooden trim and a subtle RIT orange feature band.
+  for(const side of [-1,1]){
+    box(.035,.95,42,warmWood,side*3.32,.57,-19);
+    box(.055,.055,42,accentOrange,side*3.28,1.14,-19);
+    box(.08,.12,42,darkMetal,side*3.28,.09,-19);
+  }
+  // Decorative benches near the lab entrance.
+  for(const z of [-33.2,-37]){
+    box(.85,.13,1.6,warmWood,-2.62,.64,z);
+    box(.16,.6,1.5,blueSeat,-3.05,1.03,z);
+    for(const zz of [-.55,.55])for(const xx of [-2.95,-2.25])
+      box(.09,.55,.09,darkMetal,xx,.32,z+zz);
+  }
+  // Potted plants placed by the corridor entrance and outside the ICS room.
+  for(const z of [-23.4,-35.8]){
+    const x=-2.55;
+    box(.66,.62,.66,plantPot,x,.34,z);
+    const stem=new THREE.Mesh(new THREE.CylinderGeometry(.055,.085,.9,8),darkMetal);
+    stem.position.set(x,1.03,z);scene.add(stem);
+    for(let i=0;i<5;i++){
+      const leaf=new THREE.Mesh(new THREE.SphereGeometry(.37,10,8),plantGreen);
+      leaf.scale.set(.62,1.25,.48);
+      leaf.position.set(x+Math.sin(i*2.51)*.3,1.37+(i%2)*.22,z+Math.cos(i*2.51)*.3);
+      scene.add(leaf);
+    }
+  }
+  // Modern room signs rendered as readable canvas textures.
+  function campusSign(label,x,y,z,side){
+    const c=document.createElement('canvas');c.width=768;c.height=240;
+    const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,768,240);
+    g.fillStyle='#f76902';g.fillRect(0,0,20,240);
+    g.fillStyle='#24364a';g.font='bold 61px Arial';g.textAlign='center';g.textBaseline='middle';g.fillText(label,392,120);
+    const texture=new THREE.CanvasTexture(c);
+    const sign=new THREE.Mesh(new THREE.PlaneGeometry(1.7,.53),new THREE.MeshBasicMaterial({map:texture,side:THREE.DoubleSide}));
+    sign.position.set(x,y,z);sign.rotation.y=side*Math.PI/2;scene.add(sign);
+  }
+  campusSign('CLASSROOM',-3.26,3.68,-27,1);
+  campusSign('STUDY AREA',3.26,3.68,-31,-1);
+  campusSign('ICS LAB',-3.26,3.68,-36,1);
+  // More natural indirect fill light along the hall.
+  for(const z of [-26,-34,-40]){
+    const fill=new THREE.PointLight(0xfff6e5,.25,11,2);
+    fill.position.set(0,4.25,z);scene.add(fill);
+  }
 
   /* AUTOMATIC WALK */
 
