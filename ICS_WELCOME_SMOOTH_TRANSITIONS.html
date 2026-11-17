@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RIT Computer Studies — Welcome</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#171722;font-family:Arial,sans-serif}
+.screen{position:relative;width:100%;height:100dvh;display:flex;align-items:center;justify-content:center;overflow:hidden;isolation:isolate}
+.scene-image{display:block;width:100%;height:100%;object-fit:contain;object-position:center;animation:sceneReveal 1.25s ease-out both}
+@keyframes sceneReveal{from{opacity:0;transform:scale(1.035)}to{opacity:1;transform:scale(1)}}
+.menu{position:absolute;top:48%;right:8%;width:28%;display:flex;flex-direction:column;gap:10px;z-index:2;animation:menuReveal 1.2s .25s both}
+@keyframes menuReveal{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.menu button{padding:12px 10px;background:#202d38;color:white;border:2px solid #60748b;border-radius:12px;font-size:clamp(11px,1.3vw,17px);font-weight:bold;cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s}
+.menu button:hover,.menu button:focus-visible{border-color:#72ff65;box-shadow:0 0 15px #72ff65;transform:translateY(-2px)}
+.next{position:absolute;bottom:5%;right:5%;width:19%;height:12%;border:0;background:transparent;cursor:pointer;z-index:1}
+#transition{position:fixed;inset:0;background:#05070c;z-index:20;opacity:0;pointer-events:none;transition:opacity 1.15s ease}
+#transition.show{opacity:1;pointer-events:all}
+@media(max-width:650px){
+.scene-image{width:100%;height:85%}
+.menu{top:auto;bottom:7%;left:50%;right:auto;width:85%;gap:8px;transform:translateX(-50%);animation:none}
+.menu button{padding:10px;font-size:13px}
+}
+@media(prefers-reduced-motion:reduce){.scene-image,.menu{animation:none}#transition{transition:opacity .15s}}
+</style>
+</head>
+<body>
+<div class="screen">
+  <img class="scene-image" src="BaldGuyBlink.gif" alt="RIT ICS welcome, animated teacher">
+  <div class="menu">
+    <button type="button" onclick="choose('lab')">💻 Computer lab access</button>
+    <button type="button" onclick="choose('course')">📖 Course information</button>
+    <button type="button" onclick="choose('security')">🛡️ Security system demo</button>
+  </div>
+  <button class="next" aria-label="Next screen" onclick="navigateSmoothly('screen3.html')"></button>
+</div>
+<div id="transition" aria-hidden="true"></div>
+<script>
+let transitioning=false;
+function navigateSmoothly(destination){
+  if(transitioning)return;
+  transitioning=true;
+  document.getElementById('transition').classList.add('show');
+  setTimeout(()=>{window.location.href=destination},1150);
+}
+function choose(option){
+  const pages={lab:'lab.html',course:'course.html',security:'hallway.html'};
+  if(Object.prototype.hasOwnProperty.call(pages,option))navigateSmoothly(pages[option]);
+}
+</script>
+</body>
+</html>
