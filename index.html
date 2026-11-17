@@ -2,272 +2,194 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ICS Escape Room</title>
-
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>ICS Escape Room | Enter the Lab</title>
 <style>
-* {
-  box-sizing: border-box;
+*{
+  box-sizing:border-box
 }
-
-html, body {
-  margin: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden
 }
-
-
-body.fade-out {
-  opacity: 0;
+body{
+  background:#050204;
+  color:white;
+  font-family:'Courier New',monospace;
+  opacity:1;
+  transition:opacity 1.5s ease-in-out
 }
-body {
-  background: #000;
-  font-family: "Courier New", monospace;
-  color: white;
-    opacity: 1;
-  transition: opacity 1.5s ease-in-out; /* Adjust 1.5s to make it slower or faster */
+body.fade-out{
+  opacity:0
 }
-
-/* RED MATRIX BACKGROUND */
-
-#matrix {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
+#scene,#matrix{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  display:block
 }
-
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(
-    circle,
-    rgba(0, 0, 0, 0.2) 0%,
-    rgba(0, 0, 0, 0.8) 100%
-  );
-  z-index: 1;
-  pointer-events: none;
+#scene{
+  z-index:0
 }
-
-/* MAIN CONTENT */
-
-.intro {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 20px;
+#matrix{
+  z-index:-1
 }
-
-/* RED TITLE */
-
-.title {
-  font-size: clamp(38px, 7vw, 90px);
-  font-weight: 900;
-  letter-spacing: 6px;
-  color: #ff2020;
-  text-shadow:
-    0 0 10px #ff0000,
-    0 0 25px #ff0000,
-    0 0 60px #8b0000;
-  margin: 0 0 55px;
-  animation: titleGlow 2.5s ease-in-out infinite;
+.shade{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:1;
+  background:radial-gradient(ellipse at 50% 45%,transparent 12%,rgba(0,0,0,.4) 60%,rgba(0,0,0,.85) 100%)
 }
-
-@keyframes titleGlow {
-  0%, 100% {
-    text-shadow:
-      0 0 10px #ff0000,
-      0 0 25px #ff0000;
+.scan{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:2;
+  opacity:.10;
+  background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(0,0,0,.6) 4px 5px)
+}
+.intro{
+  position:relative;
+  z-index:3;
+  display:flex;
+  min-height:100dvh;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:20px;
+  pointer-events:none
+}
+.panel{
+  width:min(94vw,850px);
+  padding:28px 15px 32px;
+  animation:enter 2.2s cubic-bezier(.2,.7,.2,1) both
+}
+.eyebrow{
+  font-size:clamp(10px,1.5vw,14px);
+  letter-spacing:.42em;
+  color:#f7a4ad;
+  text-shadow:0 0 18px #fa243e;
+  margin-bottom:16px
+}
+.title{
+  font-size:clamp(39px,8vw,94px);
+  line-height:1.02;
+  letter-spacing:clamp(1px,.55vw,7px);
+  font-weight:900;
+  margin:0;
+  text-shadow:0 0 12px #f00,0 0 34px #bd001b,0 0 38px #a5001c;
+  animation:glow 4s ease-in-out infinite
+}
+.title span{
+  display:block;
+  color:#ff283c
+}
+.rule{
+  height:1px;
+  width:min(70%,430px);
+  margin:22px auto;
+  background:linear-gradient(90deg,transparent,#ff334c,transparent);
+  box-shadow:0 0 18px #ff183e
+}
+.sub{
+  font-size:clamp(11px,1.6vw,15px);
+  letter-spacing:.12em;
+  color:#e7b4b9;
+  margin:0 0 29px
+}
+.start-button{
+  pointer-events:auto;
+  touch-action:manipulation;
+  cursor:pointer;
+  position:relative;
+  overflow:hidden;
+  border:2px solid #ff3852;
+  border-radius:5px;
+  background:linear-gradient(180deg,rgba(45,2,12,.93),rgba(8,0,4,.96));
+  color:#fff;
+  font:900 clamp(19px,3vw,28px) 'Courier New',monospace;
+  letter-spacing:.27em;
+  padding:19px 55px;
+  box-shadow:0 0 24px #b9003070,inset 0 0 20px #a6002440;
+  transition:transform .25s,box-shadow .25s,background .25s
+}
+.start-button:hover,.start-button:focus-visible{
+  transform:scale(1.055);
+  box-shadow:0 0 40px #fa1c59aa,inset 0 0 35px #e21c4440;
+  outline:none
+}
+.start-button:active{
+  transform:scale(.97)
+}
+@keyframes enter{
+  from{
+    opacity:0;
+    transform:translateY(35px) scale(.96);
+    filter:blur(7px)
   }
-
-  50% {
-    text-shadow:
-      0 0 20px #ff0000,
-      0 0 50px #ff0000,
-      0 0 80px #ff0000;
-  }
-}
-
-/* RED START BUTTON */
-
-.start-button {
-  background: rgba(0, 0, 0, 0.85);
-  color: #ff2020;
-  border: 3px solid #ff2020;
-  border-radius: 12px;
-  padding: 20px 65px;
-  font-family: "Courier New", monospace;
-  font-size: 30px;
-  font-weight: 900;
-  letter-spacing: 6px;
-  cursor: pointer;
-  box-shadow:
-    0 0 15px #ff0000,
-    inset 0 0 12px rgba(255, 0, 0, 0.2);
-  transition:
-    transform 0.3s ease,
-    background 0.3s ease,
-    box-shadow 0.3s ease;
-}
-
-.start-button:hover {
-  transform: scale(1.08);
-  background: #ff2020;
-  color: #000;
-  box-shadow:
-    0 0 25px #ff0000,
-    0 0 60px #ff0000;
-}
-
-.start-button:active {
-  transform: scale(0.96);
-}
-
-/* SUBTITLE */
-
-.subtitle {
-  margin-top: 35px;
-  color: #ffaaaa;
-  font-size: 15px;
-  letter-spacing: 3px;
-  animation: blink 2s infinite;
-}
-
-@keyframes blink {
-  0%, 100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.4;
+  to{
+    opacity:1;
+    transform:none;
+    filter:blur(0)
   }
 }
-
-/* MOBILE */
-
-@media (max-width: 480px) {
-  .title {
-    letter-spacing: 3px;
-    margin-bottom: 40px;
+@keyframes glow{
+  50%{
+    text-shadow:0 0 18px #f00,0 0 55px #f13,0 0 55px #a5001c
   }
-
-  .start-button {
-    font-size: 24px;
-    padding: 17px 45px;
+}
+@media(max-width:600px){
+  .panel{
+    padding:15px 6px
   }
-
-  .subtitle {
-    font-size: 12px;
-    letter-spacing: 1px;
+  .eyebrow{
+    letter-spacing:.2em
+  }
+  .title{
+    font-size:clamp(38px,10vw,64px)
+  }
+  .start-button{
+    padding:18px 42px
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .panel,.title{
+    animation:none
   }
 }
 </style>
 </head>
-
 <body>
-
-<!-- RED MATRIX RAIN -->
-
-<canvas id="matrix"></canvas>
-
-<div class="overlay"></div>
-
-<!-- INTRO SCREEN -->
+<canvas id="scene" aria-hidden="true">
+</canvas>
+<canvas id="matrix" aria-hidden="true">
+</canvas>
+<div class="shade">
+</div>
+<div class="scan">
+</div>
 
 <main class="intro">
-
-  <h1 class="title">
-    ICS ESCAPE ROOM
-  </h1>
-
-  <button
-    class="start-button"
-    type="button"
-    onclick="startGame()"
-  >
-    START
-  </button>
-
-  <p class="subtitle">
-    PRESS START TO ENTER
-  </p>
-
+<div class="panel">
+<div class="eyebrow">RIT // ICS LAB</div>
+<h1 class="title">ICS <span>ESCAPE ROOM</span>
+</h1>
+<div class="rule">
+</div>
+<p class="sub">ENTER THE LAB. SOLVE THE PUZZLES. ESCAPE.</p>
+<button class="start-button" type="button" onclick="startGame()">▶ START</button>
+</div>
 </main>
-  <script src="disablekeyboard.js"></script>
-
+<script src="disablekeyboard.js">
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js">
+</script>
 <script>
-  
-/* RED MATRIX RAIN */
-
-const canvas = document.getElementById("matrix");
-const ctx = canvas.getContext("2d");
-
-const characters =
-  "01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&@";
-
-const fontSize = 18;
-
-let columns;
-let drops;
-
-function resizeMatrix() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-
-  columns = Math.ceil(canvas.width / fontSize);
-
-  drops = Array.from(
-    { length: columns },
-    () => Math.random() * -50
-  );
-}
-
-function drawMatrix() {
-  ctx.fillStyle = "rgba(0, 0, 0, 0.06)";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  ctx.fillStyle = "#ff2020";
-  ctx.font = fontSize + "px monospace";
-
-  for (let i = 0; i < drops.length; i++) {
-    const character =
-      characters[
-        Math.floor(Math.random() * characters.length)
-      ];
-
-    ctx.fillText(
-      character,
-      i * fontSize,
-      drops[i] * fontSize
-    );
-
-    if (
-      drops[i] * fontSize > canvas.height &&
-      Math.random() > 0.975
-    ) {
-      drops[i] = 0;
-    }
-
-    drops[i]++;
-  }
-}
-
-resizeMatrix();
-
-window.addEventListener("resize", resizeMatrix);
-
-setInterval(drawMatrix, 45);
-
-/* START GAME */
-
+// Preserve the original START action and its exact game-progress reset behavior.
 
 function startGame() {
 
@@ -322,8 +244,33 @@ function startGame() {
     window.location.href = "intro.html";
   }, 1500);
 }
-
+(function(){
+const canvas=document.getElementById('scene');
+if(typeof THREE==='undefined'){
+const fallback=document.getElementById('matrix'),ctx=fallback.getContext('2d');let drops=[];
+function resize(){fallback.width=innerWidth;fallback.height=innerHeight;drops=Array.from({length:Math.ceil(innerWidth/18)},()=>-Math.random()*60)}resize();addEventListener('resize',resize);
+setInterval(()=>{ctx.fillStyle='rgba(0,0,0,.09)';ctx.fillRect(0,0,fallback.width,fallback.height);ctx.fillStyle='#ff2841';ctx.font='18px monospace';drops.forEach((d,i)=>{ctx.fillText('01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&@'[Math.random()*32|0],i*18,d*18);drops[i]=d*18>fallback.height&&Math.random()>.975?0:d+1})},55);return;
+}
+let renderer;try{renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'default',alpha:false})}catch(e){canvas.style.display='none';return}
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.setSize(innerWidth,innerHeight);renderer.outputEncoding=THREE.sRGBEncoding;
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x050204);scene.fog=new THREE.FogExp2(0x110308,.027);
+const camera=new THREE.PerspectiveCamera(68,innerWidth/innerHeight,.1,160);
+scene.add(new THREE.AmbientLight(0x6a182b,.48));scene.add(new THREE.HemisphereLight(0x96273d,0x070106,.35));
+const wall=new THREE.MeshStandardMaterial({color:0x20070e,roughness:.82}),floor=new THREE.MeshStandardMaterial({color:0x11050a,roughness:.78}),metal=new THREE.MeshStandardMaterial({color:0x4b1723,metalness:.5,roughness:.45}),neon=new THREE.MeshBasicMaterial({color:0xff173d}),glass=new THREE.MeshStandardMaterial({color:0x411521,metalness:.7,roughness:.25});
+function box(w,h,d,m,x,y,z){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);scene.add(o);return o}
+// Industrial corridor, viewed from the entrance, with repeating structural ribs.
+for(let z=10;z>=-105;z-=7){box(9,.22,7,floor,0,-.14,z-3.5);box(9,.2,7,wall,0,5.25,z-3.5);for(const side of [-1,1]){box(.24,5.5,7,wall,side*4.5,2.5,z-3.5);box(.16,5,.19,metal,side*4.25,2.5,z);box(.2,.11,7,metal,side*4.2,4.65,z-3.5);box(.07,.08,5,neon,side*4.17,3.5,z-3.5)}box(8.6,.08,.13,metal,0,.05,z);box(4,.075,.24,neon,0,5.04,z-1);box(1.6,.1,1.6,glass,0,5.1,z-1)}
+const lights=[];for(let z=5;z>-105;z-=14){const l=new THREE.PointLight(0xff123d,2.3,20);l.position.set(0,4.65,z);scene.add(l);lights.push(l)}
+// Distant glowing doorway and luminous exit frame.
+const exitMat=new THREE.MeshBasicMaterial({color:0x3cffad});box(5,4.5,.15,new THREE.MeshBasicMaterial({color:0x08382b}),0,2.25,-108);box(.18,4.7,.3,exitMat,-2.6,2.25,-107.8);box(.18,4.7,.3,exitMat,2.6,2.25,-107.8);box(5.4,.18,.3,exitMat,0,4.62,-107.8);
+// Light floating digital particles, intentionally sparse for mobile performance.
+const dots=[];const dotMat=new THREE.MeshBasicMaterial({color:0xff4262});for(let i=0;i<55;i++){const p=new THREE.Mesh(new THREE.BoxGeometry(.035,.15,.035),dotMat);p.position.set((Math.random()-.5)*8,Math.random()*5,-Math.random()*105);scene.add(p);dots.push({p,offset:Math.random()*6.28})}
+const clock=new THREE.Clock();function animate(){requestAnimationFrame(animate);const t=clock.getElapsedTime();
+// Slow, smooth cinematic push down the hallway with subtle breathing movement.
+const glide=Math.min(t/36,1);camera.position.set(Math.sin(t*.25)*.16,1.8+Math.sin(t*.65)*.055,7-glide*16);camera.lookAt(Math.sin(t*.18)*.25,2,-50-glide*10);
+lights.forEach((l,i)=>{l.intensity=1.6+Math.sin(t*2.1+i*1.7)*.35});dots.forEach(({p,offset})=>{p.position.y+=.0015+Math.sin(t+offset)*.0005;if(p.position.y>5)p.position.y=0});renderer.render(scene,camera)}animate();
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+})();
 </script>
-
 </body>
 </html>
