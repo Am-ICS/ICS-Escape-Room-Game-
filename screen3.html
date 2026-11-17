@@ -266,18 +266,53 @@ canvas{
 #puzzleFrame { flex:1; width:100%; min-height:0; border:0; background:black; }
 body.puzzle-active > canvas, body.puzzle-active > #hud, body.puzzle-active > #mobile, body.puzzle-active > #action { visibility:hidden; }
 #exitGuide{position:absolute;top:48%;right:18px;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;padding:13px 10px;background:#061c16ed;border:2px solid #44ff9a;border-radius:12px;color:#baffd8;box-shadow:0 0 22px #19ff7755;text-align:center;max-width:132px}#exitArrow{font-size:49px;line-height:1;font-weight:900;text-shadow:0 0 14px #39ff9c}#exitGuideText{font-size:11px;font-weight:900;line-height:1.4;letter-spacing:.5px}body.puzzle-active #exitGuide{display:none}@media(max-width:650px){#exitGuide{right:7px;top:55%;padding:8px 5px;max-width:85px}#exitArrow{font-size:32px}#exitGuideText{font-size:9px}#help{font-size:10px;white-space:normal;width:80%}}
+
+/* SCREEN4-INSPIRED RED HORROR UI */
+#top{background:linear-gradient(125deg,#200912ed,#0b060bec);border:1px solid #a2384f;border-left:4px solid #ff4b69;border-radius:4px;box-shadow:0 12px 60px #000b,0 0 28px #ff18402a;backdrop-filter:blur(9px);max-width:650px}
+#brand{color:#ff9caf;letter-spacing:2.5px}
+#clock{color:#ff526f;text-shadow:0 0 15px #e31e4c77}
+#status{color:#ffbecb;letter-spacing:.4px}
+#prompt{background:#1b0711ed;border:1px solid #ff6c88;border-radius:4px;box-shadow:0 0 32px #f5224b4d;color:#ffe1e7;font-weight:800;letter-spacing:.6px}
+#help{background:#170710dc;border:1px solid #63273a;border-radius:4px;color:#ffc2ce;letter-spacing:.4px}
+#aim{color:#ffc4d0;text-shadow:0 0 12px #ff3158}
+#exitGuide{background:#1c0912ed;border:1px solid #ff5d78;border-radius:4px;color:#ffc3cf;box-shadow:0 0 20px #f2254c33}
+#exitArrow{text-shadow:0 0 13px #ff476c}
+.btn{border-radius:4px;background:#a3223c;border-color:#ff748c}
+#puzzleHeader{background:#180710;border-bottom-color:#ff4b70}
+
+/* Stage-clear cinematic transition */
+#stageTransition{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,#300916 0%,#10040a 55%,#020104 100%);color:#fff;overflow:hidden;text-align:center;padding:20px}
+#stageTransition.show{display:flex;animation:stageIn .65s ease-out both}
+#stageTransition:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0px,transparent 3px,#ff315009 4px);pointer-events:none}
+.stageInner{position:relative;width:min(92vw,680px);padding:48px 25px;border:1px solid #ff5577;box-shadow:0 0 90px #ff174533,inset 0 0 65px #ff174511;background:#10050bd9}
+.stageEyebrow{font:700 13px monospace;letter-spacing:4px;color:#ff859d}
+.stageInner h1{font:900 clamp(36px,7vw,72px) Arial,sans-serif;letter-spacing:3px;color:#ffeff1;text-shadow:0 0 30px #ff285a;margin:22px 0 8px}
+.stageInner h2{font:900 clamp(25px,5vw,43px) monospace;color:#ff617f;margin:10px 0 24px}
+.stageInner p{color:#e6acb9;font:15px monospace;letter-spacing:1px}
+.stageTrack{height:6px;background:#471323;margin:32px auto 0;max-width:440px;overflow:hidden}
+.stageTrack span{display:block;width:0;height:100%;background:#ff5577;box-shadow:0 0 14px #ff5577;animation:stageLoad 3s linear forwards}
+@keyframes stageIn{from{opacity:0}to{opacity:1}}
+@keyframes stageLoad{to{width:100%}}
+</style>
+<style id="shared-corridor-look">
+/* Both stages share the SAME red emergency corridor treatment. */
+html::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:6;
+background:repeating-linear-gradient(to bottom,rgba(0,0,0,.0) 0px,rgba(0,0,0,.0) 3px,rgba(10,0,3,.30) 4px,rgba(10,0,3,.30) 5px);
+opacity:.60;mix-blend-mode:multiply}
+html::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:6;
+background:radial-gradient(ellipse at 50% 44%,transparent 22%,rgba(0,0,0,.47) 100%)}
 </style>
 </head>
 <body>
 <div id="hud">
 <div id="top">
-<div id="brand">🐯 RIT | ICS ESCAPE ROOM — SECURITY BREACH</div>
+<div id="brand">◈ RIT // ICS LAB — RED ALERT</div>
 <div id="clock">05:00</div>
 <div id="progress">
 <div id="bar">
 </div>
 </div>
-<div id="status">🔒 Restore Websites, Files, and Applications</div>
+<div id="status">⚠ RESTORE THE THREE COMPROMISED SYSTEMS</div>
 <div id="terminal-status" aria-live="polite">🌐 WEBSITES: LOCKED &nbsp; 📁 FILES: LOCKED &nbsp; 💻 APPS: LOCKED</div>
 <div id="hearts">❤️❤️❤️❤️❤️</div>
 </div>
@@ -285,7 +320,7 @@ body.puzzle-active > canvas, body.puzzle-active > #hud, body.puzzle-active > #mo
 <div id="exitGuide"><span id="exitArrow">↓</span><span id="exitGuideText">EXIT DOOR • BEHIND YOU</span></div>
 <div id="prompt">
 </div>
-<div id="help">WASD = walk • Move mouse = look (NO HOLD) • E = interact • Shift = run</div>
+<div id="help">WASD MOVE  •  MOUSE LOOK  •  SHIFT SPRINT  •  E ACCESS</div>
 <img id="teacher" src="Shocked.png" alt="Shocked teacher" onerror="this.style.display='none'">
 </div>
 <button id="action" class="btn" type="button">INTERACT</button>
@@ -310,6 +345,7 @@ body.puzzle-active > canvas, body.puzzle-active > #hud, body.puzzle-active > #mo
 <p>The hacker has locked the system. Returning to the beginning in 5 seconds...</p>
 </div>
 </div>
+<div id="stageTransition" role="status" aria-live="polite"><div class="stageInner"><div class="stageEyebrow">◈ ICS LAB // STAGE 01 CLEARED</div><h1>CHALLENGE COMPLETE!</h1><h2>NEXT SCREEN →</h2><p>ENTERING STAGE 2 · SECURITY TOWER</p><div class="stageTrack"><span></span></div></div></div>
 <div id="fade">
 </div>
 
@@ -367,7 +403,7 @@ function updateHUD(){
   const ms=timeLeft(),seconds=Math.ceil(ms/1000);
   $('clock').textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0');
   $('bar').style.width=(ms/DURATION*100)+'%';
-  $('exitGuideText').textContent=allSolved()?'EXIT UNLOCKED • FOLLOW ARROW':'EXIT DOOR • FOLLOW ARROW';
+  $('exitGuideText').textContent=allSolved()?'NEXT CHALLENGE • FOLLOW ARROW':'EXIT DOOR • FOLLOW ARROW';
   $('status').textContent=allSolved()?'🔓 EXIT UNLOCKED — TURN AROUND FROM THE COMPUTERS AND FOLLOW GREEN FLOOR LIGHTS':`🔒 ${PUZZLES.filter(solved).length}/3 RESTORED — EXIT IS BEHIND YOU, OPPOSITE THE THREE COMPUTERS`;
   $('terminal-status').innerHTML=PUZZLES.map((p,i)=>{
     const icon=['🌐','📁','💻'][i];
@@ -410,7 +446,9 @@ function interact(){
     const t=Number(sessionStorage.getItem('escapeRoomEndTime'));
     if(!Number.isFinite(t)||t<=0)sessionStorage.setItem('escapeRoomEndTime',String(Date.now()+15*60*1000));
     sessionStorage.removeItem(RESUME_KEY);
-    location.href='screen4.html'
+    $('stageTransition').classList.add('show');
+    document.exitPointerLock?.();
+    setTimeout(()=>{ location.href='screen4.html'; },3000);
   }
   else goToPuzzle(near.puzzle)
 }
@@ -443,96 +481,175 @@ function sign(text,fg='#ff7777',bg='#14060a'){
 }
 function createRoom(){
   scene=new THREE.Scene();
-  scene.background=new THREE.Color(0x07090e);
-  scene.fog=new THREE.Fog(0x07090e,14,42);
-  camera=new THREE.PerspectiveCamera(72,innerWidth/innerHeight,.1,90);
+  scene.background=new THREE.Color(0x090203);
+  scene.fog=new THREE.FogExp2(0x160305,.038);
+  camera=new THREE.PerspectiveCamera(76,innerWidth/innerHeight,.1,90);
   camera.position.set(0,1.65,6);
-  renderer=new THREE.WebGLRenderer({
-    antialias:true
-  });
+  renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
   renderer.setSize(innerWidth,innerHeight);
-  renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));
+  renderer.setPixelRatio(Math.min(devicePixelRatio,1.8));
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure=1.5;
+  if('outputEncoding' in renderer)renderer.outputEncoding=THREE.sRGBEncoding;
   document.body.prepend(renderer.domElement);
   clock=new THREE.Clock();
-  scene.add(new THREE.HemisphereLight(0x7086b5,0x180a10,.38));
-  const wall=material(0x252b34),floor=material(0x22262c),trim=material(0x5a6875),desk=material(0x393b43),red=material(0x551016,0xff1e2e,.85),green=material(0x174b34,0x21ff83,1.2);
-  // Compact enclosed ICS computer lab
-  cube(18,.3,20,floor,0,-.15,0);
-  cube(18,.3,20,wall,0,5.1,0);
-  cube(.3,5.2,20,wall,-9,2.5,0);
-  cube(.3,5.2,20,wall,9,2.5,0);
-  cube(18,5.2,.3,wall,0,2.5,-10);
-  cube(18,5.2,.3,wall,0,2.5,10);
-  for(let z=-8; z<=8; z+=4){
-    cube(17.6,.04,.07,trim,0,.03,z);
-    cube(1.6,.08,2,red,0,4.92,z);
-    const light=new THREE.PointLight(0xff3344,.85,12);
-    light.position.set(0,4.65,z);
-    scene.add(light)
+  scene.add(new THREE.HemisphereLight(0xb45b70,0x0a0307,.8));
+  scene.add(new THREE.AmbientLight(0x551424,.42));
+  const steel=material(0x261117),wall=material(0x21070b),floor=material(0x17080c),trim=material(0x4b1520),
+        desk=material(0x45333b),black=material(0x101018),red=material(0x621522,0xff224d,.9),
+        green=material(0x18402c,0x24ff82,1.4);
+  const neon=(color)=>material(color,color,1.7);
+  const lamps=[];
+  function bulb(color,intensity,x,y,z,range=10,flicker=false){
+    const l=new THREE.PointLight(color,intensity,range,2);l.position.set(x,y,z);scene.add(l);
+    if(flicker)lamps.push({light:l,power:intensity});
+    return l;
   }
-  for(let x of [-8.7,8.7])for(let z of [-6,0,6]){
-    cube(.1,2.6,2.7,trim,x,2.45,z);
-    cube(.12,2.1,2.2,material(0x19303c,0x073b52,.22),x,2.45,z)
+  function plaque(text,x,y,z,w=3.4,h=.48,fg='#ffbdc8',bg='#210b14'){
+    const c=document.createElement('canvas');c.width=1024;c.height=160;
+    const ctx=c.getContext('2d');ctx.fillStyle=bg;ctx.fillRect(0,0,1024,160);
+    ctx.strokeStyle=fg;ctx.lineWidth=5;ctx.strokeRect(7,7,1010,146);
+    ctx.fillStyle=fg;ctx.shadowColor=fg;ctx.shadowBlur=12;
+    ctx.font='bold 53px monospace';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(text,512,82);
+    const tex=new THREE.CanvasTexture(c);
+    if('encoding' in tex)tex.encoding=THREE.sRGBEncoding;
+    const mesh=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({map:tex,side:THREE.DoubleSide}));
+    mesh.position.set(x,y,z);scene.add(mesh);return mesh;
   }
-  // Three puzzle stations face the player: Websites / Files / Applications.
-  const spots=[[-5.5,-5], [0,-5], [5.5,-5]];
+  // Long, red-lit abandoned IT hallway with gridded metal floor and structural ribs.
+  cube(18,.36,20,floor,0,-.18,0);
+  cube(18,.28,20,wall,0,5.45,0);
+  cube(.34,5.6,20,wall,-9,2.65,0);
+  cube(.34,5.6,20,wall,9,2.65,0);
+  cube(18,5.6,.35,wall,0,2.65,-10);
+  cube(18,5.6,.35,wall,0,2.65,10);
+  for(let z=-9;z<=9;z+=1.4){
+    cube(17.5,.025,.045,trim,0,.02,z);
+    for(const x of [-8.7,8.7]){
+      cube(.17,5.2,.18,trim,x,2.65,z);
+      cube(.11,.75,.12,neon(0x98233b),x,4.2,z);
+    }
+    cube(17.3,.11,.14,trim,0,5.23,z);
+  }
+  for(let x=-8;x<=8;x+=1.6)cube(.025,.015,19.5,steel,x,.03,0);
+  for(let z=-8;z<=8;z+=3){
+    cube(4.5,.19,.73,black,0,5.15,z);
+    cube(3.8,.06,.27,neon(0xff3030),0,5.03,z);
+    bulb(0xff2525,2.8,0,4.85,z,9,true);
+  }
+  for(const x of [-8.55,8.55]){
+    cube(.23,.3,19.3,steel,x,4.86,0);
+    for(let z=-8;z<=8;z+=2.4){
+      cube(.15,.06,.2,neon(0xff4762),x,4.72,z);
+    }
+  }
+  // Red floor route with caution stripes, cables and service hatch covers.
+  for(let z=-9;z<=9;z+=1.5){
+    for(const x of [-2.4,2.4])cube(.16,.018,.8,neon(0x9f293e),x,.05,z);
+  }
+  for(let z=-7;z<=7;z+=3){
+    cube(1.9,.026,1.2,steel,0,.038,z);
+    for(let i=0;i<5;i++)cube(1.7,.03,.045,trim,0,.057,z-.42+i*.21);
+  }
+  // Side doors, glass inspection panels, pipework and red warning strips.
+  for(let z of [-6.8,-1.8,3.2]){
+    for(let side of [-1,1]){
+      let x=side*8.73;
+      cube(.14,3.6,2.55,black,x,2.05,z);
+      cube(.26,.14,2.9,trim,x,3.92,z);
+      for(let dz of [-1.46,1.46])cube(.25,3.8,.12,trim,x,2.08,z+dz);
+      cube(.09,1.12,1.62,material(0x14202b,0x7d1e34,.35),x-side*.1,2.65,z);
+      cube(.08,.045,1.4,neon(0xff3957),x-side*.15,3.26,z);
+      cube(.3,.1,2.8,steel,x,4.64,z);
+    }
+  }
+  // Server racks line the walls; blinking indicators and cooling vents.
+  for(const z of [-8.1,-4.1,-.1,3.9,7.7])for(const side of [-1,1]){
+    const x=side*7.65;
+    cube(1.35,2.8,.95,black,x,1.45,z);
+    cube(1.46,.1,1.06,trim,x,2.89,z);
+    for(let y=.28;y<2.72;y+=.25){
+      cube(1.1,.16,.035,steel,x,y,z+.5);
+      for(let k=0;k<4;k++)cube(.045,.026,.019,neon(k===0?0xff3b5e:k===3?0xffc37b:0x9d314a),x-.38+k*.24,y,z+.523);
+    }
+  }
+  // Ceiling security cameras and wall warning displays.
+  for(const z of [-6,2,7]){
+    cube(.65,.22,.45,black,-7.95,4.55,z);
+    cube(.24,.16,.16,neon(0xff3d63),-7.56,4.49,z);
+  }
+  plaque('SYSTEM HACKED',0,4.18,-9.78,6.4,.66,'#ff4545');
+  plaque('SECURITY LOCKDOWN ACTIVE',0,3.49,-9.77,5.4,.47,'#ffb2c0');
+  plaque('NEXT CHALLENGE',0,4.18,9.77,5.3,.62,'#ff8b9f');
+  // Three existing puzzles only; screens are interactive gateways, not recreated games.
+  const spots=[[-5.5,-5],[0,-5],[5.5,-5]];
   PUZZLES.forEach((p,i)=>{
     const [x,z]=spots[i];
-    // Computer desk, legs, and a proper desktop monitor (not a floating TV).
-    cube(3.5,.22,1.5,desk,x,1.05,z+.4);
-    cube(.15,1,.15,trim,x-1.4,.5,z+.9);
-    cube(.15,1,.15,trim,x+1.4,.5,z+.9);
-    const bezel=material(0x11161d),screenMat=material(0x101d22,p.color,.35);
-    cube(2.65,1.62,.20,bezel,x,2.15,z);
-    const monitor=cube(2.42,1.38,.035,screenMat,x,2.18,z+.123);
-    // Lower bezel, central support neck, and wide foot on the desk.
-    cube(2.65,.16,.23,trim,x,1.39,z+.02);
-    cube(.18,.37,.19,trim,x,1.21,z+.12);
-    cube(.85,.07,.58,bezel,x,1.13,z+.25);
-    // Keyboard and mouse make each station unmistakably a computer.
-    cube(1.85,.055,.43,material(0x171c25),x-.28,1.19,z+.85);
-    for(let r=0;r<3;r++)for(let c=0;c<11;c++)
-      cube(.12,.008,.085,material(0x52606d),x-1.08+c*.155,1.224,z+.70+r*.12);
-    cube(.21,.06,.34,material(0x242c36),x+1.17,1.19,z+.85);
-    // Desktop tower beside the monitor, with a glowing power light.
-    cube(.43,.95,.72,bezel,x+1.45,1.64,z+.23);
-    cube(.06,.06,.025,material(0x0b3523,0x3dff8a,1.8),x+1.45,1.94,z+.61);
-    cube(2.9,.55,.07,sign(['🌐 WEBSITES','📁 FILES','💻 APPS'][i]),x,3.45,z);
-    cube(2.55,.3,.07,sign('PRESS E TO ACCESS','#ffcccc','#26090d'),x,1.6,z+.15);
-    const lamp=new THREE.PointLight(p.color,1.1,7);
-    lamp.position.set(x,2.5,z+1); scene.add(lamp);
+    cube(3.6,.22,1.65,desk,x,1.04,z+.4);
+    for(const dx of [-1.48,1.48])for(const dz of [-.25,1.05])
+      cube(.14,.94,.14,steel,x+dx,.52,z+dz);
+    cube(2.7,1.7,.2,black,x,2.14,z);
+    const screenMat=material(0x140c14,p.color,.55);
+    const monitor=cube(2.46,1.45,.035,screenMat,x,2.16,z+.125);
+    // Terminal text is painted onto the monitor glass.
+    const c=document.createElement('canvas');c.width=768;c.height=450;
+    const ctx=c.getContext('2d');
+    ctx.fillStyle='#090a11';ctx.fillRect(0,0,768,450);
+    ctx.fillStyle='#ff637f';ctx.font='bold 29px monospace';ctx.fillText('◈ ICS // ACCESS TERMINAL',26,48);
+    ctx.fillStyle='#723244';ctx.fillRect(25,70,715,3);
+    ctx.fillStyle='#ffe0e4';ctx.font='bold 46px monospace';
+    ctx.fillText(['01  WEBSITES','02  FILES','03  APPLICATIONS'][i],26,149);
+    ctx.fillStyle='#ff9cab';ctx.font='28px monospace';
+    ['HACKED: DOMAIN ACCESS','HACKED: FILE INTEGRITY','HACKED: APP SECURITY'].forEach((t,j)=>{if(j===i)ctx.fillText(t,26,220)});
+    ctx.fillStyle='#b56a7e';ctx.fillText('PRESS E TO CONNECT',26,298);
+    ctx.fillStyle='#ff425e';ctx.fillRect(26,370,410,8);
+    for(let q=0;q<9;q++){ctx.fillStyle='#ffffff0c';ctx.fillRect(0,q*48,768,1);}
+    const tex=new THREE.CanvasTexture(c);
+    if('encoding' in tex)tex.encoding=THREE.sRGBEncoding;
+    const face=new THREE.Mesh(new THREE.PlaneGeometry(2.39,1.37),new THREE.MeshBasicMaterial({map:tex}));
+    face.position.set(x,2.16,z+.151);scene.add(face);
+    cube(.18,.33,.2,steel,x,1.25,z+.11);
+    cube(.88,.065,.56,black,x,1.1,z+.25);
+    cube(1.95,.06,.43,black,x-.25,1.18,z+.84);
+    for(let r=0;r<3;r++)for(let col=0;col<11;col++)
+      cube(.12,.009,.08,trim,x-1.12+col*.155,1.215,z+.69+r*.12);
+    cube(.22,.055,.32,black,x+1.18,1.18,z+.85);
+    cube(.47,.98,.74,black,x+1.45,1.67,z+.22);
+    cube(.055,.055,.02,neon(0xff4b68),x+1.45,1.94,z+.60);
+    plaque(['01 / WEBSITE DETECTIVE','02 / FILE RECOVERY','03 / APP SECURITY'][i],x,3.62,z-.06,3.5,.42,'#ffb1be');
+    const lamp=bulb(p.color,2.8,x,2.5,z+1,7,true);
     const obj={type:'puzzle',puzzle:p,x,z:z+1.7,monitor,lamp};
     terminals.push(obj);
     clickTargets.push({mesh:monitor,obj});
   });
-  // Exit at the opposite end, physically accessible after all three puzzles
-  cube(3.6,4.4,.2,trim,0,2.2,9.7);
-  door=cube(2.9,3.9,.16,red,0,1.95,9.5);
-  cube(5.6,.85,.12,sign('🚪 EXIT / NEXT STAGE','#ffffff','#08442b'),0,4.65,9.4);
-  // Bright frame and floor runway make the exit unmistakable.
-  const exitGlow=material(0x0c4a30,0x26ff89,1.8);
-  cube(.18,4.3,.2,exitGlow,-1.7,2.15,9.3);
-  cube(.18,4.3,.2,exitGlow,1.7,2.15,9.3);
-  cube(3.55,.2,.2,exitGlow,0,4.3,9.3);
-  cube(1.9,.4,.09,sign('E = EXIT','#ffffff','#0c4a30'),0,2.4,9.37);
-  doorLight=new THREE.PointLight(0xff2525,1.8,9);
-  doorLight.position.set(0,3.5,8.5);
-  scene.add(doorLight);
-  clickTargets.push({
-    mesh:door,obj:{
-      type:'exit',x:0,z:8
-    }
-  });
-  // Hacked warning banners on the side walls.
-  cube(.07,1.0,3.0,sign('SYSTEM HACKED','#ff3d48','#20070a'),-8.75,3.3,-3);
-  cube(.07,1.0,3.0,sign('ACCESS DENIED','#ff3d48','#20070a'),8.75,3.3,-3);
-  // Decorative floating screens removed: they obstructed the view.
-  // Bright exit floor markers point toward the door at z = +9.5.
-  for (const z of [-1, 1.5, 4, 6.5]) {
-    cube(.85,.035,.95,material(0x126a43,0x24ff91,1.8),0,.035,z);
+  // The exit remains behind the player; unlocked only after all three puzzles.
+  cube(3.7,4.55,.24,trim,0,2.25,9.7);
+  door=cube(3,3.95,.18,red,0,1.96,9.51);
+  const exitGlow=green;
+  cube(.17,4.3,.23,exitGlow,-1.72,2.15,9.32);
+  cube(.17,4.3,.23,exitGlow,1.72,2.15,9.32);
+  cube(3.6,.18,.22,exitGlow,0,4.3,9.32);
+  plaque('E  //  NEXT CHALLENGE',0,2.65,9.38,2.8,.44,'#c8ffdf','#10261a');
+  doorLight=bulb(0xff3554,3.2,0,3.5,8.4,9,true);
+  clickTargets.push({mesh:door,obj:{type:'exit',x:0,z:8}});
+  // Guidance from terminals to exit, preserving the same navigation direction.
+  for(const z of [-1,1.5,4,6.5]){
+    cube(.86,.035,.95,green,0,.035,z);
+    for(const x of [-.62,.62])cube(.1,.02,.7,neon(0x8b3545),x,.045,z);
   }
-  cube(5,.12,.12,material(0x125735,0x20ff82,1.5),0,.08,8.7);
+  cube(5,.12,.12,green,0,.08,8.7);
+  // Dust in the emergency lighting.
+  const particles=new THREE.BufferGeometry();
+  const coords=new Float32Array(480*3);
+  for(let i=0;i<480;i++){coords[i*3]=(Math.random()-.5)*17;coords[i*3+1]=Math.random()*5;coords[i*3+2]=(Math.random()-.5)*19;}
+  particles.setAttribute('position',new THREE.BufferAttribute(coords,3));
+  const dust=new THREE.Points(particles,new THREE.PointsMaterial({color:0xffa0b1,size:.032,transparent:true,opacity:.4,depthWrite:false}));
+  scene.add(dust);
+  scene.userData.horrorLights=lamps;
+  scene.userData.dust=dust;
 }
+
 const ray=new THREE.Raycaster();
 const mouse=new THREE.Vector2();
 function chooseNearest(){
@@ -551,9 +668,10 @@ function chooseNearest(){
   const p=$('prompt');
   p.style.display=near?'block':'none';
   if(near){
-    p.textContent=near.type==='exit'?(allSolved()?'🔓 EXIT UNLOCKED — Press E or INTERACT':'🔒 EXIT LOCKED — Restore all three systems'):`${near.puzzle.name}: ${solved(near.puzzle)?'✓ SOLVED — revisit':'🔒 HACKED — Press E or INTERACT'}`
+    p.textContent=near.type==='exit'?(allSolved()?'🔓 NEXT CHALLENGE — Press E to enter':'🔒 EXIT LOCKED — Restore all three systems'):`${near.puzzle.name}: ${solved(near.puzzle)?'✓ SOLVED — revisit':'🔒 HACKED — Press E or INTERACT'}`
   }
-  $('action').style.display=near&&(near.type!=='exit'||allSolved())?'block':'none'
+  $('action').style.display=near&&(near.type!=='exit'||allSolved())?'block':'none';
+  $('action').textContent=near&&near.type==='exit'?'NEXT CHALLENGE →':'INTERACT'
 }
 function look(dx,dy){
   yaw-=dx*.0035;
@@ -577,6 +695,11 @@ function animate(){
   camera.position.z=Math.max(-8.8,Math.min(8.5,camera.position.z));
   camera.position.y=1.65+(forward||side?Math.sin(performance.now()*.011)*.025:0);
   const t=clock.elapsedTime;
+  // Horror lighting and floating dust, purely visual.
+  if(scene.userData.horrorLights)scene.userData.horrorLights.forEach((v,i)=>{
+    v.light.intensity=v.power*(Math.sin(t*3.8+i*1.73)>-.92?1:.18);
+  });
+  if(scene.userData.dust)scene.userData.dust.rotation.y=Math.sin(t*.11)*.02;
   // Emergency lights flicker without changing gameplay.
   for(const term of terminals){
     const ok=solved(term.puzzle);
