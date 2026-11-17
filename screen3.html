@@ -293,6 +293,18 @@ body.puzzle-active > canvas, body.puzzle-active > #hud, body.puzzle-active > #mo
 .stageTrack span{display:block;width:0;height:100%;background:#ff5577;box-shadow:0 0 14px #ff5577;animation:stageLoad 3s linear forwards}
 @keyframes stageIn{from{opacity:0}to{opacity:1}}
 @keyframes stageLoad{to{width:100%}}
+
+/* Smooth terminal zoom and first-person interaction */
+#terminalTransition{position:fixed;inset:0;z-index:25;display:none;align-items:center;justify-content:center;pointer-events:none;background:rgba(2,3,8,0);transition:background .65s ease}
+#terminalTransition.active{display:flex}
+#terminalTransition.zoom{background:rgba(2,3,8,.93)}
+#terminalTransition .terminalCard{width:min(80vw,750px);height:min(54vh,440px);border:10px solid #14151a;border-radius:14px;background:radial-gradient(ellipse at center,#280e1a,#08090f 80%);box-shadow:0 0 0 3px #a53b53,0 0 85px #ff2c5560;transform:perspective(900px) translateY(28vh) scale(.14) rotateX(18deg);opacity:0;transition:transform .75s cubic-bezier(.2,.8,.15,1),opacity .4s;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:18px}
+#terminalTransition.zoom .terminalCard{transform:perspective(900px) translateY(0) scale(1) rotateX(0);opacity:1}
+#terminalTransition strong{font:900 clamp(22px,4vw,43px) monospace;color:#ff8ca5;text-shadow:0 0 20px #ff3e66;text-align:center}
+#terminalTransition small{font:14px monospace;color:#e7b5c1;letter-spacing:3px}
+#terminalTransition .load{width:65%;height:5px;background:#35131e;overflow:hidden}
+#terminalTransition .load:before{content:"";display:block;height:100%;width:0;background:#ff597e;box-shadow:0 0 12px #ff597e;transition:width .7s ease}
+#terminalTransition.zoom .load:before{width:100%}
 </style>
 <style id="shared-corridor-look">
 /* Both stages share the SAME red emergency corridor treatment. */
@@ -346,6 +358,7 @@ background:radial-gradient(ellipse at 50% 44%,transparent 22%,rgba(0,0,0,.47) 10
 </div>
 </div>
 <div id="stageTransition" role="status" aria-live="polite"><div class="stageInner"><div class="stageEyebrow">◈ ICS LAB // STAGE 01 CLEARED</div><h1>CHALLENGE COMPLETE!</h1><h2>NEXT SCREEN →</h2><p>ENTERING STAGE 2 · SECURITY TOWER</p><div class="stageTrack"><span></span></div></div></div>
+<div id="terminalTransition"><div class="terminalCard"><small>RIT // ICS SECURE TERMINAL</small><strong id="terminalOpeningName">CONNECTING...</strong><div class="load"></div><small>ESTABLISHING CONNECTION</small></div></div>
 <div id="fade">
 </div>
 
@@ -415,14 +428,21 @@ function updateHUD(){
   if(hearts===0)return timeout();
   if(ms<=0)timeout()
 }
+let terminalOpening=false;
 function goToPuzzle(p){
-  if (timedOut || !timeLeft()) return timeout();
-  // All three computers open their matching standalone HTML pages.
-  const pages = { websites: 'website.html', files: 'files.html', applications: 'applications.html' };
-  // Keep the lab active when returning from a standalone puzzle page.
-  sessionStorage.setItem(RESUME_KEY, JSON.stringify({x:camera.position.x,z:camera.position.z,yaw,pitch,at:Date.now()}));
-  window.location.href = pages[p.file];
+  if (terminalOpening || timedOut || !timeLeft()) return;
+  terminalOpening=true;
+  // Ease the player's view into the computer before opening its actual puzzle.
+  const pages={websites:'website.html',files:'files.html',applications:'applications.html'};
+  sessionStorage.setItem(RESUME_KEY,JSON.stringify({x:camera.position.x,z:camera.position.z,yaw,pitch,at:Date.now()}));
+  const layer=$('terminalTransition');
+  $('terminalOpeningName').textContent=p.name.toUpperCase();
+  layer.classList.add('active');
+  document.exitPointerLock?.();
+  requestAnimationFrame(()=>requestAnimationFrame(()=>layer.classList.add('zoom')));
+  setTimeout(()=>{window.location.href=pages[p.file];},900);
 }
+
 function closePuzzle(){
   puzzleOpen = false;
   lastMouseX=null;
@@ -485,6 +505,30 @@ function createRoom(){
   scene.fog=new THREE.FogExp2(0x160305,.038);
   camera=new THREE.PerspectiveCamera(76,innerWidth/innerHeight,.1,90);
   camera.position.set(0,1.65,6);
+  // First-person hoodie sleeves and visible hands; camera-relative, no extra model files.
+  const skin=new THREE.MeshStandardMaterial({color:0xb78364,roughness:.88});
+  const cloth=new THREE.MeshStandardMaterial({color:0x1b1c22,roughness:.96});
+  const gloveShadow=new THREE.MeshStandardMaterial({color:0x815a46,roughness:.9});
+  const handsRig=new THREE.Group();
+  camera.add(handsRig);scene.add(camera);
+  for(const side of [-1,1]){
+    const sleeve=new THREE.Mesh(new THREE.CylinderGeometry(.105,.16,.51,9),cloth);
+    sleeve.position.set(side*.39,-.51,-.67);sleeve.rotation.z=side*.33;
+    handsRig.add(sleeve);
+    const wrist=new THREE.Mesh(new THREE.CylinderGeometry(.079,.083,.13,9),skin);
+    wrist.position.set(side*.31,-.30,-.73);wrist.rotation.z=side*.33;handsRig.add(wrist);
+    const palm=new THREE.Mesh(new THREE.SphereGeometry(1,12,8),skin);
+    palm.scale.set(.112,.14,.058);palm.position.set(side*.29,-.235,-.77);handsRig.add(palm);
+    const thumb=new THREE.Mesh(new THREE.SphereGeometry(.046,10,8),skin);
+    thumb.position.set(side*.29-side*.105,-.245,-.80);thumb.scale.set(.8,1.8,.8);thumb.rotation.z=side*.7;handsRig.add(thumb);
+    for(let i=0;i<4;i++){
+      const finger=new THREE.Mesh(new THREE.SphereGeometry(.032-i*.002,9,7),i===3?gloveShadow:skin);
+      finger.position.set(side*(.23+i*.042),-.126+(i%2)*.009,-.79);finger.scale.set(.8,1.8,.85);finger.rotation.z=side*.10;
+      handsRig.add(finger);
+    }
+  }
+  scene.userData.handsRig=handsRig;
+
   renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
   renderer.setSize(innerWidth,innerHeight);
   renderer.setPixelRatio(Math.min(devicePixelRatio,1.8));
@@ -695,6 +739,13 @@ function animate(){
   camera.position.z=Math.max(-8.8,Math.min(8.5,camera.position.z));
   camera.position.y=1.65+(forward||side?Math.sin(performance.now()*.011)*.025:0);
   const t=clock.elapsedTime;
+  // Subtle breathing and walking sway, hands stay visible at screen bottom.
+  if(scene.userData.handsRig){
+    const h=scene.userData.handsRig;
+    const moving=!!(forward||side);
+    h.position.y=Math.sin(t*2.1)*.007+(moving?Math.sin(t*11)*.018:0);
+    h.rotation.z=(moving?Math.sin(t*6)*.024:0);
+  }
   // Horror lighting and floating dust, purely visual.
   if(scene.userData.horrorLights)scene.userData.horrorLights.forEach((v,i)=>{
     v.light.intensity=v.power*(Math.sin(t*3.8+i*1.73)>-.92?1:.18);
