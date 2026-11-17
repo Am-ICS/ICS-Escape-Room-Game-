@@ -1,409 +1,778 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>RIT Computer Lab - HACKED</title>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
-<style>
-* {
-  box-sizing: border-box;
-}
+  <title>RIT Computer Lab | HACKED</title>
 
-html, body {
-  margin: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
+  <!-- THREE.JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-body {
-  background: #050000;
-  color: #ff2020;
-  font-family: "Courier New", monospace;
-  cursor: pointer;
-}
+  <style>
+    /* ========================================
+       1. PAGE SETUP
+    ======================================== */
 
-/* RED MATRIX BACKGROUND */
+    * {
+      box-sizing: border-box;
+    }
 
-#matrix {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  opacity: 0.75;
-}
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #030000;
+      font-family: "Courier New", monospace;
+    }
 
-/* DARK RED OVERLAY */
+    /* ========================================
+       2. 3D CANVAS
+    ======================================== */
 
-.overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  background:
-    radial-gradient(
-      circle at center,
-      transparent 10%,
-      rgba(20, 0, 0, 0.55) 65%,
-      rgba(0, 0, 0, 0.9) 100%
-    );
-  pointer-events: none;
-}
+    #game3D {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
 
-/* RED SCREEN FLASH */
+    /* ========================================
+       3. RED MATRIX BACKGROUND
+    ======================================== */
 
-.flash {
-  position: fixed;
-  inset: 0;
-  z-index: 5;
-  background: rgba(255, 0, 0, 0.15);
-  pointer-events: none;
-  animation: flashScreen 2s infinite;
-}
+    #matrix {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.28;
+      pointer-events: none;
+    }
 
-@keyframes flashScreen {
-  0%, 85%, 100% {
-    opacity: 0;
-  }
+    /* ========================================
+       4. HORROR SCREEN EFFECTS
+    ======================================== */
 
-  88% {
-    opacity: 1;
-  }
+    .vignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
 
-  91% {
-    opacity: 0;
-  }
+      background: radial-gradient(
+        ellipse at center,
+        transparent 15%,
+        rgba(30, 0, 0, 0.3) 55%,
+        rgba(0, 0, 0, 0.95) 100%
+      );
+    }
 
-  94% {
-    opacity: 0.6;
-  }
-}
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.15;
 
-/* MAIN CONTENT */
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        black 4px,
+        black 5px
+      );
+    }
 
-.hacker-scene {
-  position: relative;
-  z-index: 3;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 20px;
-}
+    .red-flash {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: rgba(255, 0, 0, 0.2);
+      opacity: 0;
+      animation: flash 2s infinite;
+    }
 
-/* WARNING TITLE */
+    @keyframes flash {
+      0%, 84%, 100% {
+        opacity: 0;
+      }
 
-.warning {
-  font-size: clamp(28px, 6vw, 75px);
-  font-weight: 900;
-  letter-spacing: 3px;
-  color: #ff1717;
-  text-shadow:
-    0 0 8px #ff0000,
-    0 0 22px #ff0000,
-    0 0 45px #8b0000;
-  animation: glitch 1.4s infinite;
-  margin: 0;
-}
+      87% {
+        opacity: 0.8;
+      }
 
-@keyframes glitch {
-  0%, 90%, 100% {
-    transform: translate(0);
-  }
+      90% {
+        opacity: 0;
+      }
 
-  92% {
-    transform: translate(-4px, 2px);
-  }
+      93% {
+        opacity: 0.5;
+      }
+    }
 
-  94% {
-    transform: translate(4px, -2px);
-  }
+    /* ========================================
+       5. WARNING TEXT
+    ======================================== */
 
-  96% {
-    transform: translate(-2px, -2px);
-  }
-}
+    .warning {
+      position: fixed;
+      top: 7%;
+      left: 0;
+      width: 100%;
+      padding: 0 15px;
 
-/* HOODED HACKER */
+      text-align: center;
+      font-size: clamp(28px, 6vw, 75px);
+      font-weight: 900;
+      letter-spacing: 3px;
+      color: #ff2020;
 
-.hacker {
-  position: relative;
-  width: 220px;
-  height: 260px;
-  margin: 20px auto;
-  filter: drop-shadow(0 0 28px #c00000);
-  animation: hackerFloat 3s ease-in-out infinite;
-}
+      text-shadow:
+        0 0 10px red,
+        0 0 25px red,
+        0 0 50px darkred;
 
-@keyframes hackerFloat {
-  0%, 100% {
-    transform: translateY(0);
-  }
+      animation: glitch 1.4s infinite;
+      pointer-events: none;
+    }
 
-  50% {
-    transform: translateY(-12px);
-  }
-}
+    @keyframes glitch {
+      0%, 90%, 100% {
+        transform: translate(0);
+      }
 
-/* HOOD */
+      92% {
+        transform: translate(-5px, 2px);
+      }
 
-.hood {
-  position: absolute;
-  top: 0;
-  left: 15px;
-  width: 190px;
-  height: 210px;
-  background: linear-gradient(
-    135deg,
-    #292929,
-    #080808 65%,
-    #000
-  );
-  border: 4px solid #5e0000;
-  border-radius: 50% 50% 35% 35%;
-  box-shadow:
-    inset 0 0 30px #000,
-    0 0 20px #800000;
-}
+      94% {
+        transform: translate(5px, -3px);
+      }
 
-/* BLACK FACE */
+      96% {
+        transform: translate(-3px, -2px);
+      }
+    }
 
-.face {
-  position: absolute;
-  top: 65px;
-  left: 53px;
-  width: 114px;
-  height: 120px;
-  background: #000;
-  border-radius: 45%;
-  box-shadow: inset 0 0 20px #1a0000;
-}
+    /* ========================================
+       6. EVIL LAUGH
+    ======================================== */
 
-/* GLOWING EYES */
+    .evil-laugh {
+      position: fixed;
+      bottom: 11%;
+      left: 0;
+      width: 100%;
+      padding: 0 15px;
 
-.eye {
-  position: absolute;
-  top: 46px;
-  width: 24px;
-  height: 9px;
-  background: #ff1111;
-  border-radius: 50%;
-  box-shadow:
-    0 0 12px red,
-    0 0 25px red;
-  transform: rotate(10deg);
-}
+      text-align: center;
+      font-size: clamp(24px, 4vw, 48px);
+      font-weight: bold;
+      letter-spacing: 4px;
+      color: #ff3434;
 
-.eye.left {
-  left: 18px;
-}
+      text-shadow:
+        0 0 12px red,
+        0 0 30px darkred;
 
-.eye.right {
-  right: 18px;
-  transform: rotate(-10deg);
-}
+      animation: laughShake 0.25s infinite alternate;
+      pointer-events: none;
+    }
 
-/* HACKER SHOULDERS */
+    @keyframes laughShake {
+      from {
+        transform: rotate(-1deg);
+      }
 
-.shoulders {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 220px;
-  height: 95px;
-  background: linear-gradient(
-    #171717,
-    #000
-  );
-  border-radius: 60% 60% 15% 15%;
-  border: 3px solid #390000;
-  z-index: -1;
-}
+      to {
+        transform: rotate(1deg);
+      }
+    }
 
-/* EVIL LAUGH */
+    /* ========================================
+       7. BOTTOM TEXT
+    ======================================== */
 
-.laugh {
-  font-size: clamp(22px, 4vw, 46px);
-  font-weight: 900;
-  letter-spacing: 3px;
-  margin: 5px 0 20px;
-  color: #ff3333;
-  text-shadow: 0 0 15px red;
-  animation: laughShake 0.3s infinite alternate;
-}
+    .status {
+      position: fixed;
+      bottom: 4%;
+      width: 100%;
+      text-align: center;
 
-@keyframes laughShake {
-  from {
-    transform: rotate(-1deg);
-  }
+      color: #a94444;
+      font-size: 12px;
+      letter-spacing: 3px;
+      pointer-events: none;
+    }
 
-  to {
-    transform: rotate(1deg);
-  }
-}
+    /* ========================================
+       8. FADE TRANSITION
+    ======================================== */
 
-/* CLICK TO ESCAPE */
+    #fade {
+      position: fixed;
+      inset: 0;
+      background: black;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+      z-index: 20;
+    }
 
-.escape {
-  position: absolute;
-  bottom: 30px;
-  color: #ddd;
-  font-size: 14px;
-  letter-spacing: 2px;
-  animation: blink 1.2s infinite;
-}
+    #fade.active {
+      opacity: 1;
+    }
 
-@keyframes blink {
-  0%, 100% {
-    opacity: 1;
-  }
+    /* ========================================
+       9. MOBILE ADJUSTMENTS
+    ======================================== */
 
-  50% {
-    opacity: 0.3;
-  }
-}
+    @media (max-width: 650px) {
+      .warning {
+        top: 9%;
+      }
 
-/* MOBILE */
+      .evil-laugh {
+        bottom: 15%;
+      }
+    }
 
-@media (max-height: 650px) {
-  .hacker {
-    transform: scale(0.7);
-    margin: -10px auto;
-  }
-
-  .hacker-scene {
-    justify-content: space-around;
-  }
-}
-</style>
+  </style>
 </head>
+
 <body>
 
-<!-- RED FALLING MATRIX CODE -->
+  <!-- 3D WORLD -->
+  <canvas id="game3D"></canvas>
 
-<canvas id="matrix"></canvas>
+  <!-- MATRIX RAIN -->
+  <canvas id="matrix"></canvas>
 
-<!-- DARK ATMOSPHERE -->
+  <!-- SCREEN EFFECTS -->
+  <div class="vignette"></div>
+  <div class="scanlines"></div>
+  <div class="red-flash"></div>
 
-<div class="overlay"></div>
-
-<!-- RED FLASH -->
-
-<div class="flash"></div>
-
-<!-- HACKER TRAP -->
-
-<main class="hacker-scene">
-
+  <!-- WARNING -->
   <h1 class="warning">
     YOU ARE STUCK IN HERE!
   </h1>
 
-  <!-- SCARY HOODED HACKER -->
-
-  <div class="hacker">
-
-    <div class="shoulders"></div>
-
-    <div class="hood"></div>
-
-    <div class="face">
-
-      <div class="eye left"></div>
-      <div class="eye right"></div>
-
-    </div>
-
-  </div>
-
-  <h2 class="laugh">
+  <!-- HACKER LAUGH -->
+  <h2 class="evil-laugh">
     MWAHAHAHAHAHA!!!
   </h2>
 
+  <!-- STATUS -->
+  <div class="status">
+    SYSTEM COMPROMISED
+  </div>
 
-</main>
-  <script src="disablekeyboard.js"></script>
-<script>
-/* RED MATRIX RAIN */
+  <!-- FADE -->
+  <div id="fade"></div>
 
-const canvas = document.getElementById("matrix");
-const ctx = canvas.getContext("2d");
 
-const letters =
-  "01ABCDEF#$%&@RITERRORHACKED";
+  <script>
+    /* ========================================
+       10. GAME SETTINGS
+    ======================================== */
 
-const fontSize = 17;
+    const NEXT_PAGE = "screen2.html";
+    const SCENE_DURATION = 3000;
 
-let columns;
-let drops;
+    /* ========================================
+       11. THREE.JS SETUP
+    ======================================== */
 
-function resizeMatrix() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+    const scene = new THREE.Scene();
 
-  columns = Math.ceil(canvas.width / fontSize);
+    scene.background = new THREE.Color(0x030000);
 
-  drops = Array(columns).fill(0).map(() =>
-    Math.random() * -50
-  );
-}
-
-function drawMatrix() {
-  ctx.fillStyle = "rgba(0, 0, 0, 0.08)";
-  ctx.fillRect(
-    0,
-    0,
-    canvas.width,
-    canvas.height
-  );
-
-  ctx.fillStyle = "#ff1717";
-  ctx.font = fontSize + "px monospace";
-
-  for (let i = 0; i < drops.length; i++) {
-
-    const character =
-      letters[Math.floor(Math.random() * letters.length)];
-
-    ctx.fillText(
-      character,
-      i * fontSize,
-      drops[i] * fontSize
+    scene.fog = new THREE.FogExp2(
+      0x140000,
+      0.045
     );
 
-    if (
-      drops[i] * fontSize > canvas.height &&
-      Math.random() > 0.975
+    const camera = new THREE.PerspectiveCamera(
+      55,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      100
+    );
+
+    camera.position.set(0, 1.6, 7.5);
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas: document.getElementById("game3D"),
+      antialias: true
+    });
+
+    renderer.setSize(
+      window.innerWidth,
+      window.innerHeight
+    );
+
+    renderer.setPixelRatio(
+      Math.min(window.devicePixelRatio, 2)
+    );
+
+    /* ========================================
+       12. MATERIALS
+    ======================================== */
+
+    const hoodieMaterial = new THREE.MeshStandardMaterial({
+      color: 0x111216,
+      roughness: 0.95,
+      side: THREE.DoubleSide
+    });
+
+    const darkMaterial = new THREE.MeshStandardMaterial({
+      color: 0x050505,
+      roughness: 1
+    });
+
+    const trimMaterial = new THREE.MeshStandardMaterial({
+      color: 0x5b0808,
+      roughness: 0.8
+    });
+
+    const eyeMaterial = new THREE.MeshBasicMaterial({
+      color: 0xff1717
+    });
+
+    const wallMaterial = new THREE.MeshStandardMaterial({
+      color: 0x100507,
+      roughness: 1
+    });
+
+    /* ========================================
+       13. HELPER FUNCTION
+    ======================================== */
+
+    function createMesh(
+      geometry,
+      material,
+      parent,
+      x = 0,
+      y = 0,
+      z = 0
     ) {
-      drops[i] = 0;
+      const object = new THREE.Mesh(
+        geometry,
+        material
+      );
+
+      object.position.set(x, y, z);
+
+      parent.add(object);
+
+      return object;
     }
 
-    drops[i]++;
-  }
-}
+    /* ========================================
+       14. BUILD THE DARK ROOM
+    ======================================== */
 
-resizeMatrix();
+    const floor = createMesh(
+      new THREE.PlaneGeometry(30, 30),
+      wallMaterial,
+      scene,
+      0,
+      -1,
+      0
+    );
 
-window.addEventListener(
-  "resize",
-  resizeMatrix
-);
+    floor.rotation.x = -Math.PI / 2;
 
-setInterval(drawMatrix, 45);
+    const backWall = createMesh(
+      new THREE.PlaneGeometry(30, 15),
+      wallMaterial,
+      scene,
+      0,
+      5,
+      -5
+    );
 
-/* CLICK ANYWHERE TO GO BACK */
+    // Red glowing strips on the floor
 
-function goBack() {
-  window.location.href = "screen2.html";
-}
+    for (let i = -6; i <= 6; i += 2) {
+      createMesh(
+        new THREE.BoxGeometry(0.025, 0.02, 18),
+        trimMaterial,
+        scene,
+        i,
+        -0.98,
+        0
+      );
+    }
 
-setTimeout(goBack, 3000);
-</script>
+    /* ========================================
+       15. LIGHTING
+    ======================================== */
+
+    const ambientLight = new THREE.AmbientLight(
+      0x661111,
+      0.9
+    );
+
+    scene.add(ambientLight);
+
+    const redLight = new THREE.PointLight(
+      0xff1010,
+      3,
+      15
+    );
+
+    redLight.position.set(0, 3, 2);
+
+    scene.add(redLight);
+
+    const backLight = new THREE.PointLight(
+      0xaa0011,
+      2,
+      12
+    );
+
+    backLight.position.set(-3, 2, -1);
+
+    scene.add(backLight);
+
+    /* ========================================
+       16. CREATE THE 3D HACKER
+    ======================================== */
+
+    const hacker = new THREE.Group();
+
+    scene.add(hacker);
+
+    // BODY
+
+    const body = createMesh(
+      new THREE.SphereGeometry(1, 32, 24),
+      hoodieMaterial,
+      hacker,
+      0,
+      0.3,
+      0
+    );
+
+    body.scale.set(1.4, 1.1, 0.75);
+
+    // LEFT ARM
+
+    const leftArm = createMesh(
+      new THREE.CylinderGeometry(
+        0.35,
+        0.48,
+        1.7,
+        20
+      ),
+      hoodieMaterial,
+      hacker,
+      -1.15,
+      -0.2,
+      0
+    );
+
+    leftArm.rotation.z = -0.2;
+
+    // RIGHT ARM
+
+    const rightArm = createMesh(
+      new THREE.CylinderGeometry(
+        0.35,
+        0.48,
+        1.7,
+        20
+      ),
+      hoodieMaterial,
+      hacker,
+      1.15,
+      -0.2,
+      0
+    );
+
+    rightArm.rotation.z = 0.2;
+
+    // LARGE HOOD
+
+    const hood = createMesh(
+      new THREE.SphereGeometry(
+        0.9,
+        36,
+        28
+      ),
+      hoodieMaterial,
+      hacker,
+      0,
+      1.5,
+      0.1
+    );
+
+    hood.scale.set(1, 1.25, 0.9);
+
+    // DARK FACE
+
+    const face = createMesh(
+      new THREE.SphereGeometry(
+        0.68,
+        32,
+        24
+      ),
+      darkMaterial,
+      hacker,
+      0,
+      1.45,
+      0.78
+    );
+
+    face.scale.set(1, 1.05, 0.35);
+
+    // HOOD RED OUTLINE
+
+    const hoodOutline = createMesh(
+      new THREE.TorusGeometry(
+        0.69,
+        0.055,
+        12,
+        48
+      ),
+      trimMaterial,
+      hacker,
+      0,
+      1.48,
+      0.99
+    );
+
+    hoodOutline.scale.set(1, 1.15, 1);
+
+    // GLOWING EYES
+
+    function createEye(x) {
+      const eye = createMesh(
+        new THREE.SphereGeometry(
+          0.16,
+          20,
+          12
+        ),
+        eyeMaterial,
+        hacker,
+        x,
+        1.57,
+        1.08
+      );
+
+      eye.scale.set(1.2, 0.32, 0.4);
+
+      const eyeLight = new THREE.PointLight(
+        0xff0000,
+        1.2,
+        2
+      );
+
+      eyeLight.position.set(
+        x,
+        1.57,
+        1.15
+      );
+
+      hacker.add(eyeLight);
+    }
+
+    createEye(-0.3);
+    createEye(0.3);
+
+    /* ========================================
+       17. FLOATING RED PARTICLES
+    ======================================== */
+
+    const particles = [];
+
+    const particleMaterial = new THREE.MeshBasicMaterial({
+      color: 0xff2020
+    });
+
+    for (let i = 0; i < 65; i++) {
+      const particle = createMesh(
+        new THREE.SphereGeometry(
+          0.015,
+          5,
+          5
+        ),
+        particleMaterial,
+        scene,
+        (Math.random() - 0.5) * 12,
+        Math.random() * 6 - 1,
+        (Math.random() - 0.5) * 8
+      );
+
+      particles.push({
+        mesh: particle,
+        speed: 0.2 + Math.random() * 0.6
+      });
+    }
+
+    /* ========================================
+       18. RED MATRIX RAIN
+    ======================================== */
+
+    const matrixCanvas = document.getElementById("matrix");
+
+    const matrixContext = matrixCanvas.getContext("2d");
+
+    const letters = "01ABCDEF#$%&@RITERRORHACKED";
+
+    const fontSize = 17;
+
+    let drops = [];
+
+    function resizeMatrix() {
+      matrixCanvas.width = window.innerWidth;
+      matrixCanvas.height = window.innerHeight;
+
+      const columns = Math.ceil(
+        matrixCanvas.width / fontSize
+      );
+
+      drops = Array.from(
+        { length: columns },
+        () => -Math.random() * 50
+      );
+    }
+
+    function drawMatrix() {
+      matrixContext.fillStyle = "rgba(0,0,0,0.08)";
+
+      matrixContext.fillRect(
+        0,
+        0,
+        matrixCanvas.width,
+        matrixCanvas.height
+      );
+
+      matrixContext.fillStyle = "#ff1717";
+
+      matrixContext.font = fontSize + "px monospace";
+
+      for (let i = 0; i < drops.length; i++) {
+        const letter = letters[
+          Math.floor(Math.random() * letters.length)
+        ];
+
+        matrixContext.fillText(
+          letter,
+          i * fontSize,
+          drops[i] * fontSize
+        );
+
+        if (
+          drops[i] * fontSize > matrixCanvas.height &&
+          Math.random() > 0.975
+        ) {
+          drops[i] = 0;
+        }
+
+        drops[i]++;
+      }
+    }
+
+    resizeMatrix();
+
+    setInterval(drawMatrix, 45);
+
+    /* ========================================
+       19. ANIMATION LOOP
+    ======================================== */
+
+    const clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      const time = clock.getElapsedTime();
+
+      // Hacker floats
+
+      hacker.position.y =
+        Math.sin(time * 2) * 0.13;
+
+      // Hacker slowly turns
+
+      hacker.rotation.y =
+        Math.sin(time * 0.8) * 0.12;
+
+      // Camera slowly approaches
+
+      camera.position.z = Math.max(
+        5.1,
+        7.5 - time * 0.65
+      );
+
+      camera.position.x =
+        Math.sin(time * 0.6) * 0.1;
+
+      camera.lookAt(0, 1.2, 0);
+
+      // Flickering red light
+
+      redLight.intensity =
+        2.5 + Math.sin(time * 9) * 0.6;
+
+      // Floating particles
+
+      particles.forEach((particle) => {
+        particle.mesh.position.y +=
+          particle.speed * 0.015;
+
+        if (particle.mesh.position.y > 5) {
+          particle.mesh.position.y = -1;
+        }
+      });
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    /* ========================================
+       20. WINDOW RESIZE
+    ======================================== */
+
+    window.addEventListener("resize", () => {
+      camera.aspect =
+        window.innerWidth / window.innerHeight;
+
+      camera.updateProjectionMatrix();
+
+      renderer.setSize(
+        window.innerWidth,
+        window.innerHeight
+      );
+
+      resizeMatrix();
+    });
+
+    /* ========================================
+       21. RETURN TO SCREEN 2
+    ======================================== */
+
+    function goBack() {
+      document.getElementById("fade")
+        .classList.add("active");
+
+      setTimeout(() => {
+        window.location.href = NEXT_PAGE;
+      }, 500);
+    }
+
+    setTimeout(goBack, SCENE_DURATION);
+
+  </script>
 
 </body>
 </html>

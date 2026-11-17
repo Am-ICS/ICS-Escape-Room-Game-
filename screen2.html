@@ -43,7 +43,7 @@ function navigateSmoothly(destination){
   if(transitioning)return;
   transitioning=true;
   document.getElementById('transition').classList.add('show');
-  setTimeout(()=>{window.location.href=destination},1150);
+  setTimeout(()=>{window.location.href=destination});
 }
 function choose(option){
   const pages={lab:'lab.html',course:'course.html',security:'hallway.html'};
