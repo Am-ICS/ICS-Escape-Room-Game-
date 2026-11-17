@@ -304,12 +304,20 @@ opacity:.60;mix-blend-mode:multiply}
 html::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:6;
 background:radial-gradient(ellipse at 50% 44%,transparent 22%,rgba(0,0,0,.47) 100%)}
 </style>
+<style>
+/* Five-second hint only. Does not intercept mouse, keyboard, or gameplay. */
+#rightClickHint 
+{
+ position:fixed; top: 230px;; left:50%; transform:translate(-50%,-50%); z-index:90; pointer-events:none; color:white; background:rgba(12,0,5,.85); border:1px solid #ff496b; border-radius:8px; padding:18px 24px; width:max-content; max-width:90vw; text-align:center; font:800 clamp(16px,2.8vw,26px) Arial,sans-serif; text-shadow:0 0 12px #ff3158; box-shadow:0 0 25px #ff224433; animation:hintDisappear .4s ease 5s forwards; }
+@keyframes hintDisappear {to{opacity:0;visibility:hidden}}
+</style>
 </head>
 <body>
+<div id="rightClickHint">PLEASE RIGHT-CLICK YOUR MOUSE BEFORE YOU START</div>
 <div id="hud">
 <div id="top">
 <div id="brand">◈ RIT // ICS LAB — RED ALERT</div>
-<div id="clock">05:00</div>
+<div id="clock">03:00</div>
 <div id="progress">
 <div id="bar">
 </div>
@@ -571,8 +579,17 @@ function createRoom(){
     ctx.fillText(text,512,82);
     const tex=new THREE.CanvasTexture(c);
     if('encoding' in tex)tex.encoding=THREE.sRGBEncoding;
-    const mesh=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({map:tex,side:THREE.DoubleSide}));
-    mesh.position.set(x,y,z);scene.add(mesh);return mesh;
+    // Give each side its own correctly oriented face so text never appears mirrored.
+    const geometry=new THREE.PlaneGeometry(w,h);
+    const material=new THREE.MeshBasicMaterial({map:tex,side:THREE.FrontSide});
+    const mesh=new THREE.Mesh(geometry,material);
+    mesh.position.set(x,y,z-.012);
+    mesh.rotation.y=Math.PI;
+    scene.add(mesh);
+    const back=new THREE.Mesh(geometry,material);
+    back.position.set(x,y,z+.012);
+    scene.add(back);
+    return mesh;
   }
   // Long, red-lit abandoned IT hallway with gridded metal floor and structural ribs.
   cube(18,.36,20,floor,0,-.18,0);
@@ -859,19 +876,7 @@ window.addEventListener('mousemove',e=>{
 });
 window.addEventListener('click',e=>{
   if(!started||puzzleOpen||!renderer||e.target!==renderer.domElement)return;
-  // Clicking a computer screen opens that station immediately.
-  if(document.pointerLockElement!==renderer.domElement){
-    const pointer=new THREE.Vector2((e.clientX/innerWidth)*2-1,-(e.clientY/innerHeight)*2+1);
-    ray.setFromCamera(pointer,camera);
-    const hits=ray.intersectObjects(clickTargets.map(item=>item.mesh),false);
-    if(hits.length){
-      const target=clickTargets.find(item=>item.mesh===hits[0].object);
-      if(target){
-        if(target.obj.type==='puzzle') {goToPuzzle(target.obj.puzzle);return;}
-        if(target.obj.type==='exit'&&allSolved()) {near=target.obj;interact();return;}
-      }
-    }
-  }
+  // Mouse click only locks the view. Press E near a computer to interact.
   if(document.pointerLockElement!==renderer.domElement&&renderer.domElement.requestPointerLock){
     renderer.domElement.requestPointerLock().catch(()=>{});
   }

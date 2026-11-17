@@ -1598,9 +1598,30 @@ background:radial-gradient(ellipse at 50% 44%,transparent 22%,rgba(0,0,0,.47) 10
 #stage4TerminalTransition .load:before{content:"";display:block;height:100%;width:0;background:#ff597e;box-shadow:0 0 12px #ff597e;transition:width .7s ease}
 #stage4TerminalTransition.zoom .load:before{width:100%}
 </style>
+<style>
+/* Five-second hint only. Does not intercept mouse, keyboard, or gameplay. */
+#rightClickHint { position:fixed; top:100px; left:50%; transform:translate(-50%,-50%); z-index:90; pointer-events:none; color:white; background:rgba(12,0,5,.85); border:1px solid #ff496b; border-radius:8px; padding:18px 24px; width:max-content; max-width:90vw; text-align:center; font:800 clamp(16px,2.8vw,26px) Arial,sans-serif; text-shadow:0 0 12px #ff3158; box-shadow:0 0 25px #ff224433; animation:hintDisappear .4s ease 5s forwards; }
+@keyframes hintDisappear {to{opacity:0;visibility:hidden}}
+</style>
 </head>
 
   <body class="game3d">
+<div id="rightClickHint">PLEASE RIGHT-CLICK YOUR MOUSE BEFORE YOU START</div>
+<script>
+// Show the right-click reminder only once per tab session.
+(function () {
+  const hint = document.getElementById('rightClickHint');
+  try {
+    if (sessionStorage.getItem('icsScreen4HintSeen') === 'yes') {
+      hint.style.display = 'none';
+    } else {
+      sessionStorage.setItem('icsScreen4HintSeen', 'yes');
+    }
+  } catch (error) {
+    // If storage is blocked, the normal five-second hint still works.
+  }
+})();
+</script>
 
 <canvas id="gameCanvas"></canvas>
 <div id="stage4TerminalTransition" aria-hidden="true"></div>
@@ -3524,15 +3545,21 @@ panel("SYSTEM HACKED",-7.94,3.1,3.5,2.2,.58,"#ff4040","#160306",45);
 // Custom monitors with text and glowing HUD readouts
 function screenText(lines,x,y,z,w=2.1,h=1.12,tint="#4df0c2"){
  const c=document.createElement("canvas");c.width=768;c.height=440;const ctx=c.getContext("2d");
- ctx.fillStyle="#030d13";ctx.fillRect(0,0,768,440);
- ctx.fillStyle=tint;ctx.font="bold 30px monospace";ctx.fillText("◈  ICS // SECURE TERMINAL",26,52);
- ctx.fillStyle="#173847";ctx.fillRect(22,77,722,3);
- lines.forEach((line,i)=>{ctx.fillStyle=i===0?tint:"#e4a7b4";ctx.font=(i===0?"bold ":"")+"29px monospace";ctx.fillText(line,28,128+i*56);});
- for(let i=0;i<10;i++){ctx.fillStyle="rgba(90,210,230,.08)";ctx.fillRect(0,i*44,768,1);}
- ctx.fillStyle=tint;ctx.fillRect(26,390,Math.floor(200+Math.random()*370),7);
  const t=new THREE.CanvasTexture(c);if("encoding" in t)t.encoding=THREE.sRGBEncoding;
  const mesh=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({map:t,side:THREE.DoubleSide}));
  mesh.position.set(x,y,z);scene.add(mesh);
+ // Update the existing monitor texture instead of creating extra screens.
+ return function updateMonitor(displayLines,successful){
+  const accent=successful?"#4dff91":tint;
+  ctx.fillStyle=successful?"#041b12":"#030d13";ctx.fillRect(0,0,768,440);
+  ctx.strokeStyle=accent;ctx.lineWidth=9;ctx.strokeRect(8,8,752,424);
+  ctx.fillStyle=accent;ctx.font="bold 30px monospace";ctx.fillText("◈  ICS // SECURE TERMINAL",26,52);
+  ctx.fillStyle=successful?"#226746":"#173847";ctx.fillRect(22,77,722,3);
+  displayLines.forEach((line,i)=>{ctx.fillStyle=successful?accent:(i===0?accent:"#e4a7b4");ctx.font=(i===0?"bold ":"")+"29px monospace";ctx.fillText(line,28,128+i*56);});
+  for(let i=0;i<10;i++){ctx.fillStyle=successful?"rgba(77,255,145,.08)":"rgba(90,210,230,.08)";ctx.fillRect(0,i*44,768,1);}
+  ctx.fillStyle=accent;ctx.fillRect(26,390,successful?710:380,7);
+  t.needsUpdate=true;
+ };
 }
 const stations=[
  {x:-4.95,z:5.0,label:"REBUILD COMPUTER",file:"rebuild_computer_with_teacher.html",color:0xff768a,check:"easyComplete"},
@@ -3540,28 +3567,34 @@ const stations=[
  {x:-4.95,z:-7.3,label:"BINARY",file:"binary.html",color:0xff536d,check:"hardComplete"},
  {x:0,z:-13.4,label:"FINAL SECRET WORD",file:null,color:0xffb5c1,check:null}
 ];
+const stationDisplays=[];
 function terminal(s,i){
  const x=s.x,z=s.z;
  // Workstation island with industrial enclosure and a floating interface
  box(x,.84,z,3.5,.18,1.85,0x343d49,.7);
  for(let dx of [-1.45,1.45])for(let dz of [-.72,.72])box(x+dx,.39,z+dz,.16,.78,.15,0x202a36,.8);
  box(x,1.6,z-.55,2.5,1.55,.23,0x0b131c,.7);
- glow(x,1.61,z-.416,2.24,1.27,.015,0x06202a);
+ const screenGlow=glow(x,1.61,z-.416,2.24,1.27,.015,0x06202a);
  const lines=i===0?["01  HARDWARE RECOVERY","REBUILD REQUIRED","CPU  /  RAM  /  SSD","STATUS: CORRUPTED"]:
  i===1?["02  SIGNAL DECRYPTION","MORSE FREQUENCY","TRANSMISSION LOST","STATUS: ENCRYPTED"]:
  i===2?["03  BINARY FIREWALL","ACCESS LEVEL: 03","AUTHORIZATION LOCK","STATUS: RESTRICTED"]:
  ["FINAL ACCESS TERMINAL","3 SECURITY KEYS NEEDED","10-LETTER PASSCODE","SYSTEM: QUARANTINED"];
- screenText(lines,x,1.63,z-.395,2.18,1.24,"#"+s.color.toString(16).padStart(6,"0"));
+ const updateMonitor=screenText(lines,x,1.63,z-.395,2.18,1.24,"#"+s.color.toString(16).padStart(6,"0"));
+ const completed=!!s.check && sessionStorage.getItem(s.check)==="true";
+ updateMonitor(completed?[lines[0],"SYSTEM RESTORED","SECURITY CHECK PASSED","STATUS: SUCCESSFUL"]:lines,completed);
  box(x,1.19,z-.53,.17,.25,.2,0x293745,.7);
  box(x,1.1,z-.51,.9,.06,.35,0x263342,.7);
  box(x,1.015,z+.37,1.78,.06,.44,0x101c27,.4);
  for(let j=0;j<11;j++)for(let k=0;k<3;k++)box(x-.78+j*.15,1.053,z+.23+k*.12,.11,.008,.065,0x43566a,.2);
  box(x+1.13,1.02,z+.4,.2,.035,.29,0x14232d);
  box(x+1.35,.75,z-.35,.42,1.32,.58,0x121d29,.65);
- for(let y=.34;y<1.2;y+=.22)glow(x+1.57,y,z-.08,.018,.035,.08,s.color);
+ const statusLeds=[];
+ for(let y=.34;y<1.2;y+=.22)statusLeds.push(glow(x+1.57,y,z-.08,.018,.035,.08,s.color));
  panel((i===3?"04":("0"+(i+1)))+"  "+s.label,x,3.03,z-.6,3.7,.45,"#"+s.color.toString(16).padStart(6,"0"),"#07131d",46);
- glow(x,.79,z+.86,2.9,.04,.045,s.color);
- light(s.color,4,x,2.1,z+.4,5);
+ const deskGlow=glow(x,.79,z+.86,2.9,.04,.045,s.color);
+ const stationLight=light(s.color,4,x,2.1,z+.4,5);
+ stationDisplays.push({s,lines,updateMonitor,screenGlow,statusLeds,deskGlow,stationLight,completed});
+ if(completed){screenGlow.material.color.setHex(0x146b3a);screenGlow.material.emissive.setHex(0x146b3a);deskGlow.material.color.setHex(0x29ff75);deskGlow.material.emissive.setHex(0x29ff75);statusLeds.forEach(led=>{led.material.color.setHex(0x29ff75);led.material.emissive.setHex(0x29ff75);});stationLight.color.setHex(0x29ff75);}
  // Danger signage and numbered bays
  panel(i===3?"FINAL WORD LOCK":("BAY 0"+(i+1)+"  //  IT"),x,3.73,z-.66,2.9,.36,"#ffd1d9","#15202d",46);
 }
@@ -3758,6 +3791,20 @@ function animate(now){
  prompt.textContent="[ E ] ACCESS TERMINAL — "+s.label+(locked?" 🔒":"");prompt.style.display="block";
  }else prompt.style.display="none";
  }
+ // Keep each computer green after its challenge is completed, including on return.
+ stationDisplays.forEach(d=>{
+  if(!d.s.check)return;
+  const completed=sessionStorage.getItem(d.s.check)==="true";
+  if(completed===d.completed)return;
+  d.completed=completed;
+  d.updateMonitor(completed?[d.lines[0],"SYSTEM RESTORED","SECURITY CHECK PASSED","STATUS: SUCCESSFUL"]:d.lines,completed);
+  const color=completed?0x29ff75:d.s.color;
+  d.deskGlow.material.color.setHex(color);d.deskGlow.material.emissive.setHex(color);
+  d.screenGlow.material.color.setHex(completed?0x146b3a:0x06202a);
+  d.screenGlow.material.emissive.setHex(completed?0x146b3a:0x06202a);
+  d.statusLeds.forEach(led=>{led.material.color.setHex(color);led.material.emissive.setHex(color);});
+  d.stationLight.color.setHex(color);
+ });
  let done=["easyComplete","mediumComplete","hardComplete"].filter(k=>sessionStorage.getItem(k)==="true").length;
  hudProgress.textContent=done+" / 3 SYSTEMS RESTORED";
  const time=document.getElementById("countdown");if(time)hudTime.textContent="⏱ "+time.textContent;
