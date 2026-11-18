@@ -1,364 +1,832 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <title>RIT Computer Studies — 3D Welcome</title>
+
 <style>
+
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#353941;font-family:Arial,sans-serif;color:#f3f6fa}
+
 .screen{position:relative;width:100%;height:100dvh;overflow:hidden;isolation:isolate}
+
 #lab3d,#fallback{position:absolute;inset:0;width:100%;height:100%;display:block}
+
 #fallback{display:none;background:linear-gradient(125deg,#777a7d,#545965 55%,#333944)}
+
 .screen:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(5,13,22,.45),transparent 43%,rgba(4,12,20,.34)),linear-gradient(0deg,rgba(4,11,19,.42),transparent 35%);z-index:1}
+
 .heading{position:absolute;left:4%;top:7%;z-index:3;max-width:64%;text-shadow:0 3px 20px #000b}
+
 .heading .eyebrow{display:block;color:#90d7d3;font:800 11px monospace;letter-spacing:3px;margin-bottom:13px}
+
 .heading strong{display:block;font-size:clamp(25px,3.2vw,49px);letter-spacing:-.035em;line-height:1.06;max-width:700px}
+
 .heading .subtitle{display:block;font-size:clamp(12px,1.1vw,15px);color:#cad7e3;margin-top:12px;letter-spacing:.02em}
+
 .menu{position:absolute;right:5%;top:50%;transform:translateY(-50%);width:min(30%,360px);z-index:4;padding:23px;border:1px solid #ffffff28;border-radius:19px;background:linear-gradient(145deg,#152433ee,#101b29ee);box-shadow:0 25px 75px #0008,0 0 0 1px #0005;backdrop-filter:blur(12px);display:flex;flex-direction:column;gap:11px}
+
 .menu-title{font-size:11px;letter-spacing:2.5px;color:#93b8c9;font-weight:900;margin-bottom:7px}
-.menu button{width:100%;text-align:left;display:flex;align-items:center;gap:13px;padding:15px 13px;border:1px solid #54718a88;border-radius:10px;background:#253a4b;color:#f4f8fc;font-size:clamp(12px,1.05vw,15px);font-weight:750;cursor:pointer;transition:background .2s,transform .2s,border-color .2s,box-shadow .2s}
+
+.menu button{width:100%;text-align:left;display:flex;align-items:center;gap:13px;padding:15px 13px;border:1px solid #54718a88;border-radius:10px;background:#253a4b;color:#f4f8fc;font-size:clamp(12px,1.05vw,15px);font-weight:750;cursor:pointer;transition:*background* .2s,transform .2s,border-color .2s,box-shadow .2s}
+
 .menu button .emoji{font-size:21px}.menu button .arrow{margin-left:auto;color:#a9d6e4;font-size:18px}
+
 .menu button:hover,.menu button:focus-visible{background:#30536a;border-color:#8bd8c5;transform:translateX(3px);box-shadow:0 0 18px #53c8b52c;outline:none}
+
 .menu-foot{font:11px monospace;color:#92aaba;margin-top:7px;line-height:1.5}
+
 .teacher-card{position:absolute;left:4%;bottom:4%;width:min(23vw,260px);z-index:4;border:1px solid #ffffff45;border-radius:15px;overflow:hidden;box-shadow:0 18px 45px #0009;background:#1c2938}
+
 .teacher{display:block;width:100%;max-height:230px;object-fit:cover;object-position:center bottom}
+
 .teacher-caption{padding:10px 13px;background:#132333e8;font-size:12px;font-weight:800;color:#e5f2f9;line-height:1.35}
+
 .teacher-caption span{display:block;color:#8fcfcb;font-size:10px;letter-spacing:1.5px;margin-bottom:3px}
+
+
 
 @media(max-width:760px){.heading{left:5%;top:5%;max-width:90%}.heading strong{font-size:clamp(23px,5.5vw,38px)}.menu{width:90%;left:5%;right:auto;top:auto;bottom:3%;transform:none;padding:13px;gap:7px}.menu button{padding:10px 12px}.menu-title,.menu-foot{display:none}.teacher-card{left:5%;bottom:43%;width:min(39vw,190px)}.teacher{max-height:145px}.teacher-caption{font-size:10px;padding:7px}}
 
+
+
 </style>
+
 </head>
+
 <body>
+
 <div class="screen">
+
   <canvas id="lab3d" aria-label="3D recreation of the real RIT computer classroom"></canvas>
+
   <div id="fallback"></div>
+
   <div class="heading"><span class="eyebrow">RIT // INFORMATION & COMPUTER STUDIES</span><strong>WELCOME TO<br>COMPUTER STUDIES</strong><span class="subtitle">Explore a familiar computer lab. Choose where to begin.</span></div>
+
   <div class="teacher-card"><img class="teacher" src="BaldGuyBlink.gif" alt="Animated RIT ICS teacher" onerror="this.parentElement.style.display='none'"><div class="teacher-caption"><span>YOUR ICS GUIDE</span>Hey! Welcome to the lab 👋</div></div>
+
   <div class="menu"><div class="menu-title">EXPLORE THE CLASSROOM</div>
+
     <button type="button" onclick="choose('lab')"><span class="emoji">💻</span>Computer lab access <span class="arrow">›</span></button>
+
     <button type="button" onclick="choose('security')"><span class="emoji">🛡️</span>Security system demo <span class="arrow">›</span></button>
+
     <div class="menu-foot">ICS LAB · SELECT AN OPTION TO CONTINUE</div>
+
   </div>
+
 </div>
 
+
+
 <script src="disablekeyboard.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
 <script>
+
 'use strict';
+
 // Direct navigation only. No smooth transition or delay.
+
 function nextNav(destination) {
+
   const allowed = ['lab.html', 'hallway.html'];
+
   if (allowed.includes(destination)) window.location.assign(destination);
+
 }
+
 function choose(option) {
+
   const pages = {lab: 'lab.html', security: 'hallway.html'};
+
   if (Object.prototype.hasOwnProperty.call(pages, option)) nextNav(pages[option]);
+
 }
+
+
 
 function startClassroom() {
+
   const fallback = document.getElementById('fallback');
+
   if (typeof THREE === 'undefined') { fallback.style.display = 'block'; return; }
+
   let renderer;
+
   try { renderer = new THREE.WebGLRenderer({canvas:document.getElementById('lab3d'),antialias:true}); }
+
   catch (error) { fallback.style.display = 'block'; return; }
+
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.6));
+
   renderer.setSize(innerWidth, innerHeight, false);
+
   renderer.shadowMap.enabled = true;
+
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
   renderer.outputEncoding = THREE.sRGBEncoding;
+
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
   renderer.toneMappingExposure = .92;
 
+
+
   const scene = new THREE.Scene();
+
   scene.background = new THREE.Color(0x777b80);
+
   const camera = new THREE.PerspectiveCamera(66,innerWidth/innerHeight,.1,90);
+
   const material = (color,roughness=.88,metalness=0) => new THREE.MeshStandardMaterial({color,roughness,metalness});
+
   const M = {
+
     wall:material(0xb9b8b4), floor:material(0xa9a9a6), ceiling:material(0xc5c3be),
+
     seam:material(0x777774), wood:material(0xc49a68), woodEdge:material(0x95714b),
+
     black:material(0x191c20,.58), chair:material(0x303239), metal:material(0x777b80,.42,.5),
+
     table:material(0xe0e0dc), trim:material(0xaaa9a5), tv:material(0x101319,.27),
+
     screen:material(0x171c27,.3), purple:new THREE.MeshBasicMaterial({color:0x6d50cb}),
+
     light:new THREE.MeshBasicMaterial({color:0xdde8ed})
+
   };
+
   function box(w,h,d,x,y,z,mat,shadow=false) {
+
     const mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);
+
     mesh.position.set(x,y,z);mesh.castShadow=shadow;mesh.receiveShadow=true;scene.add(mesh);return mesh;
+
   }
+
   function cylinder(radius,height,x,y,z,mat,segments=12) {
+
     const mesh=new THREE.Mesh(new THREE.CylinderGeometry(radius,radius,height,segments),mat);
+
     mesh.position.set(x,y,z);mesh.castShadow=true;scene.add(mesh);return mesh;
+
   }
+
   // Room proportions and viewpoint follow the supplied real classroom photo.
+
   // Front wall is z=-12; camera looks inward from the doorway.
+
   box(16,.14,25,0,-.09,0,M.floor);
+
   box(16,7.2,.18,0,3.6,-12,M.wall);
+
   box(.18,7.2,25,-8,3.6,0,M.wall);
+
   box(.18,7.2,25,8,3.6,0,M.wall);
+
   box(16,.12,25,0,7.22,0,M.ceiling);
+
   // Light gray square vinyl floor tiles.
+
   for(let x=-8;x<=8;x+=1.25) box(.009,.012,25,x,.003,0,M.seam);
+
   for(let z=-12;z<=12;z+=1.25) box(16,.012,.009,0,.003,z,M.seam);
+
   // Acoustic drop ceiling grid and subtly varied square tiles.
+
   for(let x=-8;x<=8;x+=1.25) box(.025,.024,25,x,7.135,0,M.trim);
+
   for(let z=-12;z<=12;z+=1.25) box(16,.024,.025,0,7.135,z,M.trim);
+
   // Rectangular fluorescent panels (not overly bright).
+
   for(const [x,z] of [[-4.5,6.5],[-3.2,-3],[4.2,-5],[4.1,5]]) {
+
     box(1.08,.04,2.35,x,7.08,z,M.metal);
+
     box(.93,.015,2.15,x,7.055,z,M.light);
+
     const lamp=new THREE.PointLight(0xe4e9ef,.32,10,2);
+
     lamp.position.set(x,6.7,z);scene.add(lamp);
+
   }
+
   // Ceiling vents and round smoke detector.
+
   for(const [x,z] of [[-1.6,2.1],[5.6,2.1],[-5,-7]]) {
+
     box(1.1,.035,1.1,x,7.07,z,M.trim);
+
     for(let i=-2;i<=2;i++) box(.8,.012,.035,x,7.044,z+i*.16,M.seam);
+
   }
+
   cylinder(.18,.08,1.2,7.03,4.3,M.trim);
+
   // Cable trays run along both side walls near the ceiling.
+
   for(const x of [-7.7,7.7]) {
+
     box(.3,.12,24,x,5.85,0,M.metal);
+
     for(let z=-11;z<12;z+=.55) box(.36,.055,.05,x,5.92,z,M.black);
+
   }
+
   // Left-side long two-level light-wood computer bench, like the reference.
+
   box(3.35,.13,18.6,-6.26,1.64,-1.4,M.wood,true);
+
   box(3.35,.09,18.6,-6.26,3.28,-1.4,M.wood,true);
+
   box(3.35,.07,18.6,-6.26,1.54,-1.4,M.woodEdge);
+
   for(let z=-10;z<=7;z+=3.2) {
+
     box(.09,1.55,.09,-4.8,.77,z,M.metal);
+
     box(.09,1.55,.09,-7.65,.77,z,M.metal);
+
     box(.12,1.5,.12,-7.75,2.48,z,M.metal);
+
   }
+
   // Right wall matching desks, visible deeper into the room.
+
   box(2.45,.13,14.5,6.75,1.62,-3.2,M.wood,true);
+
   box(2.45,.09,14.5,6.75,3.15,-3.2,M.wood,true);
+
   for(let z=-10;z<=3;z+=3) box(.09,1.6,.09,5.65,.8,z,M.metal);
+
   // Black desktop computers with subtle real screen content.
+
   function screenMaterial(index) {
+
     const c=document.createElement('canvas');c.width=256;c.height=160;
+
     const g=c.getContext('2d');
+
     g.fillStyle='#10151e';g.fillRect(0,0,256,160);
+
     g.fillStyle='#1b2635';g.fillRect(0,0,256,20);
+
     g.fillStyle='#4c7790';g.fillRect(10,8,52,4);
+
     if(index%3===0){g.fillStyle='#253d4c';g.fillRect(22,40,210,77);}
+
     else if(index%3===1){g.fillStyle='#263949';g.fillRect(18,39,95,100);g.fillRect(126,39,110,100);}
+
     for(let j=0;j<5;j++){g.fillStyle=j%2?'#426075':'#6a8190';g.fillRect(25,47+j*16,55+(index*13+j*19)%80,3);}
+
     const tex=new THREE.CanvasTexture(c);tex.encoding=THREE.sRGBEncoding;
+
     return new THREE.MeshBasicMaterial({map:tex,toneMapped:false});
+
   }
+
   const displays=Array.from({length:6},(_,i)=>screenMaterial(i));
+
   function computer(x,z,level,i,face=1) {
+
     const y=level;
+
     box(1.14,.72,.1,x,y+.53,z,M.black,true);
+
     box(1.03,.6,.012,x,y+.53,z+face*.058,displays[i%6]);
+
     box(.065,.3,.065,x,y+.03,z,M.metal);
+
     box(.5,.04,.31,x,y-.11,z+.05,M.black);
+
     box(.9,.035,.27,x,y-.08,z+face*.52,M.black);
+
     box(.23,.035,.3,x+.65,y-.08,z+face*.5,M.black);
+
     box(.44,.7,.7,x-.7,y-.36,z-.1,M.black);
+
   }
+
   // Slim desktop PC towers on the upper shelves (no upper monitors).
+
   function upperPcTower(x,z,shelfY) {
+
     const y=shelfY+.09;
+
     box(.42,.78,.82,x,y+.39,z,M.black,true);
+
     box(.425,.74,.035,x,y+.39,z+.427,M.trim);
+
     box(.29,.055,.012,x,y+.60,z+.45,M.metal);
+
     const power=new THREE.Mesh(new THREE.SphereGeometry(.025,8,8),new THREE.MeshBasicMaterial({color:0x68b6e2}));
+
     power.position.set(x+.13,y+.20,z+.452);scene.add(power);
+
     for(let k=0;k<3;k++) box(.25,.012,.013,x,y+.39-k*.055,z+.452,M.seam);
+
   }
+
   for(let z=-9.8;z<=6;z+=3.1) upperPcTower(-6.8,z,3.325);
+
   for(let z=-9.8;z<=1;z+=3.3) upperPcTower(6.75,z,3.195);
+
   // Monitors and accessories stay on the lower desks only.
+
   for(let z=-10;z<=6.2;z+=3.1){
+
     computer(-6.2,z,1.75,Math.round(z+12),1);
+
   }
+
   for(let z=-10;z<=1;z+=3.3){
+
     computer(6.65,z,1.75,Math.round(z+22),1);
+
   }
+
   // Rolling black task chairs with five-spoke bases.
+
   function chair(x,z,rotation=0) {
+
     const group=new THREE.Group();scene.add(group);group.position.set(x,0,z);group.rotation.y=rotation;
+
     function part(w,h,d,px,py,pz,mat){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);o.position.set(px,py,pz);o.castShadow=true;group.add(o);}
+
     part(.82,.12,.8,0,.94,0,M.chair);
+
     part(.85,.98,.12,0,1.5,-.36,M.chair);
+
     part(.07,.75,.07,0,.49,0,M.metal);
+
     for(let a=0;a<5;a++){
+
       const theta=a*Math.PI*2/5;
+
       const spoke=new THREE.Mesh(new THREE.BoxGeometry(.09,.07,.57),M.black);
+
       spoke.position.set(Math.sin(theta)*.23,.16,Math.cos(theta)*.23);spoke.rotation.y=theta;group.add(spoke);
+
       part(.14,.11,.16,Math.sin(theta)*.48,.1,Math.cos(theta)*.48,M.black);
+
+    }
+
+  }
+
+  for(let z=-9;z<=5;z+=3.1) chair(-3.7,z,.25);
+
+  for(let z=-9;z<=1;z+=3.2) chair(4.9,z,-.3);
+
+  // Central long white collaboration table is the photo's focal point.
+
+  box(2.85,.14,7.7,.25,1.45,-1.7,M.table,true);
+
+  for(const x of [-.95,1.45]) for(const z of [-5.1,1.65]) {
+
+    box(.08,1.4,.08,x,.72,z,M.metal);
+
+    cylinder(.11,.065,x,.07,z,M.black);
+
+  }
+
+  // Small book / teaching materials on the central table.
+
+  box(.58,.07,.45,.55,1.57,-4.1,material(0x2d6273));
+
+  box(.43,.06,.35,-.25,1.57,-4.3,material(0xb6ab8e));
+
+  // Large black front-of-room display, plus soft purple accent glow.
+
+  box(4.4,2.65,.18,0,4.1,-11.79,M.black,true);
+
+  box(4.12,2.38,.012,0,4.1,-11.675,M.tv);
+
+  box(4.8,.08,.12,0,2.69,-11.74,M.trim);
+
+  const accent=new THREE.PointLight(0x7961d8,1.2,7,2);
+
+  accent.position.set(0,5.5,-11.1);scene.add(accent);
+
+  box(2.8,.08,.1,0,5.64,-11.72,M.purple);
+
+  // RIT lettering centered on the wall sign above the TV.
+
+  box(2.4,.48,.05,0,6.03,-11.78,M.table);
+
+  const signCanvas=document.createElement('canvas');
+
+  signCanvas.width=512;signCanvas.height=128;
+
+  const signCtx=signCanvas.getContext('2d');
+
+  signCtx.clearRect(0,0,512,128);
+
+  signCtx.fillStyle='#e86b16';
+
+  signCtx.font='900 105px Arial, sans-serif';
+
+  signCtx.textAlign='center';signCtx.textBaseline='middle';
+
+  signCtx.fillText('RIT',256,66);
+
+  const signTexture=new THREE.CanvasTexture(signCanvas);
+
+  const signMaterial=new THREE.MeshBasicMaterial({map:signTexture,transparent:true,depthWrite:false,side:THREE.DoubleSide});
+
+  const ritSign=new THREE.Mesh(new THREE.PlaneGeometry(1.75,.43),signMaterial);
+
+  ritSign.position.set(0,6.04,-11.735);
+
+  scene.add(ritSign);
+
+  // CLASSROOM VISUAL UPGRADE — decorative details only; menu, teacher and navigation untouched.
+  const detailMat=(color,rough=.7,metal=0)=>new THREE.MeshStandardMaterial({color,roughness:rough,metalness:metal});
+  const trimWhite=detailMat(0xd8dce0),frameMetal=detailMat(0x434c56,.45,.55),softBlack=detailMat(0x22262d,.58),
+        brushed=detailMat(0x8b939b,.35,.7),blueGlass=new THREE.MeshPhysicalMaterial({color:0x7397b1,transparent:true,opacity:.24,roughness:.12,metalness:.12,side:THREE.DoubleSide}),
+        wallBlue=detailMat(0x8ea0af),bookBlue=detailMat(0x346479),bookOrange=detailMat(0xd18a48),leaf=detailMat(0x426d4d);
+  const detailBox=(w,h,d,x,y,z,mat,cast=false)=>box(w,h,d,x,y,z,mat,cast);
+  // Architectural finish: skirting, ceiling crown, a wide window bank and door.
+  for(const x of [-7.86,7.86]){
+    detailBox(.11,.23,24.1,x,.14,0,trimWhite);
+    detailBox(.13,.11,24.1,x,6.93,0,trimWhite);
+  }
+  for(const z of [-11.87,12.15]){
+    detailBox(15.75,.23,.11,0,.14,z,trimWhite);
+    detailBox(15.75,.11,.11,0,6.93,z,trimWhite);
+  }
+  // Faux exterior window glazing, framed against the right wall with cool reflected light.
+  for(const z of [7.4,3.5,-.4,-4.3]){
+    detailBox(.025,2.55,3.15,7.79,4.42,z,blueGlass);
+    detailBox(.11,2.69,.10,7.72,4.42,z-1.6,frameMetal);
+    detailBox(.11,2.69,.10,7.72,4.42,z+1.6,frameMetal);
+    detailBox(.11,.10,3.3,7.72,5.77,z,frameMetal);
+    detailBox(.11,.10,3.3,7.72,3.08,z,frameMetal);
+    detailBox(.13,.07,3.3,7.68,4.48,z,frameMetal);
+    detailBox(.18,.13,3.43,7.62,3.03,z,trimWhite);
+  }
+  // Entry door at the back of the room, including handle and an exit sign.
+  detailBox(1.7,3.25,.09,-5.7,1.69,12.36,frameMetal);
+  detailBox(1.47,2.95,.03,-5.7,1.68,12.28,detailMat(0x717f8a));
+  detailBox(.54,.74,.018,-5.7,2.32,12.25,blueGlass);
+  detailBox(.06,.22,.07,-5.06,1.57,12.19,brushed);
+  detailBox(1.45,.4,.08,-5.7,3.62,12.28,detailMat(0x2c7256));
+  // Thin wall display board and pinboard on the left wall.
+  detailBox(.09,2.05,4.2,-7.82,4.35,-4.2,frameMetal);
+  detailBox(.11,1.89,4.03,-7.74,4.35,-4.2,detailMat(0x37556a));
+  for(let i=0;i<4;i++){
+    const z=-5.68+i*.92;
+    detailBox(.012,.48,.7,-7.675,4.55,z,i%2?bookOrange:trimWhite);
+    detailBox(.013,.035,.47,-7.654,4.42,z,wallBlue);
+  }
+  // Monitor bezels, webcam lenses, keyboard keys and cable management on both benches.
+  const pcLocations=[];
+  for(let z=-10;z<=6.2;z+=3.1)pcLocations.push([-6.2,z]);
+  for(let z=-10;z<=1;z+=3.3)pcLocations.push([6.65,z]);
+  const powerLed=new THREE.MeshBasicMaterial({color:0x75dbbc});
+  for(const [x,z] of pcLocations){
+    detailBox(1.19,.045,.12,x,2.67,z,frameMetal);
+    detailBox(.045,.74,.13,x-.59,2.28,z,frameMetal);
+    detailBox(.045,.74,.13,x+.59,2.28,z,frameMetal);
+    const webcam=new THREE.Mesh(new THREE.SphereGeometry(.035,10,8),softBlack);
+    webcam.position.set(x,2.69,z+.067);scene.add(webcam);
+    const led=new THREE.Mesh(new THREE.SphereGeometry(.018,8,6),powerLed);
+    led.position.set(x+.47,1.69,z+.56);scene.add(led);
+    for(let row=0;row<3;row++)for(let k=0;k<9;k++){
+      detailBox(.066,.008,.043,x-.37+k*.09,1.691,z+.43+row*.075,frameMetal);
+    }
+    // Cable descends behind the desktop.
+    detailBox(.018,.56,.018,x+.48,1.38,z-.19,softBlack);
+  }
+  // Detailed chair armrests and seat cushions at each existing chair position.
+  const chairPlaces=[];
+  for(let z=-9;z<=5;z+=3.1)chairPlaces.push([-3.7,z]);
+  for(let z=-9;z<=1;z+=3.2)chairPlaces.push([4.9,z]);
+  for(const [x,z] of chairPlaces){
+    detailBox(.66,.07,.58,x,.985,z,softBlack);
+    for(const dx of [-.44,.44]){
+      detailBox(.075,.42,.075,x+dx,1.25,z-.03,frameMetal);
+      detailBox(.11,.065,.47,x+dx,1.46,z+.08,softBlack);
     }
   }
-  for(let z=-9;z<=5;z+=3.1) chair(-3.7,z,.25);
-  for(let z=-9;z<=1;z+=3.2) chair(4.9,z,-.3);
-  // Central long white collaboration table is the photo's focal point.
-  box(2.85,.14,7.7,.25,1.45,-1.7,M.table,true);
-  for(const x of [-.95,1.45]) for(const z of [-5.1,1.65]) {
-    box(.08,1.4,.08,x,.72,z,M.metal);
-    cylinder(.11,.065,x,.07,z,M.black);
+  // Collaborative table: notebooks, tablet, pencil cup, mug and subtle table-edge trim.
+  detailBox(2.88,.035,7.75,.25,1.52,-1.7,trimWhite);
+  detailBox(.64,.055,.83,-.55,1.60,-2.2,bookBlue);
+  detailBox(.60,.018,.79,-.55,1.638,-2.2,trimWhite);
+  detailBox(.66,.042,.46,.75,1.61,-.65,softBlack);
+  detailBox(.56,.008,.36,.75,1.635,-.65,detailMat(0x4a6979));
+  const mug=new THREE.Mesh(new THREE.CylinderGeometry(.14,.13,.23,16),trimWhite);
+  mug.position.set(.84,1.71,-3.1);mug.castShadow=true;scene.add(mug);
+  const mugRim=new THREE.Mesh(new THREE.TorusGeometry(.135,.018,7,24),frameMetal);
+  mugRim.rotation.x=Math.PI/2;mugRim.position.set(.84,1.835,-3.1);scene.add(mugRim);
+  // Ceiling light diffusers with restrained glow, not additional expensive point lights.
+  const diffuse=new THREE.MeshBasicMaterial({color:0xe8f4ff,transparent:true,opacity:.22,depthWrite:false});
+  for(const [x,z] of [[-4.5,6.5],[-3.2,-3],[4.2,-5],[4.1,5]]){
+    detailBox(1.02,.012,2.29,x,7.022,z,diffuse);
+    for(const dx of [-.49,.49])detailBox(.035,.035,2.36,x+dx,7.018,z,brushed);
   }
-  // Small book / teaching materials on the central table.
-  box(.58,.07,.45,.55,1.57,-4.1,material(0x2d6273));
-  box(.43,.06,.35,-.25,1.57,-4.3,material(0xb6ab8e));
-  // Large black front-of-room display, plus soft purple accent glow.
-  box(4.4,2.65,.18,0,4.1,-11.79,M.black,true);
-  box(4.12,2.38,.012,0,4.1,-11.675,M.tv);
-  box(4.8,.08,.12,0,2.69,-11.74,M.trim);
-  const accent=new THREE.PointLight(0x7961d8,1.2,7,2);
-  accent.position.set(0,5.5,-11.1);scene.add(accent);
-  box(2.8,.08,.1,0,5.64,-11.72,M.purple);
-  // RIT lettering centered on the wall sign above the TV.
-  box(2.4,.48,.05,0,6.03,-11.78,M.table);
-  const signCanvas=document.createElement('canvas');
-  signCanvas.width=512;signCanvas.height=128;
-  const signCtx=signCanvas.getContext('2d');
-  signCtx.clearRect(0,0,512,128);
-  signCtx.fillStyle='#e86b16';
-  signCtx.font='900 105px Arial, sans-serif';
-  signCtx.textAlign='center';signCtx.textBaseline='middle';
-  signCtx.fillText('RIT',256,66);
-  const signTexture=new THREE.CanvasTexture(signCanvas);
-  const signMaterial=new THREE.MeshBasicMaterial({map:signTexture,transparent:true,depthWrite:false,side:THREE.DoubleSide});
-  const ritSign=new THREE.Mesh(new THREE.PlaneGeometry(1.75,.43),signMaterial);
-  ritSign.position.set(0,6.04,-11.735);
-  scene.add(ritSign);
+  // Clock above the front display, with actual hands.
+  const clockFace=new THREE.Mesh(new THREE.CylinderGeometry(.34,.34,.055,32),trimWhite);
+  clockFace.rotation.x=Math.PI/2;clockFace.position.set(4.5,5.58,-11.65);scene.add(clockFace);
+  const clockHands=new THREE.Group();clockHands.position.set(4.5,5.58,-11.607);scene.add(clockHands);
+  const hand1=detailBox(.035,.24,.012,4.5,5.66,-11.58,softBlack);
+  const hand2=detailBox(.20,.03,.012,4.58,5.58,-11.56,softBlack);
+  // A little greenery brings warmth to the otherwise technical space.
+  const pot=detailMat(0xb7aa94);
+  const planter=new THREE.Mesh(new THREE.CylinderGeometry(.29,.24,.45,16),pot);
+  planter.position.set(2.85,.25,-9.6);scene.add(planter);
+  for(let i=0;i<7;i++){
+    const a=i*Math.PI*2/7;
+    const frond=new THREE.Mesh(new THREE.SphereGeometry(1,12,9),leaf);
+    frond.position.set(2.85+Math.cos(a)*.24,.75+Math.sin(i*2)*.09,-9.6+Math.sin(a)*.24);
+    frond.scale.set(.12,.45,.18);frond.rotation.z=-Math.cos(a)*.45;scene.add(frond);
+  }
+  // Gentle warm accent light over the central collaboration table.
+  const warmAccent=new THREE.PointLight(0xffd9a7,.27,7,2);
+  warmAccent.position.set(.25,4,-1.5);scene.add(warmAccent);
+
   // Overall dimmer neutral light: clean classroom, not scary.
+
   scene.add(new THREE.HemisphereLight(0xe8e9ee,0x6e747e,.96));
+
   const sunlight=new THREE.DirectionalLight(0xe9e6df,.48);
+
   sunlight.position.set(-4,8,6);sunlight.castShadow=true;
+
   sunlight.shadow.mapSize.set(1024,1024);
+
   sunlight.shadow.camera.left=-13;sunlight.shadow.camera.right=13;
+
   sunlight.shadow.camera.top=15;sunlight.shadow.camera.bottom=-15;
+
   scene.add(sunlight);
+
   // Approved cartoon teacher: the same model from LIGHTER_TAN preview.
+
   // Reusable RIT cartoon teacher, approved lighter-tan version.
+
   // Requires Three.js r128. Returns { group, update, setAnimation }.
+
   function createRITTeacher(THREE) {
+
   const mat=(c,roughness=.88)=>new THREE.MeshStandardMaterial({color:c,roughness,metalness:0});const skin=mat('#d18b5c'),skinLight=mat('#dfa174'),hoodie=mat('#24222b'),hoodieLight=mat('#34313b'),hoodieDark=mat('#17161c'),jeans=mat('#315789'),jeansLight=mat('#416ca4'),shoe=mat('#1d1b25'),sole=mat('#f4f2ed'),hair=mat('#242128'),white=mat('#fffdf6'),iris=mat('#573425'),black=mat('#0b0b10');
+
   const teacher=new THREE.Group();
+
   function add(parent,geo,material,x=0,y=0,z=0){const o=new THREE.Mesh(geo,material);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o;}
+
   function sphere(p,m,x,y,z,sx,sy,sz){const o=add(p,new THREE.SphereGeometry(1,28,20),m,x,y,z);o.scale.set(sx,sy,sz);return o;}
+
   function box(p,m,x,y,z,sx,sy,sz,r=0){const o=add(p,new THREE.BoxGeometry(sx,sy,sz),m,x,y,z);o.rotation.z=r;return o;}
+
   function capsuleBetween(p,m,a,b,r){const v1=new THREE.Vector3(...a),v2=new THREE.Vector3(...b),d=new THREE.Vector3().subVectors(v2,v1);const o=add(p,new THREE.CylinderGeometry(r,r,d.length(),16),m,...v1.clone().add(v2).multiplyScalar(.5).toArray());o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());sphere(p,m,...a,r,r,r);sphere(p,m,...b,r,r,r);return o;}
+
   function outlineSphere(p,x,y,z,sx,sy,sz){const shell=new THREE.Mesh(new THREE.SphereGeometry(1,28,20),new THREE.MeshBasicMaterial({color:0x14141b,side:THREE.BackSide}));shell.position.set(x,y,z);shell.scale.set(sx*1.047,sy*1.047,sz*1.047);p.add(shell);}
+
   // Oversized cartoon sneakers, jeans and chunky hoodie.
+
   for(const s of [-1,1]){
+
    sphere(teacher,shoe,s*.35,.18,.19,.32,.17,.55);sphere(teacher,sole,s*.35,.085,.24,.34,.09,.57);
+
    sphere(teacher,jeans,s*.35,.94,0,.285,.85,.31);sphere(teacher,jeansLight,s*.35,.38,.04,.29,.19,.32);
+
   }
+
   sphere(teacher,hoodie,0,2.25,0,.90,.96,.54);sphere(teacher,hoodieLight,0,2.9,-.18,.69,.35,.48);sphere(teacher,hoodieDark,0,1.52,0,.76,.15,.48);
+
   // Kangaroo pocket and hoodie drawstrings.
+
   sphere(teacher,hoodieLight,0,1.94,.51,.55,.30,.075);for(const s of [-1,1])capsuleBetween(teacher,hoodieDark,[s*.14,2.92,.53],[s*.14,2.42,.59],.035);
+
   // Arms: left rests at pocket, right is animated at the shoulder.
+
   capsuleBetween(teacher,hoodie,[-.74,2.69,0],[-.98,1.96,.25],.27);
+
   capsuleBetween(teacher,skin,[-.98,1.96,.25],[-.53,1.91,.57],.18);
+
   const rightArm=new THREE.Group();rightArm.position.set(.73,2.68,0);teacher.add(rightArm);
+
   capsuleBetween(rightArm,hoodie,[0,0,0],[.45,-.43,.18],.27);capsuleBetween(rightArm,skin,[.45,-.43,.18],[.89,-.20,.49],.18);
+
   const hand=sphere(rightArm,skinLight,.98,-.17,.52,.26,.15,.30);hand.rotation.z=.35;
+
   for(let i=0;i<4;i++)capsuleBetween(rightArm,skinLight,[1.03,-.11+i*.064,.65],[1.32,-.06+i*.065,.67],.045);
+
   capsuleBetween(rightArm,skinLight,[.89,-.22,.63],[.92,.02,.78],.08);
+
   // FACE V4 — flat, cohesive cartoon facial features, not floating spheres.
+
   // All features are layered against a broad warm face panel, with a single beard shape.
+
   const face=new THREE.Group();teacher.add(face);
+
   const beard=mat('#302a35'),beardDark=mat('#211d27'),cheek=mat('#d89669');
+
   const smileDark=mat('#24171a'),teeth=mat('#fff9ed');
+
   function curvedLine(parent,points,material,radius=.025){
+
    const curve=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)));
+
    return add(parent,new THREE.TubeGeometry(curve,36,radius,8,false),material);
+
   }
+
   // Bald head and neck: a warm, broad oval with no protruding eye sockets.
+
   sphere(face,skin,0,3.13,0,.29,.30,.29);
+
   sphere(face,skin,0,3.82,.03,.73,.77,.55);
+
   // Removed the black outline shell around the bald head.
+
   for(const side of [-1,1]){
+
    sphere(face,skin,side*.69,3.72,.055,.145,.20,.115);
+
    sphere(face,cheek,side*.738,3.72,.151,.055,.095,.018);
+
   }
+
   // One smooth, broad beard cap hugs the lower front of the face.
+
   // The upper face remains visible, rather than having separate beard "rocks".
+
   sphere(face,beard,0,3.505,.355,.605,.345,.236);
+
   sphere(face,beard,0,3.37,.35,.45,.20,.23);
+
   for(const side of [-1,1]){
+
    // Beard rising naturally along each jawline.
+
    const sideBeard=sphere(face,beard,side*.45,3.55,.305,.155,.235,.19);
+
    sideBeard.rotation.z=-side*.23;
+
    // Warm cheeks overlap beard edge and integrate into the head.
+
    sphere(face,skin,side*.385,3.765,.455,.225,.19,.07);
+
   }
+
   // Small integrated nose (a flattened oval, not a floating round ball).
+
   sphere(face,skinLight,0,3.805,.563,.125,.075,.038);
+
   // Smile: a shallow dark curved mouth with one narrow row of teeth.
+
   // Mouth parts sit on the beard surface, so there is no giant open oval.
+
   sphere(face,smileDark,0,3.552,.574,.285,.071,.024);
+
   sphere(face,teeth,0,3.566,.600,.252,.037,.012);
+
   curvedLine(face,[[-.33,3.59,.579],[-.21,3.48,.597],[0,3.465,.600],[.21,3.48,.597],[.33,3.59,.579]],beardDark,.019);
+
   // Compact moustache above the smile, two joined lobes.
+
   for(const side of [-1,1]){
+
    const moustache=sphere(face,beardDark,side*.13,3.675,.576,.15,.042,.028);
+
    moustache.rotation.z=side*.14;
+
   }
+
   // Eyes: flat white ovals placed against the face, with thin pupils and no bulging sockets.
+
   const eyelids=[];
+
   for(const side of [-1,1]){
+
    const x=side*.285;
+
    sphere(face,white,x,4.085,.467,.176,.191,.035);
+
    sphere(face,iris,x-side*.014,4.077,.502,.091,.111,.018);
+
    sphere(face,black,x-side*.014,4.075,.520,.055,.075,.011);
+
    sphere(face,white,x-side*.038,4.123,.533,.023,.027,.008);
+
    const brow=sphere(face,beardDark,x,4.33,.405,.185,.040,.030);
+
    brow.rotation.z=-side*.13;
+
    const lid=sphere(face,skin,x,4.09,.511,.185,.18,.029);
+
    lid.visible=false;eyelids.push(lid);
+
   }
+
   // Rounded rectangular black glasses, fitted closely to the eyes (not floating).
+
   const glassesMat = new THREE.MeshStandardMaterial({color:'#18171d',roughness:.48,metalness:.12});
+
   function glassesFrame(cx){
+
    const w=.205,h=.195,r=.065,z=.545,cy=4.085;
+
    const pts=[
+
     [cx-w+r,cy+h,z],[cx+w-r,cy+h,z],
+
     [cx+w,cy+h-r,z],[cx+w,cy-h+r,z],
+
     [cx+w-r,cy-h,z],[cx-w+r,cy-h,z],
+
     [cx-w,cy-h+r,z],[cx-w,cy+h-r,z],[cx-w+r,cy+h,z]
+
    ];
+
    curvedLine(face,pts,glassesMat,.018);
+
   }
+
   glassesFrame(-.285);glassesFrame(.285);
+
   curvedLine(face,[[-.08,4.105,.557],[0,4.12,.57],[.08,4.105,.557]],glassesMat,.019);
+
   for(const side of [-1,1]){
+
    curvedLine(face,[[side*.49,4.105,.548],[side*.60,4.115,.44],[side*.72,4.10,.20]],glassesMat,.018);
+
   }
-  
+
+
+
   let animation='wave';
+
   function update(t) {
+
     teacher.position.y = Math.sin(t * 1.5) * .022;
+
     rightArm.rotation.z = animation === 'wave' ? Math.sin(t * 4.7) * .22 + .18 : -.23;
+
     rightArm.rotation.x = animation === 'wave' ? Math.sin(t * 4.7) * .12 : 0;
+
     eyelids.forEach(lid => lid.visible = (t % 4.1) > 3.96);
+
   }
+
   return { group:teacher, update, setAnimation: value => { animation=value; } };
+
   }
+
   const ritTeacher = createRITTeacher(THREE);
+
   ritTeacher.group.scale.setScalar(.76);
+
   ritTeacher.group.position.set(-2.65, 0, 2.85);
+
   ritTeacher.group.rotation.y = .16;
+
   scene.add(ritTeacher.group);
 
+
+
   function resize(){const w=innerWidth,h=innerHeight;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false);}
+
   addEventListener('resize',resize);resize();
+
   const start=performance.now();
+
   function animate(now){
+
     requestAnimationFrame(animate);
+
     const t=(now-start)/1000;
+
     camera.position.set(1.0+Math.sin(t*.12)*.18,2.9,10.6-Math.min(t*.045,.65));
+
     camera.lookAt(-.25,3.1,-6.4);
+
     ritTeacher.update(t);
+
     renderer.render(scene,camera);
+
   }
+
   requestAnimationFrame(animate);
+
 }
+
 startClassroom();
+
 </script>
+
 </body>
+
 </html>
