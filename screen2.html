@@ -28,11 +28,15 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#171722;fon
 <body>
 <div class="screen">
   <img class="scene-image" src="BaldGuyBlink.gif" alt="RIT ICS welcome, animated teacher">
-  <div class="menu">
-    <button type="button" onclick="choose('lab')">💻 Computer lab access</button>
-    <button type="button" onclick="choose('course')">📖 Course information</button>
-    <button type="button" onclick="choose('security')">🛡️ Security system demo</button>
-  </div>
+<div class="menu">
+  <button type="button" onclick="choose('enter')">
+    💻 Enter the classroom
+  </button>
+
+  <button type="button" onclick="choose('course')">
+    📖 Course information
+  </button>
+</div>
   <button class="next" aria-label="Next screen" onclick="navigateSmoothly('screen3.html')"></button>
 </div>
 <div id="transition" aria-hidden="true"></div>
@@ -45,9 +49,15 @@ function navigateSmoothly(destination){
   document.getElementById('transition').classList.add('show');
   setTimeout(()=>{window.location.href=destination});
 }
-function choose(option){
-  const pages={lab:'lab.html',course:'course.html',security:'hallway.html'};
-  if(Object.prototype.hasOwnProperty.call(pages,option))navigateSmoothly(pages[option]);
+function choose(option) {
+  const pages = {
+    enter: 'classroom.html',
+    course: 'course.html'
+  };
+
+  if (pages[option]) {
+    navigateSmoothly(pages[option]);
+  }
 }
 </script>
 </body>

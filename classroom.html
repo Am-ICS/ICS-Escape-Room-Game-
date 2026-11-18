@@ -20,13 +20,13 @@
 .menu button .emoji{font-size:21px}.menu button .arrow{margin-left:auto;color:#a9d6e4;font-size:18px}
 .menu button:hover,.menu button:focus-visible{background:#30536a;border-color:#8bd8c5;transform:translateX(3px);box-shadow:0 0 18px #53c8b52c;outline:none}
 .menu-foot{font:11px monospace;color:#92aaba;margin-top:7px;line-height:1.5}
-.teacher-card{position:absolute;left:4%;bottom:4%;width:min(50vw,500px);z-index:4;border:1px solid #ffffff45;border-radius:15px;overflow:hidden;box-shadow:0 18px 45px #0009;background:#1c2938}
-.teacher{display:block;width:100%;max-height:300px;object-fit:cover;object-position:center bottom}
+.teacher-card{position:absolute;left:4%;bottom:4%;width:min(23vw,260px);z-index:4;border:1px solid #ffffff45;border-radius:15px;overflow:hidden;box-shadow:0 18px 45px #0009;background:#1c2938}
+.teacher{display:block;width:100%;max-height:230px;object-fit:cover;object-position:center bottom}
 .teacher-caption{padding:10px 13px;background:#132333e8;font-size:12px;font-weight:800;color:#e5f2f9;line-height:1.35}
 .teacher-caption span{display:block;color:#8fcfcb;font-size:10px;letter-spacing:1.5px;margin-bottom:3px}
-#transition{position:fixed;inset:0;background:#07121d;z-index:20;opacity:0;pointer-events:none;transition:opacity 1.15s ease}#transition.show{opacity:1;pointer-events:all}
+
 @media(max-width:760px){.heading{left:5%;top:5%;max-width:90%}.heading strong{font-size:clamp(23px,5.5vw,38px)}.menu{width:90%;left:5%;right:auto;top:auto;bottom:3%;transform:none;padding:13px;gap:7px}.menu button{padding:10px 12px}.menu-title,.menu-foot{display:none}.teacher-card{left:5%;bottom:43%;width:min(39vw,190px)}.teacher{max-height:145px}.teacher-caption{font-size:10px;padding:7px}}
-@media(prefers-reduced-motion:reduce){#transition{transition:opacity .15s}}
+
 </style>
 </head>
 <body>
@@ -37,26 +37,23 @@
   <div class="teacher-card"><img class="teacher" src="BaldGuyBlink.gif" alt="Animated RIT ICS teacher" onerror="this.parentElement.style.display='none'"><div class="teacher-caption"><span>YOUR ICS GUIDE</span>Hey! Welcome to the lab 👋</div></div>
   <div class="menu"><div class="menu-title">EXPLORE THE CLASSROOM</div>
     <button type="button" onclick="choose('lab')"><span class="emoji">💻</span>Computer lab access <span class="arrow">›</span></button>
-    <button type="button" onclick="choose('course')"><span class="emoji">📖</span>Course information <span class="arrow">›</span></button>
     <button type="button" onclick="choose('security')"><span class="emoji">🛡️</span>Security system demo <span class="arrow">›</span></button>
     <div class="menu-foot">ICS LAB · SELECT AN OPTION TO CONTINUE</div>
   </div>
 </div>
-<div id="transition" aria-hidden="true"></div>
+
 <script src="disablekeyboard.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 'use strict';
-let transitioning = false;
-function navigateSmoothly(destination) {
-  if (transitioning) return;
-  transitioning = true;
-  document.getElementById('transition').classList.add('show');
-  setTimeout(() => { window.location.href = destination; }, 1150);
+// Direct navigation only. No smooth transition or delay.
+function nextNav(destination) {
+  const allowed = ['lab.html', 'hallway.html'];
+  if (allowed.includes(destination)) window.location.assign(destination);
 }
 function choose(option) {
-  const pages = {lab:'lab.html', course:'course.html', security:'hallway.html'};
-  if (Object.prototype.hasOwnProperty.call(pages, option)) navigateSmoothly(pages[option]);
+  const pages = {lab: 'lab.html', security: 'hallway.html'};
+  if (Object.prototype.hasOwnProperty.call(pages, option)) nextNav(pages[option]);
 }
 
 function startClassroom() {
@@ -235,6 +232,119 @@ function startClassroom() {
   sunlight.shadow.camera.left=-13;sunlight.shadow.camera.right=13;
   sunlight.shadow.camera.top=15;sunlight.shadow.camera.bottom=-15;
   scene.add(sunlight);
+  // Approved cartoon teacher: the same model from LIGHTER_TAN preview.
+  // Reusable RIT cartoon teacher, approved lighter-tan version.
+  // Requires Three.js r128. Returns { group, update, setAnimation }.
+  function createRITTeacher(THREE) {
+  const mat=(c,roughness=.88)=>new THREE.MeshStandardMaterial({color:c,roughness,metalness:0});const skin=mat('#d18b5c'),skinLight=mat('#dfa174'),hoodie=mat('#24222b'),hoodieLight=mat('#34313b'),hoodieDark=mat('#17161c'),jeans=mat('#315789'),jeansLight=mat('#416ca4'),shoe=mat('#1d1b25'),sole=mat('#f4f2ed'),hair=mat('#242128'),white=mat('#fffdf6'),iris=mat('#573425'),black=mat('#0b0b10');
+  const teacher=new THREE.Group();
+  function add(parent,geo,material,x=0,y=0,z=0){const o=new THREE.Mesh(geo,material);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;parent.add(o);return o;}
+  function sphere(p,m,x,y,z,sx,sy,sz){const o=add(p,new THREE.SphereGeometry(1,28,20),m,x,y,z);o.scale.set(sx,sy,sz);return o;}
+  function box(p,m,x,y,z,sx,sy,sz,r=0){const o=add(p,new THREE.BoxGeometry(sx,sy,sz),m,x,y,z);o.rotation.z=r;return o;}
+  function capsuleBetween(p,m,a,b,r){const v1=new THREE.Vector3(...a),v2=new THREE.Vector3(...b),d=new THREE.Vector3().subVectors(v2,v1);const o=add(p,new THREE.CylinderGeometry(r,r,d.length(),16),m,...v1.clone().add(v2).multiplyScalar(.5).toArray());o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());sphere(p,m,...a,r,r,r);sphere(p,m,...b,r,r,r);return o;}
+  function outlineSphere(p,x,y,z,sx,sy,sz){const shell=new THREE.Mesh(new THREE.SphereGeometry(1,28,20),new THREE.MeshBasicMaterial({color:0x14141b,side:THREE.BackSide}));shell.position.set(x,y,z);shell.scale.set(sx*1.047,sy*1.047,sz*1.047);p.add(shell);}
+  // Oversized cartoon sneakers, jeans and chunky hoodie.
+  for(const s of [-1,1]){
+   sphere(teacher,shoe,s*.35,.18,.19,.32,.17,.55);sphere(teacher,sole,s*.35,.085,.24,.34,.09,.57);
+   sphere(teacher,jeans,s*.35,.94,0,.285,.85,.31);sphere(teacher,jeansLight,s*.35,.38,.04,.29,.19,.32);
+  }
+  sphere(teacher,hoodie,0,2.25,0,.90,.96,.54);sphere(teacher,hoodieLight,0,2.9,-.18,.69,.35,.48);sphere(teacher,hoodieDark,0,1.52,0,.76,.15,.48);
+  // Kangaroo pocket and hoodie drawstrings.
+  sphere(teacher,hoodieLight,0,1.94,.51,.55,.30,.075);for(const s of [-1,1])capsuleBetween(teacher,hoodieDark,[s*.14,2.92,.53],[s*.14,2.42,.59],.035);
+  // Arms: left rests at pocket, right is animated at the shoulder.
+  capsuleBetween(teacher,hoodie,[-.74,2.69,0],[-.98,1.96,.25],.27);
+  capsuleBetween(teacher,skin,[-.98,1.96,.25],[-.53,1.91,.57],.18);
+  const rightArm=new THREE.Group();rightArm.position.set(.73,2.68,0);teacher.add(rightArm);
+  capsuleBetween(rightArm,hoodie,[0,0,0],[.45,-.43,.18],.27);capsuleBetween(rightArm,skin,[.45,-.43,.18],[.89,-.20,.49],.18);
+  const hand=sphere(rightArm,skinLight,.98,-.17,.52,.26,.15,.30);hand.rotation.z=.35;
+  for(let i=0;i<4;i++)capsuleBetween(rightArm,skinLight,[1.03,-.11+i*.064,.65],[1.32,-.06+i*.065,.67],.045);
+  capsuleBetween(rightArm,skinLight,[.89,-.22,.63],[.92,.02,.78],.08);
+  // FACE V4 — flat, cohesive cartoon facial features, not floating spheres.
+  // All features are layered against a broad warm face panel, with a single beard shape.
+  const face=new THREE.Group();teacher.add(face);
+  const beard=mat('#302a35'),beardDark=mat('#211d27'),cheek=mat('#d89669');
+  const smileDark=mat('#24171a'),teeth=mat('#fff9ed');
+  function curvedLine(parent,points,material,radius=.025){
+   const curve=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)));
+   return add(parent,new THREE.TubeGeometry(curve,36,radius,8,false),material);
+  }
+  // Bald head and neck: a warm, broad oval with no protruding eye sockets.
+  sphere(face,skin,0,3.13,0,.29,.30,.29);
+  sphere(face,skin,0,3.82,.03,.73,.77,.55);
+  // Removed the black outline shell around the bald head.
+  for(const side of [-1,1]){
+   sphere(face,skin,side*.69,3.72,.055,.145,.20,.115);
+   sphere(face,cheek,side*.738,3.72,.151,.055,.095,.018);
+  }
+  // One smooth, broad beard cap hugs the lower front of the face.
+  // The upper face remains visible, rather than having separate beard "rocks".
+  sphere(face,beard,0,3.505,.355,.605,.345,.236);
+  sphere(face,beard,0,3.37,.35,.45,.20,.23);
+  for(const side of [-1,1]){
+   // Beard rising naturally along each jawline.
+   const sideBeard=sphere(face,beard,side*.45,3.55,.305,.155,.235,.19);
+   sideBeard.rotation.z=-side*.23;
+   // Warm cheeks overlap beard edge and integrate into the head.
+   sphere(face,skin,side*.385,3.765,.455,.225,.19,.07);
+  }
+  // Small integrated nose (a flattened oval, not a floating round ball).
+  sphere(face,skinLight,0,3.805,.563,.125,.075,.038);
+  // Smile: a shallow dark curved mouth with one narrow row of teeth.
+  // Mouth parts sit on the beard surface, so there is no giant open oval.
+  sphere(face,smileDark,0,3.552,.574,.285,.071,.024);
+  sphere(face,teeth,0,3.566,.600,.252,.037,.012);
+  curvedLine(face,[[-.33,3.59,.579],[-.21,3.48,.597],[0,3.465,.600],[.21,3.48,.597],[.33,3.59,.579]],beardDark,.019);
+  // Compact moustache above the smile, two joined lobes.
+  for(const side of [-1,1]){
+   const moustache=sphere(face,beardDark,side*.13,3.675,.576,.15,.042,.028);
+   moustache.rotation.z=side*.14;
+  }
+  // Eyes: flat white ovals placed against the face, with thin pupils and no bulging sockets.
+  const eyelids=[];
+  for(const side of [-1,1]){
+   const x=side*.285;
+   sphere(face,white,x,4.085,.467,.176,.191,.035);
+   sphere(face,iris,x-side*.014,4.077,.502,.091,.111,.018);
+   sphere(face,black,x-side*.014,4.075,.520,.055,.075,.011);
+   sphere(face,white,x-side*.038,4.123,.533,.023,.027,.008);
+   const brow=sphere(face,beardDark,x,4.33,.405,.185,.040,.030);
+   brow.rotation.z=-side*.13;
+   const lid=sphere(face,skin,x,4.09,.511,.185,.18,.029);
+   lid.visible=false;eyelids.push(lid);
+  }
+  // Rounded rectangular black glasses, fitted closely to the eyes (not floating).
+  const glassesMat = new THREE.MeshStandardMaterial({color:'#18171d',roughness:.48,metalness:.12});
+  function glassesFrame(cx){
+   const w=.205,h=.195,r=.065,z=.545,cy=4.085;
+   const pts=[
+    [cx-w+r,cy+h,z],[cx+w-r,cy+h,z],
+    [cx+w,cy+h-r,z],[cx+w,cy-h+r,z],
+    [cx+w-r,cy-h,z],[cx-w+r,cy-h,z],
+    [cx-w,cy-h+r,z],[cx-w,cy+h-r,z],[cx-w+r,cy+h,z]
+   ];
+   curvedLine(face,pts,glassesMat,.018);
+  }
+  glassesFrame(-.285);glassesFrame(.285);
+  curvedLine(face,[[-.08,4.105,.557],[0,4.12,.57],[.08,4.105,.557]],glassesMat,.019);
+  for(const side of [-1,1]){
+   curvedLine(face,[[side*.49,4.105,.548],[side*.60,4.115,.44],[side*.72,4.10,.20]],glassesMat,.018);
+  }
+  
+  let animation='wave';
+  function update(t) {
+    teacher.position.y = Math.sin(t * 1.5) * .022;
+    rightArm.rotation.z = animation === 'wave' ? Math.sin(t * 4.7) * .22 + .18 : -.23;
+    rightArm.rotation.x = animation === 'wave' ? Math.sin(t * 4.7) * .12 : 0;
+    eyelids.forEach(lid => lid.visible = (t % 4.1) > 3.96);
+  }
+  return { group:teacher, update, setAnimation: value => { animation=value; } };
+  }
+  const ritTeacher = createRITTeacher(THREE);
+  ritTeacher.group.scale.setScalar(.76);
+  ritTeacher.group.position.set(-2.65, 0, 2.85);
+  ritTeacher.group.rotation.y = .16;
+  scene.add(ritTeacher.group);
+
   function resize(){const w=innerWidth,h=innerHeight;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false);}
   addEventListener('resize',resize);resize();
   const start=performance.now();
@@ -243,6 +353,7 @@ function startClassroom() {
     const t=(now-start)/1000;
     camera.position.set(1.0+Math.sin(t*.12)*.18,2.9,10.6-Math.min(t*.045,.65));
     camera.lookAt(-.25,3.1,-6.4);
+    ritTeacher.update(t);
     renderer.render(scene,camera);
   }
   requestAnimationFrame(animate);
