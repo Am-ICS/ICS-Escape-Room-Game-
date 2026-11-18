@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HACKED // Final Credits</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; }
+  body { background: #000; color: white; font-family: Arial, sans-serif; }
+  #matrix { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+  .credits-container { position: fixed; inset: 0; overflow: hidden; z-index: 1; }
+  .credits { position: absolute; top: 100%; left: 0; width: 100%; padding: 0 16px 60px; text-align: center; color: #fff5f5; animation: scrollUp 35s linear forwards; }
+  h1 { font-size: clamp(34px, 5vw, 50px); font-weight: bold; margin: 60px 15px; text-shadow: 0 0 18px #e1264566; }
+  h2 { font-size: clamp(21px, 3vw, 30px); font-weight: normal; margin: 42px 0 12px; color: #ff8794; }
+  p { font-size: clamp(20px, 3vw, 30px); margin: 12px 0; line-height: 1.4; }
+  .thankyou { font-size: clamp(26px, 4vw, 36px); margin-top: 90px; }
+  .copyright { font-size: 22px; color: #dfc5c8; margin-top: 65px; }
+  .small { font-size: clamp(16px, 2vw, 21px); color: #dfc5c8; }
+  @keyframes scrollUp { from { transform: translateY(0); } to { transform: translateY(calc(-100vh - 100%)); } }
+  @media (max-width: 600px) { h1 { margin: 40px 10px; } h2 { margin-top: 30px; } .thankyou { margin-top: 65px; } }
+</style>
+</head>
+<body>
+<canvas id="matrix" aria-hidden="true"></canvas>
+<div class="credits-container">
+  <div class="credits" id="credits">
+    <h1>THE END</h1>
+    <h2>Created By</h2>
+    <p>Lia and Amber</p>
+    <h2>Developed By</h2>
+    <p>Amber</p>
+    <h2>Edited By</h2>
+    <p>Lia</p>
+    <h2>Artwork By</h2>
+    <p>AI and Lia</p>
+    <h2>Face Appearance</h2>
+    <p>Arturo</p>
+    <h2>Starring</h2>
+    <p>Lia</p>
+    <p>Amber</p>
+    <h2>Technology</h2>
+    <p class="small">HTML5 · CSS3 · JavaScript</p>
+    <p class="small">Browser Web APIs · Canvas API · Web Storage API</p>
+    <h2>AI Coding Assistance</h2>
+    <p class="small">OpenAI ChatGPT — chatgpt.com</p>
+    <h1 class="thankyou">THANK YOU FOR ENJOYING THE GAME!</h1>
+    <p class="copyright">© 2026 Lia and Amber</p>
+  </div>
+</div>
+<script src="disablekeyboard.js"></script>
+<script>
+  "use strict";
+  const canvas = document.getElementById("matrix");
+  const ctx = canvas.getContext("2d");
+  const fontSize = 22;
+  const characters = "01";
+  const redDensity = 0.20;
+  let drops = [], activeColumns = [];
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const columns = Math.ceil(canvas.width / fontSize);
+    drops = [];
+    activeColumns = [];
+    for (let i = 0; i < columns; i++) {
+      drops[i] = Math.random() * canvas.height / fontSize;
+      activeColumns[i] = Math.random() < redDensity;
+    }
+    ctx.fillStyle = "#000";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+  resizeCanvas();
+  function drawMatrix() {
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = "rgba(0, 0, 0, 0.22)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.font = fontSize + "px monospace";
+    ctx.fillStyle = "#ed3549";
+    ctx.shadowColor = "#ff3045";
+    ctx.shadowBlur = 5;
+    for (let i = 0; i < drops.length; i++) {
+      if (!activeColumns[i]) continue;
+      const digit = characters.charAt(Math.floor(Math.random() * characters.length));
+      if (Math.random() < 0.35) ctx.fillText(digit, i * fontSize, drops[i] * fontSize);
+      if (drops[i] * fontSize > canvas.height && Math.random() > 0.96) drops[i] = 0;
+      drops[i] += 0.45;
+    }
+  }
+  setInterval(drawMatrix, 70);
+  window.addEventListener("resize", resizeCanvas);
+  // Return to the homepage only after the full credit roll has finished.
+  document.getElementById("credits").addEventListener("animationend", function(event) {
+    if (event.animationName === "scrollUp") {
+      window.location.replace("index.html");
+    }
+  });
+</script>
+</body>
+</html>
