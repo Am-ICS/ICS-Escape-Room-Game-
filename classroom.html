@@ -798,11 +798,7 @@ function startClassroom() {
 
 
 
-<<<<<<< HEAD
   // Eight staff-inspired cartoon people based on the supplied portraits.
-=======
-  // Seven staff-inspired cartoon people based only on the seven supplied portraits.
->>>>>>> 9a8c38d17b6f3663c5a105cc0185fbbfc6f99405
   // No extra generic characters and no photo textures.
   const classmates=[];
   const staffLooks=[
@@ -811,14 +807,9 @@ function startClassroom() {
     {skin:0xe2b18d,shirt:0xb68f7e,hair:0x583727,style:'long',glasses:true,undershirt:0x9b3044},
     {skin:0xe3b59a,shirt:0x526957,hair:0x71543f,style:'long',glasses:true,build:1.08},
     {skin:0xc18d67,shirt:0x252b31,hair:0x222327,style:'short',glasses:true,build:.94},
-<<<<<<< HEAD
     {skin:0x65402e,shirt:0xb8b6d9,hair:0x211b19,style:'cropped',mustache:true,goatee:true,collar:true,build:.98},
     {skin:0xd7a07b,shirt:0x9e2937,hair:0x252027,style:'tied',mustache:true,beard:true,build:1.02},
     {skin:0xc38d68,shirt:0x20242a,hair:0x1c2025,style:'short',glasses:true,collar:true,build:.94}
-=======
-    {skin:0x85583f,shirt:0xaaa9ca,hair:0x222126,style:'short',build:.98},
-    {skin:0xd7a07b,shirt:0x9e2937,hair:0x252027,style:'tied',mustache:true,beard:true,build:1.02}
->>>>>>> 9a8c38d17b6f3663c5a105cc0185fbbfc6f99405
   ];
   function createClassmate(index,x,z,facing=0){
     const look=staffLooks[index],g=new THREE.Group();
@@ -850,7 +841,6 @@ function startClassroom() {
     oval(g,top,0,hip+.60,0,.43*(look.build||1),.59,.31);
     oval(g,top,0,hip+.10,.02,.36,.18,.30);
     if(look.undershirt)oval(g,mat(look.undershirt),0,hip+.88,.293,.24,.22,.03);
-<<<<<<< HEAD
     // Photo-inspired light lavender button-down with an open collar.
     if(look.collar){
       const collarMat=mat(0xd5d3eb),seamMat=mat(0x8887a9);
@@ -860,8 +850,6 @@ function startClassroom() {
       }
       for(let n=0;n<3;n++)oval(g,seamMat,0,hip+.85-n*.16,.315,.017,.018,.009);
     }
-=======
->>>>>>> 9a8c38d17b6f3663c5a105cc0185fbbfc6f99405
     oval(g,skin,0,hip+1.12,.01,.14,.23,.15);
     for(const side of [-1,1]){
       oval(g,top,side*.37,hip+.86,0,.21,.23,.23);
@@ -889,23 +877,16 @@ function startClassroom() {
     oval(face,skinLight,0,hip+1.49,.337,.09,.11,.07);
     stroke(face,mouth,[[-.14,hip+1.35,.284],[0,hip+1.32,.329],[.14,hip+1.35,.284]],.016);
     // Individually modeled haircuts, facial hair, and spectacles.
-<<<<<<< HEAD
     if(look.style!=='cropped')oval(face,hair,0,hip+1.94,-.03,.36,.16,.31);
-=======
-    oval(face,hair,0,hip+1.94,-.03,.36,.16,.31);
->>>>>>> 9a8c38d17b6f3663c5a105cc0185fbbfc6f99405
     if(look.style==='long'){
       for(const side of [-1,1]){
         const lock=oval(face,hair,side*.315,hip+1.51,-.085,.16,.53,.24);
         lock.rotation.z=side*.09;
         oval(face,hair,side*.25,hip+1.89,.10,.15,.20,.22);
       }
-<<<<<<< HEAD
     }else if(look.style==='cropped'){
       // Very short natural hair: no rounded cap or fringe.
       oval(face,hair,0,hip+1.935,-.04,.337,.085,.283);
-=======
->>>>>>> 9a8c38d17b6f3663c5a105cc0185fbbfc6f99405
     }else if(look.style==='tied'){
       oval(face,hair,0,hip+1.70,-.34,.25,.36,.22);
       oval(face,hair,0,hip+1.42,-.48,.18,.28,.16);
@@ -916,14 +897,11 @@ function startClassroom() {
       oval(face,hair,0,hip+1.30,.18,.28,.15,.17);
       for(const side of [-1,1])oval(face,hair,side*.255,hip+1.43,.19,.09,.17,.13);
     }
-<<<<<<< HEAD
     if(look.goatee){
       // Match the SMALL chin patch on the blue-shirt example; no broad beard,
       // jaw stubble, or moustache-to-chin connectors. Only this one character.
       oval(face,hair,0,hip+1.265,.270,.085,.044,.035);
     }
-=======
->>>>>>> 9a8c38d17b6f3663c5a105cc0185fbbfc6f99405
     if(look.mustache){
       for(const side of [-1,1]){
         const m=oval(face,hair,side*.09,hip+1.405,.324,.11,.035,.034);
@@ -944,12 +922,8 @@ function startClassroom() {
   [
     [-3.0,-9.3,.10],[-3.0,-5.2,.10],[-3.0,-1.1,.10],
     [3.4,-9.3,-.10],[3.4,-5.2,-.10],[3.4,-1.1,-.10],
-<<<<<<< HEAD
     [0.0,-11.0,.0],
     [-5.1,-10.5,.16] // Added black-polo RIT staff member with glasses.
-=======
-    [0.0,-11.0,.0]
->>>>>>> 9a8c38d17b6f3663c5a105cc0185fbbfc6f99405
   ].forEach(([x,z,angle],i)=>createClassmate(i,x,z,angle));
 
   function resize(){const w=innerWidth,h=innerHeight;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false);}
@@ -969,11 +943,7 @@ function startClassroom() {
     camera.lookAt(-.25,3.1,-6.4);
 
     ritTeacher.update(t);
-<<<<<<< HEAD
     // All eight stand spaced apart beside the central collaboration table.
-=======
-    // All seven stand spaced apart beside the central collaboration table.
->>>>>>> 9a8c38d17b6f3663c5a105cc0185fbbfc6f99405
     // Gentle movements stay inside their own small areas so they cannot crowd anyone.
     classmates.forEach(({g,phase,angle,homeX,homeZ,movingLimbs},i)=>{
       const pace=t*.62+phase;
