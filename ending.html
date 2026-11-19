@@ -63,20 +63,30 @@
       box-shadow: 0 0 25px #f2222233;
     }
 
+    /* Crisp, readable captions — no blur, glow, zoom or movement. */
     #subtitle {
       position: fixed;
-      bottom: 8%;
+      bottom: 7%;
       left: 50%;
       transform: translateX(-50%);
       z-index: 4;
       text-align: center;
-      background: #1b050cdd;
-      padding: 12px 20px;
-      border-radius: 4px;
-      font-size: clamp(13px, 2vw, 19px);
-      font-weight: bold;
-      max-width: 92%;
-      text-shadow: 0 2px 7px black;
+      color: #ffffff;
+      background: rgba(8, 9, 14, .93);
+      border: 1px solid rgba(255, 255, 255, .38);
+      border-left: 4px solid #ff6676;
+      border-right: 4px solid #ff6676;
+      padding: 13px 24px;
+      border-radius: 5px;
+      font-size: clamp(17px, 2.1vw, 23px);
+      line-height: 1.4;
+      font-weight: 800;
+      letter-spacing: .45px;
+      width: max-content;
+      max-width: min(90vw, 760px);
+      text-shadow: 0 1px 2px #000;
+      box-shadow: 0 5px 20px rgba(0,0,0,.38);
+      pointer-events: none;
     }
 
     #flash {
@@ -248,7 +258,7 @@
     <div id="status">⚠ HACKER CONNECTION ACTIVE</div>
   </div>
 
-  <div id="subtitle">FINAL CODE ACCEPTED... WHAT'S HAPPENING?!</div>
+  <div id="subtitle" role="status" aria-live="polite" aria-atomic="true">THE HACKER IS LOSING CONTROL!</div>
   <div id="flash"></div>
   <div id="hint">AUTOMATIC CINEMATIC</div>
 
@@ -407,6 +417,14 @@ return { group:teacher, update, setAnimation: value => { animation=value; } };
     // ===== UI elements =====
     const statusEl = document.getElementById('status');
     const subtitle = document.getElementById('subtitle');
+    // Avoid writing the same caption on every animation frame.
+    let lastCaption = subtitle.textContent;
+    function setCaption(message) {
+      if (message !== lastCaption) {
+        subtitle.textContent = message;
+        lastCaption = message;
+      }
+    }
     const flash = document.getElementById('flash');
     const finish = document.getElementById('finish');
 
@@ -446,7 +464,7 @@ return { group:teacher, update, setAnimation: value => { animation=value; } };
     function startFallback() {
       document.getElementById('fallback').style.display = 'none';
       statusEl.textContent = '⚠ EMERGENCY SHUTDOWN';
-      subtitle.textContent = 'THE EXIT IS OPENING...';
+      setCaption('THE EXIT IS OPENING...');
 
       setTimeout(() => {
         flash.style.opacity = '1';
@@ -739,9 +757,7 @@ return { group:teacher, update, setAnimation: value => { animation=value; } };
           statusEl.textContent = t < 1.4
             ? '⚠ HACKER CONNECTION ACTIVE'
             : '⚠ EMERGENCY SHUTDOWN';
-          subtitle.textContent = t < 1.4
-            ? "FINAL CODE ACCEPTED... WHAT'S HAPPENING?!"
-            : 'THE HACKER IS LOSING CONTROL!';
+          setCaption('THE HACKER IS LOSING CONTROL!');
         }
 
         // 2.8–5.0: hear the hacker, turn around and LOOK BACK.
@@ -753,7 +769,7 @@ return { group:teacher, update, setAnimation: value => { animation=value; } };
           camera.rotation.y = Math.PI * p;
           camera.rotation.x = 0;
           statusEl.textContent = '⚠ SOMEONE IS BEHIND YOU';
-          subtitle.textContent = p < .7 ? 'WAIT... WHAT WAS THAT?!' : 'THE HACKER! RUN!';
+          setCaption('HE IS BEHIND US! RUN!');
           hacker.visible = true;
           hackerGlow.visible = true;
           portal.visible = true;
@@ -768,7 +784,7 @@ return { group:teacher, update, setAnimation: value => { animation=value; } };
           camera.rotation.y = Math.PI * (1-p);
           camera.rotation.x = 0;
           statusEl.textContent = '🚨 ESCAPE ROUTE OPEN';
-          subtitle.textContent = 'LOOK FORWARD — RUN TO THE EXIT!';
+          setCaption('HE IS BEHIND US! RUN!');
           hacker.visible = true;
           hackerGlow.visible = true;
           portal.visible = true;
@@ -788,9 +804,7 @@ return { group:teacher, update, setAnimation: value => { animation=value; } };
           statusEl.textContent = p < .65
             ? '⚠ HACKER BEHIND YOU — ESCAPE NOW'
             : '✓ HACKER CONNECTION TERMINATED';
-          subtitle.textContent = p < .65
-            ? 'DON\'T LOOK BACK! KEEP RUNNING!'
-            : 'THE EXIT! WE MADE IT!';
+          setCaption(t < 11.8 ? 'KEEP RUNNING!' : 'THE EXIT! WE MADE IT!');
           portal.visible = true;
           exitLight.intensity = 3 + p * 5;
         }
@@ -873,7 +887,7 @@ return { group:teacher, update, setAnimation: value => { animation=value; } };
           hacker.position.set(0, 0, camera.position.z + 8.8);
           hackerGlow.position.set(0, 2.6, hacker.position.z - .9);
           statusEl.textContent = '🚨 IT IS MOVING WRONG — RUN!';
-          subtitle.textContent = glance > .7 ? 'IT IS TWITCHING... RUN!' : 'LOOK BACK... THEN RUN!';
+          setCaption('KEEP RUNNING!');
         } else if (t >= 11.8) {
           hacker.position.set(0, 0, 10.5);
           hackerGlow.position.set(0, 2.6, 9.6);
