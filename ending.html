@@ -246,6 +246,41 @@
     #finish h1{font-family:'Courier New',monospace;letter-spacing:4px;}
     #actions a{border:1px solid #ff748c;background:#a3223c;border-radius:4px;}
     #finish .medal{filter:drop-shadow(0 0 25px #70ffb2);}
+
+    /* Subtle cinematic additions: an unobtrusive timeline and clear phase indicator. */
+    #escapeProgress {position:fixed;left:0;right:0;bottom:0;height:5px;z-index:5;
+      background:rgba(0,0,0,.65);pointer-events:none;}
+    #escapeProgressFill {width:0;height:100%;background:#ff566b;
+      box-shadow:0 0 10px rgba(255,80,100,.55);transition:background-color .35s;}
+    #escapePhase {position:fixed;top:10px;right:15px;z-index:4;pointer-events:none;
+      color:#ffd8dc;font:700 10px/1.5 'Courier New',monospace;letter-spacing:1.6px;
+      background:rgba(8,9,14,.78);border:1px solid rgba(255,120,140,.4);
+      border-radius:3px;padding:6px 10px;}
+    @media(max-width:600px){#escapePhase{top:5px;right:6px;font-size:9px;padding:4px 6px;}}
+
+    /* CLEARLY VISIBLE cinematic upgrades; no blur and no changes to 3D models. */
+    #escapeProgress{height:10px;background:#1c060a;box-shadow:0 -3px 16px #0009;}
+    #escapeProgressFill{background:linear-gradient(90deg,#a9112f,#ff4c56,#ffb178);box-shadow:0 0 16px #ff3049;}
+    #escapePhase{top:16px;right:20px;font-size:13px;padding:10px 15px;letter-spacing:1.4px;
+      background:#120c16ed;border:1px solid #ff687c;box-shadow:0 0 15px #e51a3544;}
+    #escapeObjective{position:fixed;top:17px;left:19px;z-index:5;pointer-events:none;
+      color:#fff;font:900 12px/1.5 'Courier New',monospace;letter-spacing:1.3px;
+      background:#110b13ed;border-left:4px solid #ff465b;padding:9px 14px;
+      box-shadow:0 0 18px #000b;max-width:32vw;}
+    #escapeObjective small{display:block;color:#ff9caa;font-size:10px;letter-spacing:2px;}
+    #chapterAlert{position:fixed;top:27%;left:50%;transform:translate(-50%,-12px) scale(.96);
+      z-index:6;pointer-events:none;text-align:center;opacity:0;transition:opacity .22s,transform .22s;
+      min-width:min(520px,85vw);max-width:90vw;padding:16px 24px;
+      background:linear-gradient(90deg,#17060be8,#4a0d1fe8,#17060be8);
+      border-top:2px solid #ff526a;border-bottom:2px solid #ff526a;
+      box-shadow:0 10px 35px #000c,0 0 30px #ff244322;}
+    #chapterAlert.visible{opacity:1;transform:translate(-50%,0) scale(1);}
+    #chapterAlert .kicker{color:#ffb2bd;font:700 12px 'Courier New',monospace;letter-spacing:3px;}
+    #chapterAlert .message{color:white;font:900 clamp(21px,3.8vw,39px) Arial,sans-serif;
+      letter-spacing:2px;text-shadow:0 2px 12px #000;}
+    @media(max-width:650px){#escapeObjective{top:75px;left:8px;font-size:10px;max-width:52vw;padding:5px 8px;}
+      #escapePhase{top:8px;right:8px;font-size:10px;padding:6px 8px;}
+      #chapterAlert{top:28%;padding:12px 14px;}}
   </style>
 </head>
 <body>
@@ -261,6 +296,10 @@
   <div id="subtitle" role="status" aria-live="polite" aria-atomic="true">THE HACKER IS LOSING CONTROL!</div>
   <div id="flash"></div>
   <div id="hint">AUTOMATIC CINEMATIC</div>
+  <div id="escapePhase" aria-hidden="true">01 / SYSTEM FAILURE</div>
+  <div id="escapeObjective" aria-hidden="true"><small>MISSION OBJECTIVE</small><span id="objectiveText">SURVIVE THE SHUTDOWN</span></div>
+  <div id="chapterAlert" aria-hidden="true"><div class="kicker">RIT // SECURITY ALERT</div><div class="message" id="chapterMessage">SYSTEM BREACH</div></div>
+  <div id="escapeProgress" aria-hidden="true"><div id="escapeProgressFill"></div></div>
 
 
 <!-- Victory screen -->
@@ -427,6 +466,34 @@ return { group:teacher, update, setAnimation: value => { animation=value; } };
     }
     const flash = document.getElementById('flash');
     const finish = document.getElementById('finish');
+    const escapePhase = document.getElementById('escapePhase');
+    const escapeProgressFill = document.getElementById('escapeProgressFill');
+    const objectiveText = document.getElementById('objectiveText');
+    const chapterAlert = document.getElementById('chapterAlert');
+    const chapterMessage = document.getElementById('chapterMessage');
+    let chapterStart = -10;
+    let lastEscapePhase = '';
+    function updateCinematicIndicators(t) {
+      const phase = t < 2.8 ? '01 / SYSTEM FAILURE' : t < 6.4 ? '02 / HACKER DETECTED' :
+        t < 11.8 ? '03 / ESCAPE IN PROGRESS' : t < 15.9 ? '04 / EXIT APPROACHING' : '05 / SYSTEM RESTORED';
+      if (phase !== lastEscapePhase) {
+        escapePhase.textContent = phase;
+        lastEscapePhase = phase;
+        const stages = {
+          '01 / SYSTEM FAILURE':['SYSTEM BREACH','SURVIVE THE SHUTDOWN'],
+          '02 / HACKER DETECTED':['HACKER DETECTED','FIND THE EXIT'],
+          '03 / ESCAPE IN PROGRESS':['RUN FOR YOUR LIFE','KEEP MOVING'],
+          '04 / EXIT APPROACHING':['EXIT IN SIGHT','REACH THE GREEN LIGHT'],
+          '05 / SYSTEM RESTORED':['SYSTEM RESTORED','ESCAPE COMPLETE']
+        };
+        chapterMessage.textContent = stages[phase][0];
+        objectiveText.textContent = stages[phase][1];
+        chapterStart = t;
+        escapeProgressFill.style.backgroundColor = t >= 15.9 ? '#69ffb4' : '#ff566b';
+      }
+      chapterAlert.classList.toggle('visible', t - chapterStart >= .1 && t - chapterStart < 1.5);
+      escapeProgressFill.style.width = Math.min(100, Math.max(0, t / 18.8 * 100)) + '%';
+    }
 
     // ===== Opening cinematic: fade from black to the 3D hallway =====
     // Wait for the first frame so the browser can paint the black overlay.
@@ -441,6 +508,11 @@ return { group:teacher, update, setAnimation: value => { animation=value; } };
       document.getElementById('hud').style.display = 'none';
       subtitle.style.display = 'none';
       document.getElementById('hint').style.display = 'none';
+      escapePhase.style.display = 'none';
+      document.getElementById('escapeProgress').style.display = 'none';
+      document.getElementById('escapeObjective').style.display = 'none';
+      chapterAlert.style.display = 'none';
+      escapePhase.style.display = 'none';
       finish.classList.add('visible');
       finish.style.display = 'flex';
 
@@ -749,6 +821,7 @@ return { group:teacher, update, setAnimation: value => { animation=value; } };
         if (ended) return;
 
         const t = clock.getElapsedTime();
+        updateCinematicIndicators(t);
 
         // 0–2.8 seconds: hacker system begins shutting down
         if (t < 2.8) {
