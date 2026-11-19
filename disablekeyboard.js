@@ -155,11 +155,11 @@ document.addEventListener('keydown', function (event) {
     event.preventDefault();
     noCheatAlert();
   }
-    // Block F12 (DevTools)
-  if (event.key === 'F11') {
-    event.preventDefault();
-    noCheatAlert();
-  }
+  //   // Block F12 (DevTools)
+  // if (event.key === 'F11') {
+  //   event.preventDefault();
+  //   noCheatAlert();
+  // }
 
   // Block Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C (DevTools & Inspect)
   if (isCmdOrCtrl && event.shiftKey && ['i', 'j', 'c'].includes(key)) {
