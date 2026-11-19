@@ -798,7 +798,7 @@ function startClassroom() {
 
 
 
-  // Nine staff-inspired cartoon people based on the supplied portraits.
+  // Eleven staff-inspired cartoon people based on the supplied portraits.
   // No extra generic characters and no photo textures.
   const classmates=[];
   const staffLooks=[
@@ -810,7 +810,11 @@ function startClassroom() {
     {skin:0x65402e,shirt:0xb8b6d9,hair:0x211b19,style:'cropped',mustache:true,goatee:true,collar:true,build:.98},
     {skin:0xd7a07b,shirt:0x9e2937,hair:0x252027,style:'tied',mustache:true,beard:true,build:1.02},
     {skin:0xc38d68,shirt:0x20242a,hair:0x1c2025,style:'short',glasses:true,collar:true,build:.94},
-    {skin:0xd4a083,shirt:0x22242a,hair:0x85817b,style:'bald',beard:true,beardColor:0x83786f,striped:true,collar:true,build:1.07}
+    {skin:0xd4a083,shirt:0x22242a,hair:0x85817b,style:'bald',beard:true,beardColor:0x83786f,striped:true,collar:true,build:1.07},
+    // New photo 1: dark swept hair, neat stubble, dark overshirt and patterned collar.
+    {skin:0xd6a084,shirt:0x30343d,hair:0x242024,style:'swept',stubble:true,collar:true,collarDark:true,build:.98},
+    // New photo 2: wavy brown hair, black glasses, light cream hoodie.
+    {skin:0xc79578,shirt:0xe3dfd4,hair:0x4b382b,style:'wavy',glasses:true,hoodie:true,stubble:true,build:1.07}
   ];
   function createClassmate(index,x,z,facing=0){
     const look=staffLooks[index],g=new THREE.Group();
@@ -842,6 +846,12 @@ function startClassroom() {
     oval(g,top,0,hip+.60,0,.43*(look.build||1),.59,.31);
     oval(g,top,0,hip+.10,.02,.36,.18,.30);
     if(look.undershirt)oval(g,mat(look.undershirt),0,hip+.88,.293,.24,.22,.03);
+    if(look.hoodie){
+      const hood=mat(0xd0cbbd),cord=mat(0xb9b2a5);
+      oval(g,hood,0,hip+.98,-.20,.34,.27,.27);
+      for(const side of [-1,1])stroke(g,cord,[[side*.10,hip+1.04,.313],[side*.10,hip+.69,.326]],.015);
+      oval(g,hood,0,hip+.27,.295,.24,.14,.032);
+    }
     // Fine vertical pinstripes for the newly added dark staff shirt.
     if(look.striped){
       const stripe=mat(0x53464b);
@@ -853,7 +863,7 @@ function startClassroom() {
     }
     // Photo-inspired shirt collar.
     if(look.collar){
-      const collarMat=mat(look.striped?0x29272b:0xd5d3eb),seamMat=mat(look.striped?0x555057:0x8887a9);
+      const collarMat=mat(look.striped?0x29272b:look.collarDark?0x171c25:0xd5d3eb),seamMat=mat(look.striped?0x555057:look.collarDark?0x9a9291:0x8887a9);
       for(const side of [-1,1]){
         const flap=oval(g,collarMat,side*.145,hip+1.04,.278,.15,.13,.035);
         flap.rotation.z=side*.48;
@@ -891,6 +901,15 @@ function startClassroom() {
     if(look.style==='bald'){
       // Receding grey hair at the sides; exposed bald crown.
       for(const side of [-1,1])oval(face,hair,side*.31,hip+1.76,-.09,.09,.23,.20);
+    }else if(look.style==='swept'){
+      oval(face,hair,-.09,hip+1.97,.08,.29,.14,.24);
+      oval(face,hair,.14,hip+2.015,.13,.23,.11,.20);
+    }else if(look.style==='wavy'){
+      for(const side of [-1,1]){
+        oval(face,hair,side*.23,hip+1.93,.06,.18,.21,.23);
+        oval(face,hair,side*.34,hip+1.72,-.02,.10,.23,.19);
+      }
+      oval(face,hair,0,hip+2.03,.11,.28,.12,.21);
     }else if(look.style==='long'){
       for(const side of [-1,1]){
         const lock=oval(face,hair,side*.315,hip+1.51,-.085,.16,.53,.24);
@@ -911,6 +930,11 @@ function startClassroom() {
       oval(face,beardMat,0,hip+1.30,.18,.28,.15,.17);
       for(const side of [-1,1])oval(face,beardMat,side*.255,hip+1.43,.19,.09,.17,.13);
       if(look.beardColor)for(const side of [-1,1])oval(face,beardMat,side*.09,hip+1.405,.328,.12,.043,.033);
+    }
+    if(look.stubble){
+      const stubble=mat(look.style==='swept'?0x59473f:0x695347);
+      oval(face,stubble,0,hip+1.285,.232,.205,.064,.054);
+      for(const side of [-1,1])oval(face,stubble,side*.105,hip+1.408,.323,.09,.018,.018);
     }
     if(look.goatee){
       // Match the SMALL chin patch on the blue-shirt example; no broad beard,
@@ -939,7 +963,9 @@ function startClassroom() {
     [3.4,-9.3,-.10],[3.4,-5.2,-.10],[3.4,-1.1,-.10],
     [0.0,-11.0,.0],
     [-2.5,-10.8,.06], // Black-polo RIT staff: to the left of the red-shirt person.
-    [2.5,-10.8,-.06] // Grey-bearded staff: to the right of the red-shirt person.
+    [2.5,-10.8,-.06], // Grey-bearded staff: to the right of the red-shirt person.
+    [1.35,-6.5,.08], // New dark-shirt man: open area behind the table, clear of the teacher and the other staff.
+    [4.8,-3.0,-.08] // New white-hoodie man: visible standing in the right aisle, ahead of the back row.
   ].forEach(([x,z,angle],i)=>createClassmate(i,x,z,angle));
 
   function resize(){const w=innerWidth,h=innerHeight;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false);}
