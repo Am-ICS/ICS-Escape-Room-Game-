@@ -764,6 +764,10 @@ function createRoom(){
     cube(.18,.33,.2,steel,x,1.25,z+.11);
     cube(.88,.065,.56,black,x,1.1,z+.25);
     cube(1.95,.06,.43,black,x-.25,1.18,z+.84);
+    // Match the detailed keyboard and mouse on the other three terminals.
+    for(let r=0;r<3;r++)for(let col=0;col<11;col++)
+      cube(.12,.009,.08,trim,x-1.12+col*.155,1.215,z+.69+r*.12);
+    cube(.22,.055,.32,black,x+1.18,1.18,z+.85);
     plaque('04 / NETWORK REPAIR',x,3.62,z-.06,3.5,.42,'#ffb1be');
     const lamp=bulb(p.color,2.8,x,2.5,z+1,7,true);
     // Keep the fourth station facing the player, matching the other three.
