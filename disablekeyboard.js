@@ -75,6 +75,7 @@ function noCheatAlert() {
     <div id="horrorPopup">
       <h1>💀 CAUGHT IN 4K 💀</h1>
       <h2>REALLY???? CHEAT MUCH?????!!!</h2>
+      <button id="horrorClose">
         I SWEAR I WASN'T CHEATING 😭
       </button>
     </div>
