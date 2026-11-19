@@ -797,6 +797,135 @@ function startClassroom() {
 
 
 
+
+  // Eight staff-inspired cartoon people based on the supplied portraits.
+  // No extra generic characters and no photo textures.
+  const classmates=[];
+  const staffLooks=[
+    {skin:0x70482f,shirt:0x357bb0,hair:0x242429,style:'short',glasses:true,mustache:true,build:1.06},
+    {skin:0xd9a07d,shirt:0xc82625,hair:0x85817c,style:'short',beard:true,build:1.08},
+    {skin:0xe2b18d,shirt:0xb68f7e,hair:0x583727,style:'long',glasses:true,undershirt:0x9b3044},
+    {skin:0xe3b59a,shirt:0x526957,hair:0x71543f,style:'long',glasses:true,build:1.08},
+    {skin:0xc18d67,shirt:0x252b31,hair:0x222327,style:'short',glasses:true,build:.94},
+    {skin:0x65402e,shirt:0xb8b6d9,hair:0x211b19,style:'cropped',mustache:true,goatee:true,collar:true,build:.98},
+    {skin:0xd7a07b,shirt:0x9e2937,hair:0x252027,style:'tied',mustache:true,beard:true,build:1.02},
+    {skin:0xc38d68,shirt:0x20242a,hair:0x1c2025,style:'short',glasses:true,collar:true,build:.94}
+  ];
+  function createClassmate(index,x,z,facing=0){
+    const look=staffLooks[index],g=new THREE.Group();
+    const mat=c=>new THREE.MeshStandardMaterial({color:c,roughness:.86,metalness:0});
+    const skin=mat(look.skin),skinLight=mat(new THREE.Color(look.skin).multiplyScalar(1.09));
+    const top=mat(look.shirt),trousers=mat(index%2?0x313844:0x38516a);
+    const hair=mat(look.hair),shoe=mat(index%3?0x262a30:0xe7e6de);
+    const white=mat(0xf7f6f1),iris=mat(0x44362b),pupil=mat(0x14151b);
+    const frames=mat(0x242329),mouth=mat(0x613b39);
+    function oval(parent,material,x,y,z,sx,sy,sz){
+      const m=new THREE.Mesh(new THREE.SphereGeometry(1,20,16),material);
+      m.position.set(x,y,z);m.scale.set(sx,sy,sz);m.castShadow=true;parent.add(m);return m;
+    }
+    function limb(material,a,b,r){
+      const v1=new THREE.Vector3(...a),v2=new THREE.Vector3(...b),d=v2.clone().sub(v1);
+      const m=new THREE.Mesh(new THREE.CylinderGeometry(r*.92,r,d.length(),12),material);
+      m.position.copy(v1).add(v2).multiplyScalar(.5);
+      m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());
+      m.castShadow=true;g.add(m);movingLimbs.push(m);
+    }
+    function stroke(parent,material,points,r=.017){
+      const c=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)));
+      const mesh=new THREE.Mesh(new THREE.TubeGeometry(c,16,r,6,false),material);
+      parent.add(mesh);return mesh;
+    }
+    const seated=false,hip=1.16; // All seven staff stand naturally around the classroom.
+    const movingLimbs=[];
+    // Same exaggerated proportions and rounded meshes as the existing cartoon teacher.
+    oval(g,top,0,hip+.60,0,.43*(look.build||1),.59,.31);
+    oval(g,top,0,hip+.10,.02,.36,.18,.30);
+    if(look.undershirt)oval(g,mat(look.undershirt),0,hip+.88,.293,.24,.22,.03);
+    // Photo-inspired light lavender button-down with an open collar.
+    if(look.collar){
+      const collarMat=mat(0xd5d3eb),seamMat=mat(0x8887a9);
+      for(const side of [-1,1]){
+        const flap=oval(g,collarMat,side*.145,hip+1.04,.278,.15,.13,.035);
+        flap.rotation.z=side*.48;
+      }
+      for(let n=0;n<3;n++)oval(g,seamMat,0,hip+.85-n*.16,.315,.017,.018,.009);
+    }
+    oval(g,skin,0,hip+1.12,.01,.14,.23,.15);
+    for(const side of [-1,1]){
+      oval(g,top,side*.37,hip+.86,0,.21,.23,.23);
+      limb(top,[side*.39,hip+.83,.02],[side*.50,hip+.35,.14],.16);
+      oval(g,skin,side*.51,hip+.25,.17,.13,.17,.12);
+      if(seated){
+        oval(g,trousers,side*.22,hip-.12,.22,.22,.26,.35);
+        limb(trousers,[side*.22,hip-.17,.23],[side*.22,.47,.62],.18);
+        oval(g,shoe,side*.22,.20,.77,.19,.14,.32);
+      }else{
+        limb(trousers,[side*.20,hip+.03,0],[side*.20,.31,.05],.19);
+        oval(g,shoe,side*.20,.13,.20,.20,.13,.33);
+      }
+    }
+    const face=new THREE.Group();g.add(face);
+    oval(face,skin,0,hip+1.58,.015,.365,.425,.32);
+    for(const side of [-1,1]){
+      oval(face,skin,side*.34,hip+1.55,.025,.09,.14,.10);
+      oval(face,white,side*.145,hip+1.66,.302,.102,.106,.035);
+      oval(face,iris,side*.145,hip+1.66,.332,.054,.062,.018);
+      oval(face,pupil,side*.145,hip+1.66,.346,.032,.044,.012);
+      const brow=oval(face,hair,side*.15,hip+1.84,.274,.14,.025,.029);
+      brow.rotation.z=-side*.12;
+    }
+    oval(face,skinLight,0,hip+1.49,.337,.09,.11,.07);
+    stroke(face,mouth,[[-.14,hip+1.35,.284],[0,hip+1.32,.329],[.14,hip+1.35,.284]],.016);
+    // Individually modeled haircuts, facial hair, and spectacles.
+    if(look.style!=='cropped')oval(face,hair,0,hip+1.94,-.03,.36,.16,.31);
+    if(look.style==='long'){
+      for(const side of [-1,1]){
+        const lock=oval(face,hair,side*.315,hip+1.51,-.085,.16,.53,.24);
+        lock.rotation.z=side*.09;
+        oval(face,hair,side*.25,hip+1.89,.10,.15,.20,.22);
+      }
+    }else if(look.style==='cropped'){
+      // Very short natural hair: no rounded cap or fringe.
+      oval(face,hair,0,hip+1.935,-.04,.337,.085,.283);
+    }else if(look.style==='tied'){
+      oval(face,hair,0,hip+1.70,-.34,.25,.36,.22);
+      oval(face,hair,0,hip+1.42,-.48,.18,.28,.16);
+    }else{
+      oval(face,hair,0,hip+1.96,.12,.31,.11,.19);
+    }
+    if(look.beard){
+      oval(face,hair,0,hip+1.30,.18,.28,.15,.17);
+      for(const side of [-1,1])oval(face,hair,side*.255,hip+1.43,.19,.09,.17,.13);
+    }
+    if(look.goatee){
+      // Match the SMALL chin patch on the blue-shirt example; no broad beard,
+      // jaw stubble, or moustache-to-chin connectors. Only this one character.
+      oval(face,hair,0,hip+1.265,.270,.085,.044,.035);
+    }
+    if(look.mustache){
+      for(const side of [-1,1]){
+        const m=oval(face,hair,side*.09,hip+1.405,.324,.11,.035,.034);
+        m.rotation.z=side*.13;
+      }
+    }
+    if(look.glasses){
+      for(const side of [-1,1]){
+        const cx=side*.145,cy=hip+1.66,zz=.357;
+        stroke(face,frames,[[cx-.12,cy+.105,zz],[cx+.12,cy+.105,zz],[cx+.12,cy-.105,zz],[cx-.12,cy-.105,zz],[cx-.12,cy+.105,zz]],.018);
+        stroke(face,frames,[[side*.26,cy,zz],[side*.35,cy+.01,.22]],.018);
+      }
+      stroke(face,frames,[[-.025,hip+1.67,.366],[.025,hip+1.67,.366]],.02);
+    }
+    g.position.set(x,0,z);g.rotation.y=facing;g.scale.setScalar(.83+(index%3)*.035);
+    scene.add(g);classmates.push({g,angle:facing,phase:index*1.71,homeX:x,homeZ:z,movingLimbs});
+  }
+  [
+    [-3.0,-9.3,.10],[-3.0,-5.2,.10],[-3.0,-1.1,.10],
+    [3.4,-9.3,-.10],[3.4,-5.2,-.10],[3.4,-1.1,-.10],
+    [0.0,-11.0,.0],
+    [-5.1,-10.5,.16] // Added black-polo RIT staff member with glasses.
+  ].forEach(([x,z,angle],i)=>createClassmate(i,x,z,angle));
+
   function resize(){const w=innerWidth,h=innerHeight;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false);}
 
   addEventListener('resize',resize);resize();
@@ -814,6 +943,22 @@ function startClassroom() {
     camera.lookAt(-.25,3.1,-6.4);
 
     ritTeacher.update(t);
+    // All eight stand spaced apart beside the central collaboration table.
+    // Gentle movements stay inside their own small areas so they cannot crowd anyone.
+    classmates.forEach(({g,phase,angle,homeX,homeZ,movingLimbs},i)=>{
+      const pace=t*.62+phase;
+      const travel=Math.sin(pace)*.14;
+      const stride=Math.cos(pace);
+      g.position.x=homeX+travel;
+      g.position.z=homeZ+Math.sin(pace*.77)*.10;
+      g.position.y=Math.abs(stride)*.026;
+      g.rotation.y=angle+Math.sin(pace*.72)*.18;
+      g.rotation.z=Math.sin(pace)*.015;
+      // Alternate arm/leg motion gives a subtle walking gesture.
+      movingLimbs.forEach((limb,k)=>{
+        limb.rotation.x=Math.sin(pace*2+(k%2)*Math.PI)*.12;
+      });
+    });
 
     renderer.render(scene,camera);
 
