@@ -836,6 +836,7 @@
     const GAME_DURATION = 5 * 60 * 1000;
 
     const TOTAL_FILES = 10;
+    
 
     const $ = id => document.getElementById(id);
 
@@ -974,7 +975,129 @@
         description: "Unknown sender asks you to share this file",
         type: "danger",
         reason: "A suspicious request involving passwords."
-      }
+      },
+
+{
+  name: "Geography_Notes.pdf",
+  description: "PDF downloaded from the official school portal",
+  type: "safe",
+  reason: "A document from a trusted school source."
+},
+{
+  name: "History_Project.docx",
+  description: "Document shared by your history teacher",
+  type: "safe",
+  reason: "A classroom document from a known teacher."
+},
+{
+  name: "Biology_Diagram.png",
+  description: "Image created for your science assignment",
+  type: "safe",
+  reason: "An image you created for school."
+},
+{
+  name: "Library_Catalog.xlsx",
+  description: "Spreadsheet from the official school library",
+  type: "safe",
+  reason: "A file from a trusted school source."
+},
+{
+  name: "Music_Lesson.mp3",
+  description: "Audio recording provided by your music teacher",
+  type: "safe",
+  reason: "A lesson recording from a trusted teacher."
+},
+{
+  name: "Computer_Class.txt",
+  description: "Text notes you saved during computer class",
+  type: "safe",
+  reason: "A text file you created yourself."
+},
+{
+  name: "School_Assembly.pdf",
+  description: "Assembly schedule from the official school portal",
+  type: "safe",
+  reason: "A school document from an official source."
+},
+{
+  name: "Art_Portfolio.jpg",
+  description: "Photo exported from your own art project",
+  type: "safe",
+  reason: "An image from your own project."
+},
+{
+  name: "PE_Schedule.docx",
+  description: "Sports schedule shared by your PE teacher",
+  type: "safe",
+  reason: "A document from a known school staff member."
+},
+{
+  name: "Chemistry_Revision.pdf",
+  description: "Revision material from the official classroom portal",
+  type: "safe",
+  reason: "Study material from a trusted school platform."
+},
+{
+  name: "Free_Robux_Generator.exe",
+  description: "Unknown website promises unlimited free game currency",
+  type: "danger",
+  reason: "An untrusted executable promising free rewards."
+},
+{
+  name: "Exam_Results.pdf.exe",
+  description: "Unexpected email claims your exam results are attached",
+  type: "danger",
+  reason: "The actual file extension is .exe, not .pdf."
+},
+{
+  name: "School_WiFi_Fix.bat",
+  description: "Unknown sender tells you to run this script",
+  type: "danger",
+  reason: "An untrusted batch script can execute harmful commands."
+},
+{
+  name: "Secret_Answers.zip",
+  description: "Anonymous message offers leaked exam answers",
+  type: "danger",
+  reason: "A suspicious archive from an unknown sender."
+},
+{
+  name: "Homework_Unlocker.cmd",
+  description: "Random website says this file unlocks homework answers",
+  type: "danger",
+  reason: "An unknown command script can run dangerous instructions."
+},
+{
+  name: "Teacher_Announcement.scr",
+  description: "Stranger claims this is an urgent teacher announcement",
+  type: "danger",
+  reason: "A .scr file can execute programs on your computer."
+},
+{
+  name: "Free_Laptop_Prize.exe",
+  description: "Popup claims you won a free laptop",
+  type: "danger",
+  reason: "A suspicious prize popup offers an untrusted executable."
+},
+{
+  name: "Password_Verification.js",
+  description: "Unknown email asks you to run a script to verify your account",
+  type: "danger",
+  reason: "An unexpected script requesting account verification is suspicious."
+},
+{
+  name: "Student_Data_Backup.zip",
+  description: "Unknown sender asks you to extract and run its contents",
+  type: "danger",
+  reason: "An untrusted archive requesting execution may contain malware."
+},
+{
+  name: "School_Antivirus_Update.exe",
+  description: "Unexpected popup demands immediate installation",
+  type: "danger",
+  reason: "Fake security updates can install malicious software."
+}
+
 
     ];
 
@@ -1007,7 +1130,6 @@
       "Watch out for suspicious downloads!"
     ];
 
-
     /* ==============================
        GAME STATE
     ============================== */
@@ -1015,6 +1137,7 @@
     let files = [];
 
     let selectedFileId = null;
+    
 
     let sortedCount = 0;
     let safeCount = 0;
