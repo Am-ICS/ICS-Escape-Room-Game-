@@ -2102,37 +2102,8 @@ background:radial-gradient(ellipse at 50% 44%,transparent 22%,rgba(0,0,0,.47) 10
     <button class="retry-button" type="button" onclick="restartEscape()">↻ TRY AGAIN</button>
 
   </div>
-  <button id="startExam">Start Exam</button>
-
-<script>
-let examStarted = false;
-
-function noCheatAlert() {
-  alert("Really???? Cheat much?????!!!");
-}
-
-document.getElementById("startExam")
-  .addEventListener("click", async function () {
-    try {
-      await document.documentElement.requestFullscreen();
-      examStarted = true;
-      this.style.display = "none";
-    } catch (error) {
-      alert("Fullscreen is required to start.");
-    }
-  });
-
-document.addEventListener("fullscreenchange", function () {
-  if (examStarted && !document.fullscreenElement) {
-    noCheatAlert();
-    document.body.innerHTML =
-      "<h1>EXAM LOCKED</h1>";
-  }
-});
-</script>
     <script src="disablekeyboard.js"></script>
   <script>
-    
 
   "use strict";
 
