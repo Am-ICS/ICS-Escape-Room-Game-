@@ -607,6 +607,103 @@ return { group:teacher, update, setAnimation: value => { animation=value; } };
       hacker.visible = false;
       hackerGlow.visible = false;
 
+      // ===== ADD-ON ONLY: EXPLOSION + UNNATURAL MONSTER MOTION =====
+      // These effects are independent of the original cinematic and game logic.
+      const blastPieces = [];
+      const blastCenter = new THREE.Vector3(0, 2.35, -8.5);
+      const blastLight = new THREE.PointLight(0xff5a18, 0, 26);
+      blastLight.position.copy(blastCenter);
+      scene.add(blastLight);
+      const blastRing = new THREE.Mesh(
+        new THREE.TorusGeometry(1, .11, 8, 44),
+        new THREE.MeshBasicMaterial({color:0xff7928, transparent:true, opacity:0, depthWrite:false})
+      );
+      blastRing.position.copy(blastCenter);
+      scene.add(blastRing);
+      const blastCore = new THREE.Mesh(
+        new THREE.SphereGeometry(1, 18, 14),
+        new THREE.MeshBasicMaterial({color:0xffb03c, transparent:true, opacity:0, depthWrite:false})
+      );
+      blastCore.position.copy(blastCenter);
+      scene.add(blastCore);
+      for (let i = 0; i < 170; i++) {
+        const piece = new THREE.Mesh(
+          new THREE.BoxGeometry(.07 + Math.random()*.16, .07 + Math.random()*.17, .07 + Math.random()*.14),
+          new THREE.MeshBasicMaterial({color: i%4===0 ? 0xffdd79 : i%3===0 ? 0xff311b : 0xff862e, transparent:true, opacity:0})
+        );
+        const direction = new THREE.Vector3((Math.random()-.5)*2, (Math.random()-.35)*1.8, (Math.random()-.5)*2).normalize();
+        blastPieces.push({mesh:piece, direction, speed:2.8+Math.random()*6, spin:Math.random()*7});
+        piece.position.copy(blastCenter);
+        scene.add(piece);
+      }
+      const monsterBaseScale = hacker.scale.x;
+      // Save the monster's original appearance and limb poses; no geometry changes.
+      const monsterOriginalPoses = hacker.children.map(part => ({x:part.rotation.x, y:part.rotation.y, z:part.rotation.z}));
+      function updateExplosionAndGrowingMonster(t) {
+        // Explosion occurs before the original turn-around sequence.
+        // Three overlapping blast waves make the original explosion stronger.
+        const burstTimes = [1.65, 2.12, 2.65];
+        const age = t - 1.65;
+        const active = age >= 0 && age < 3.7;
+        const wave = burstTimes.reduce((best, start) => {
+          const a = t - start;
+          return a >= 0 && a < 1.25 ? Math.max(best, 1-a/1.25) : best;
+        }, 0);
+        blastRing.visible = active;
+        blastCore.visible = active;
+        if (active) {
+          const fade = Math.max(0, 1-age/3.7);
+          blastLight.intensity = 3.5*fade + 24*wave;
+          const waveAge = Math.max(0, t - burstTimes.filter(x=>x<=t).slice(-1)[0]);
+          blastRing.scale.setScalar(.3 + waveAge*8);
+          blastRing.material.opacity = .95*wave;
+          blastCore.scale.setScalar(.3 + waveAge*3.8);
+          blastCore.material.opacity = .82*wave;
+        } else blastLight.intensity = 0;
+        for (const item of blastPieces) {
+          item.mesh.visible = active;
+          if (!active) continue;
+          item.mesh.position.copy(blastCenter).addScaledVector(item.direction, item.speed*age*1.35);
+          item.mesh.position.y -= 1.8*age*age;
+          item.mesh.rotation.set(age*item.spin, age*item.spin*.7, age*item.spin*.4);
+          item.mesh.material.opacity = Math.max(0, 1-age/3.7);
+        }
+        // The monster NEVER changes size. During the second look it moves in
+        // broken, uncanny stop-motion jerks, as if the hacked world is glitching.
+        hacker.scale.setScalar(monsterBaseScale);
+        const secondLook = t >= 9.1 && t < 11.8 && hacker.visible;
+        if (secondLook) {
+          const pulse = Math.floor(t * 13);
+          const jaggedX = Math.sin(pulse * 12.9898) * .26;
+          const jaggedZ = Math.sin(pulse * 6.113) * .19;
+          hacker.position.x = jaggedX + Math.sin(t * 3.7) * .16;
+          hacker.position.z += jaggedZ;
+          hacker.position.y = Math.max(0, Math.abs(Math.sin(t * 9.2)) * .09);
+          hacker.rotation.z = Math.sin(pulse * 2.4) * .12;
+          hacker.rotation.y = Math.sin(pulse * 1.8) * .15;
+          hacker.rotation.x = Math.sin(t * 5.1) * .065;
+          // Disjointed arm and head twitches; all original monster parts retained.
+          hacker.children.forEach((part, i) => {
+            const base = monsterOriginalPoses[i];
+            part.rotation.x = base.x + (i === 1 ? Math.sin(pulse * 3.9) * .16 : 0);
+            part.rotation.y = base.y + (i === 1 ? Math.sin(pulse * 2.1) * .14 : 0);
+            part.rotation.z = base.z + (i >= 4 && i <= 7 ? Math.sin(pulse * (i + 1)) * .18 : 0);
+          });
+          hackerGlow.intensity = 2.6 + Math.abs(Math.sin(t * 17)) * 1.2;
+          hackerGlow.distance = 9;
+        } else {
+          hacker.position.x = 0;
+          hacker.position.y = 0;
+          hacker.rotation.set(0, 0, 0);
+          hacker.children.forEach((part, i) => {
+            const base = monsterOriginalPoses[i];
+            part.rotation.set(base.x, base.y, base.z);
+          });
+          hackerGlow.intensity = 2.6;
+          hackerGlow.distance = 9;
+        }
+      }
+
       // ===== Approved 3D teacher runs beside the player =====
       const runningTeacher = createRITTeacher(THREE);
       const companion = runningTeacher.group;
@@ -759,6 +856,49 @@ return { group:teacher, update, setAnimation: value => { animation=value; } };
           ? Math.sin(t * 14) * .012
           : Math.sin(t * 6) * .003;
 
+        // ADD-ON: During the sprint, glance behind ONE MORE TIME.
+        // First look (2.8–5s) is the original hacker at its original size.
+        // Second look (9.1–11.8s) reveals the SAME hacker moving unnaturally.
+        if (t >= 9.1 && t < 11.8) {
+          const turnBack = smooth(9.1, 9.8, t);
+          const turnForward = smooth(11.0, 11.8, t);
+          const glance = turnBack * (1 - turnForward);
+          camera.rotation.order = 'YXZ';
+          camera.rotation.y = Math.PI * glance;
+          camera.rotation.x = 0;
+          hacker.visible = true;
+          hackerGlow.visible = true;
+          // Keep the original monster mesh; reposition behind the moving player
+          // so it remains visible during the second glance.
+          hacker.position.set(0, 0, camera.position.z + 8.8);
+          hackerGlow.position.set(0, 2.6, hacker.position.z - .9);
+          statusEl.textContent = '🚨 IT IS MOVING WRONG — RUN!';
+          subtitle.textContent = glance > .7 ? 'IT IS TWITCHING... RUN!' : 'LOOK BACK... THEN RUN!';
+        } else if (t >= 11.8) {
+          hacker.position.set(0, 0, 10.5);
+          hackerGlow.position.set(0, 2.6, 9.6);
+          hacker.visible = false;
+          hackerGlow.visible = false;
+        }
+        // Additive explosions and uncanny movement, without changing the monster design or size.
+        updateExplosionAndGrowingMonster(t);
+        // ADD-ON ONLY: sharp camera shake synchronized to the three explosions.
+        // It fades between impacts and stops afterward; no monster or scene changes.
+        const impactTimes = [1.65, 2.12, 2.65];
+        let impactStrength = 0;
+        for (const impactTime of impactTimes) {
+          const elapsed = t - impactTime;
+          if (elapsed >= 0 && elapsed < 1.05) {
+            impactStrength += Math.pow(1 - elapsed / 1.05, 2) * (1 + 0.25 * Math.sin(elapsed * 38));
+          }
+        }
+        if (impactStrength > 0) {
+          const shake = Math.min(1.8, impactStrength);
+          camera.position.x += (Math.sin(t * 91) * .14 + Math.sin(t * 153) * .055) * shake;
+          camera.position.y += (Math.cos(t * 113) * .12 + Math.sin(t * 67) * .045) * shake;
+          camera.rotation.z += Math.sin(t * 73) * .045 * shake;
+          camera.rotation.x += Math.sin(t * 97) * .018 * shake;
+        }
         renderer.render(scene, camera);
       }
 

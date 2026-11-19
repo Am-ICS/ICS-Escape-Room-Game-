@@ -1608,18 +1608,33 @@ background:radial-gradient(ellipse at 50% 44%,transparent 22%,rgba(0,0,0,.47) 10
   <body class="game3d">
 <div id="rightClickHint">PLEASE LEFT-CLICK YOUR MOUSE BEFORE YOU START</div>
 <script>
-// Show the right-click reminder only once per tab session.
+// Show the left-click reminder whenever the player enters or returns to this lab.
+// This does not reset any challenge progress, timer, or player position.
 (function () {
   const hint = document.getElementById('rightClickHint');
-  try {
-    if (sessionStorage.getItem('icsScreen4HintSeen') === 'yes') {
-      hint.style.display = 'none';
-    } else {
-      sessionStorage.setItem('icsScreen4HintSeen', 'yes');
-    }
-  } catch (error) {
-    // If storage is blocked, the normal five-second hint still works.
+  let hideTimer;
+  function showReminder() {
+    clearTimeout(hideTimer);
+    hint.style.animation = 'none';
+    hint.style.display = 'block';
+    hint.style.opacity = '1';
+    hint.style.visibility = 'visible';
+    // Restart the five-second fade for every return, including browser back/forward cache.
+    void hint.offsetWidth;
+    hint.style.animation = 'hintDisappear .4s ease 5s forwards';
+    hideTimer = setTimeout(() => { hint.style.display = 'none'; }, 5500);
   }
+  function hideReminder() {
+    clearTimeout(hideTimer);
+    hint.style.display = 'none';
+  }
+  showReminder();
+  window.addEventListener('pageshow', event => {
+    if (event.persisted) showReminder();
+  });
+  document.addEventListener('pointerlockchange', () => {
+    if (document.pointerLockElement) hideReminder();
+  });
 })();
 </script>
 
@@ -3540,8 +3555,8 @@ for(let z=-13;z<=13;z+=4){
 }
 panel("FINAL ACCESS  //  SECRET WORD",0,4.25,-16.25,6.4,.68,"#ff5876","#170c18",52);
 panel("TYPE THE 10-LETTER PASSWORD",0,3.55,-16.24,5.2,.48,"#ff9bad","#15171e",43);
-panel("SECURITY TOWER  //  START HERE",0,3.5,14.27,5.9,.46,"#ff7892","#190d19",39);
-panel("SYSTEM HACKED",-7.94,3.1,3.5,2.2,.58,"#ff4040","#160306",45);
+panel("SECURITY TOWER  //  START HERE",0,3.5,14.27,5.9,.46,"#ff7892","#190d19",39).rotation.y=Math.PI;
+panel("SYSTEM HACKED",-7.94,3.1,3.5,2.2,.58,"#ff4040","#160306",45).rotation.y=Math.PI/2;
 // Custom monitors with text and glowing HUD readouts
 function screenText(lines,x,y,z,w=2.1,h=1.12,tint="#4df0c2"){
  const c=document.createElement("canvas");c.width=768;c.height=440;const ctx=c.getContext("2d");
